@@ -161,8 +161,6 @@ const QuestionDisplay = () => {
 
     dispatch(setTimeTaken(totalTime));
     dispatch(setScore(localScore));
-    console.log("tt", totalTime);
-    console.log("ls", localScore);
     router.push("/score");
   };
 
@@ -371,6 +369,8 @@ const QuestionDisplay = () => {
                       "quiz_results",
                       JSON.stringify(quizDatas)
                     );
+                    console.log(totalTime);
+                    console.log();
                   } else {
                     setIndex(index + 1);
                   }
