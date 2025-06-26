@@ -1,8 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
-import {
-  setScore,
-  setTimeTaken,
-} from "../features/performance/performanceSliceInfo";
+import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { useRouter } from "next/navigation";
 
@@ -13,20 +9,8 @@ interface PropTypes {
   setSubmitOverlay: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const SubmitQuizModal = ({
-  setSubmitOverlay,
-  selectedIndex,
-  correctIndices,
-  localTotalTime,
-}: PropTypes) => {
+export const SubmitQuizModal = ({ setSubmitOverlay }: PropTypes) => {
   const lightMode = useSelector((state: RootState) => state.mode.lightMode);
-  const totalTime = useSelector(
-    (state: RootState) => state.userChoices.totalTime
-  );
-  const numberOfQuestions = useSelector(
-    (state: RootState) => state.userChoices.numberOfQuestions
-  );
-  const dispatch = useDispatch();
   const router = useRouter();
 
   return (
@@ -105,14 +89,6 @@ export const SubmitQuizModal = ({
                   : "shadow-[0_4px_12px_rgba(16,185,129,0.2)] hover:shadow-[0_6px_16px_rgba(16,185,129,0.3)]"
               }`}
             onClick={async () => {
-              let localScore = 0;
-              for (let i = 0; i < numberOfQuestions; i++) {
-                if (selectedIndex[i] === correctIndices[i]) {
-                  localScore++;
-                }
-              }
-              dispatch(setScore(localScore));
-              dispatch(setTimeTaken(totalTime - localTotalTime));
               await fetch("/api/user/quizAttended", {
                 method: "PATCH",
               });

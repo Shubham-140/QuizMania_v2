@@ -4,34 +4,19 @@ import { useEffect, useState } from "react";
 import { RootState } from "../store/store";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { setNumberOfQues } from "../features/userChoices/userChoicesSlice";
 
 const Score = () => {
   const lightMode = useSelector((state: RootState) => state.mode.lightMode);
   const score = useSelector((state: RootState) => state.performance.score);
-  const numberOfQuestions = useSelector(
-    (state: RootState) => state.userChoices.numberOfQuestions
-  );
+  const questions = localStorage.getItem("numberOfQuestions");
+  const numberOfQuestions = questions ? JSON.parse(questions) : 10;
   const [showCalculating, setShowCalculating] = useState(true);
   const timeTaken = useSelector(
     (state: RootState) => state.performance.timeTaken
   );
+  console.log("from score component --> ", timeTaken);
+
   const router = useRouter();
-
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (mounted) {
-      const savedTime = localStorage.getItem("totalTime");
-      if (savedTime) {
-        setNumberOfQues(JSON.parse(savedTime));
-      }
-    }
-  }, [mounted]);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowCalculating(false), 2000);

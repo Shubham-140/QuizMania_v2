@@ -26,12 +26,10 @@ const QuestionDisplay = () => {
 
   // Redux state
   const lightMode = useSelector((state: RootState) => state.mode.lightMode);
-  const numberOfQuestions = useSelector(
-    (state: RootState) => state.userChoices.numberOfQuestions
-  );
-  const totalTime = useSelector(
-    (state: RootState) => state.userChoices.totalTime
-  );
+  const questions = localStorage.getItem("numberOfQuestions");
+  const numberOfQuestions = questions ? JSON.parse(questions) : 10;
+  const time = localStorage.getItem("totalTime");
+  const totalTime = time ? JSON.parse(time) : 120;
 
   // Local state
   const [index, setIndex] = useState(0);
@@ -369,6 +367,17 @@ const QuestionDisplay = () => {
                       "quiz_results",
                       JSON.stringify(quizDatas)
                     );
+                    const elapsedTime = totalTime - (localTotalTime || 0);
+                    console.log(elapsedTime);
+                    dispatch(setTimeTaken(elapsedTime));
+                    let localScore = 0;
+                    for (let i = 0; i < numberOfQuestions; i++) {
+                      if (selectedIndex[i] === correctIndices[i]) {
+                        localScore++;
+                      }
+                    }
+                    dispatch(setScore(localScore));
+                    console.log(localScore);
                   } else {
                     setIndex(index + 1);
                   }
