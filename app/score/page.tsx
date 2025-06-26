@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { RootState } from "../store/store";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { setNumberOfQues } from "../features/userChoices/userChoicesSlice";
 
 const Score = () => {
   const lightMode = useSelector((state: RootState) => state.mode.lightMode);
@@ -16,11 +17,23 @@ const Score = () => {
     (state: RootState) => state.performance.timeTaken
   );
   const router = useRouter();
+  const [localStorageHydrate, setLocalStorageHydrate] = useState(false);
 
   useEffect(() => {
+    const savedTime = localStorage.getItem("totalTime");
+    if (savedTime) {
+      setNumberOfQues(JSON.parse(savedTime));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (localStorageHydrate === false) {
+      return;
+    }
+    setLocalStorageHydrate(true);
     const timer = setTimeout(() => setShowCalculating(false), 2000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [localStorageHydrate]);
 
   return (
     <div
