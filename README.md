@@ -32,7 +32,8 @@ QuizMania is a feature-rich, full-stack quiz application built with Next.js 14, 
 - Light/dark theme toggle with Redux state
 - Custom quiz length (5-20 questions)
 - Adjustable time limits
-- Local storage for user preferences
+- Persistent user preferences with Redux Persist
+- Cross-session state retention
 
 #### Engagement Tools
 
@@ -49,6 +50,13 @@ QuizMania is a feature-rich, full-stack quiz application built with Next.js 14, 
 - Session management with NextAuth.js
 - Protected routes and API endpoints
 - Secure logout functionality
+
+#### State Persistence
+
+- Redux Persist integration for seamless user experience
+- Automatic state rehydration on app reload
+- Configurable persistence for sensitive data
+- Local storage optimization
 
 #### Database Integration
 
@@ -79,6 +87,7 @@ QuizMania is a feature-rich, full-stack quiz application built with Next.js 14, 
 - **Framework**: Next.js 14 with App Router
 - **Language**: TypeScript 5
 - **State Management**: Redux Toolkit
+- **State Persistence**: Redux Persist
 - **Styling**: Tailwind CSS 4
 - **UI Components**: Lucide React icons
 - **Animations**: CSS keyframes & Tailwind transitions
@@ -101,6 +110,14 @@ QuizMania is a feature-rich, full-stack quiz application built with Next.js 14, 
 
 ## 🔧 Key Features Implementation
 
+### State Management & Persistence
+
+- **Redux Toolkit**: Centralized state management with modern Redux patterns
+- **Redux Persist**: Automatic state persistence across browser sessions
+- **Selective Persistence**: Configure which parts of state to persist
+- **Rehydration**: Seamless state restoration on app initialization
+- **Storage Optimization**: Efficient local storage management
+
 ### Authentication Flow
 
 - **Secure Registration**: bcrypt password hashing + database storage
@@ -113,19 +130,22 @@ QuizMania is a feature-rich, full-stack quiz application built with Next.js 14, 
 - **Profile Exploration**: Search and view other users' profiles
 - **Statistics Tracking**: Quiz history, scores, and performance metrics
 - **Social Features**: Leaderboards and user discovery
+- **Persistent Preferences**: User settings saved across sessions
 
 ### Quiz Engine
 
 - **Dynamic Question Loading**: Server-side question generation
 - **Real-time Scoring**: Instant feedback with animations
-- **Progress Persistence**: Save and resume quiz sessions
+- **Progress Persistence**: Save and resume quiz sessions with Redux Persist
 - **Performance Analytics**: Detailed statistics and insights
+- **State Recovery**: Resume interrupted quizzes after page refresh
 
 ### Error Handling
 
 - **Custom Error Pages**: Branded 404 and error boundaries
 - **API Error Handling**: Proper HTTP status codes and messages
 - **User-Friendly Feedback**: Contextual error messages
+- **Persistence Error Recovery**: Graceful handling of storage failures
 
 ## 🚀 Getting Started
 
@@ -143,6 +163,8 @@ QuizMania is a feature-rich, full-stack quiz application built with Next.js 14, 
 - **Scalable Database**: PostgreSQL with optimized Prisma queries
 - **Rich User Experience**: Smooth animations, responsive design, and intuitive UI
 - **Social Features**: User profiles via username using params
+- **Persistent State**: Redux Persist ensures seamless user experience across sessions
+- **Performance Optimized**: Efficient state management with selective persistence
 
 ---
 
