@@ -8,16 +8,21 @@ import { useRouter } from "next/navigation";
 const Score = () => {
   const lightMode = useSelector((state: RootState) => state.mode.lightMode);
   const score = useSelector((state: RootState) => state.performance.score);
-  const [numberOfQuestions, setNumberOfQuestions] = useState<number | null>(
-    null
-  ); // Start as null
-  const [showCalculating, setShowCalculating] = useState(true);
   const timeTaken = useSelector(
     (state: RootState) => state.performance.timeTaken
   );
+
+  const [numberOfQuestions, setNumberOfQuestions] = useState<number | null>(
+    null
+  );
+  const [showCalculating, setShowCalculating] = useState(true);
+  const [isClient, setIsClient] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
+    // Set client-side flag
+    setIsClient(true);
+
     // Safely get from localStorage
     const getStoredValue = (key: string, defaultValue: number): number => {
       try {
@@ -39,8 +44,8 @@ const Score = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Show loading state while initializing
-  if (numberOfQuestions === null) {
+  // Don't render until client-side hydration is complete
+  if (!isClient || numberOfQuestions === null) {
     return (
       <div
         className={`min-h-screen flex items-center justify-center ${
