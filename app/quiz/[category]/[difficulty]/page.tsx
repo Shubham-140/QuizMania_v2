@@ -359,6 +359,8 @@ const QuestionDisplay = () => {
                 onClick={() => {
                   if (index === numberOfQuestions - 1) {
                     setSubmitOverlay(true);
+                    dispatch(setTimeTaken(localTotalTime));
+                    console.log('ss', localTotalTime);
                     const quizDatas = {
                       quizData,
                       correctIndices,
@@ -369,8 +371,6 @@ const QuestionDisplay = () => {
                       "quiz_results",
                       JSON.stringify(quizDatas)
                     );
-                    console.log(totalTime);
-                    console.log();
                   } else {
                     setIndex(index + 1);
                   }
