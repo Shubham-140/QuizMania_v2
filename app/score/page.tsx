@@ -17,23 +17,26 @@ const Score = () => {
     (state: RootState) => state.performance.timeTaken
   );
   const router = useRouter();
-  const [localStorageHydrate, setLocalStorageHydrate] = useState(false);
+
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const savedTime = localStorage.getItem("totalTime");
-    if (savedTime) {
-      setNumberOfQues(JSON.parse(savedTime));
-    }
+    setMounted(true);
   }, []);
 
   useEffect(() => {
-    if (localStorageHydrate === false) {
-      return;
+    if (mounted) {
+      const savedTime = localStorage.getItem("totalTime");
+      if (savedTime) {
+        setNumberOfQues(JSON.parse(savedTime));
+      }
     }
-    setLocalStorageHydrate(true);
+  }, [mounted]);
+
+  useEffect(() => {
     const timer = setTimeout(() => setShowCalculating(false), 2000);
     return () => clearTimeout(timer);
-  }, [localStorageHydrate]);
+  }, []);
 
   return (
     <div
