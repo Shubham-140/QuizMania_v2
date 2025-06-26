@@ -140,6 +140,7 @@ const QuestionDisplay = () => {
     setSelectedIndex(new Array(numberOfQuestions).fill(null));
   };
 
+  // ✅ FIXED: Calculate elapsed time properly
   const calculateScore = () => {
     let localScore = 0;
     for (let i = 0; i < numberOfQuestions; i++) {
@@ -147,6 +148,7 @@ const QuestionDisplay = () => {
         localScore++;
       }
     }
+
     const quizDatas = {
       quizData,
       correctIndices,
@@ -154,12 +156,46 @@ const QuestionDisplay = () => {
       options,
     };
 
-    console.log(quizDatas);
+    console.log("Quiz Results:", quizDatas);
     localStorage.setItem("quiz_results", JSON.stringify(quizDatas));
 
-    dispatch(setTimeTaken(totalTime));
+    // ✅ FIXED: Calculate elapsed time correctly
+    const elapsedTime = totalTime - (localTotalTime || 0);
+    console.log("Elapsed Time:", elapsedTime);
+    console.log("Score:", localScore);
+
+    dispatch(setTimeTaken(elapsedTime)); // ✅ Now using elapsed time
     dispatch(setScore(localScore));
+
     router.push("/score");
+  };
+
+  // ✅ FIXED: Extract score calculation logic to avoid duplication
+  const calculateScoreAndNavigate = () => {
+    let localScore = 0;
+    for (let i = 0; i < numberOfQuestions; i++) {
+      if (selectedIndex[i] === correctIndices[i]) {
+        localScore++;
+      }
+    }
+
+    const quizDatas = {
+      quizData,
+      correctIndices,
+      selectedIndex,
+      options,
+    };
+
+    localStorage.setItem("quiz_results", JSON.stringify(quizDatas));
+
+    const elapsedTime = totalTime - (localTotalTime || 0);
+    console.log("Submit - Elapsed Time:", elapsedTime);
+    console.log("Submit - Score:", localScore);
+
+    dispatch(setTimeTaken(elapsedTime));
+    dispatch(setScore(localScore));
+
+    return { localScore, elapsedTime };
   };
 
   const handleSelect = (questionIndex: number, optionIndex: number) => {
@@ -356,28 +392,9 @@ const QuestionDisplay = () => {
                   }`}
                 onClick={() => {
                   if (index === numberOfQuestions - 1) {
+                    // ✅ FIXED: Use the unified calculation function
+                    calculateScoreAndNavigate();
                     setSubmitOverlay(true);
-                    const quizDatas = {
-                      quizData,
-                      correctIndices,
-                      selectedIndex,
-                      options,
-                    };
-                    localStorage.setItem(
-                      "quiz_results",
-                      JSON.stringify(quizDatas)
-                    );
-                    const elapsedTime = totalTime - (localTotalTime || 0);
-                    console.log(elapsedTime);
-                    dispatch(setTimeTaken(elapsedTime));
-                    let localScore = 0;
-                    for (let i = 0; i < numberOfQuestions; i++) {
-                      if (selectedIndex[i] === correctIndices[i]) {
-                        localScore++;
-                      }
-                    }
-                    dispatch(setScore(localScore));
-                    console.log(localScore);
                   } else {
                     setIndex(index + 1);
                   }
