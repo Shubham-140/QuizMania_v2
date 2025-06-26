@@ -1,6 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+interface reduxType {
+  score: number;
+  timeTaken: number;
+}
+
+const initialState: reduxType = {
   score: 0,
   timeTaken: 0,
 };
