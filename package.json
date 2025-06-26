@@ -6,13 +6,14 @@
     "build": "prisma generate && next build",
     "dev": "prisma generate && next dev",
     "start": "next start",
-     "postinstall": "prisma generate"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.10.1",
     "@reduxjs/toolkit": "^2.8.2",
     "@types/pg": "^8.15.4",
     "bcrypt": "^6.0.0",
+    "build": "^0.1.4",
     "lucide-react": "^0.522.0",
     "next": "15.3.4",
     "next-auth": "^4.24.11",

@@ -41,7 +41,7 @@ export default function Login() {
       await signIn("credentials", {
         username,
         password,
-        callbackUrl: "/profile",
+        callbackUrl: "/",
       });
     } catch {
       console.log("Something went wrong");
