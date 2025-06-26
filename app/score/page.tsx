@@ -8,7 +8,9 @@ import { useRouter } from "next/navigation";
 const Score = () => {
   const lightMode = useSelector((state: RootState) => state.mode.lightMode);
   const score = useSelector((state: RootState) => state.performance.score);
-  const [numberOfQuestions, setNumberOfQuestions] = useState(10);
+  const [numberOfQuestions, setNumberOfQuestions] = useState<number | null>(
+    null
+  ); // Start as null
   const [showCalculating, setShowCalculating] = useState(true);
   const timeTaken = useSelector(
     (state: RootState) => state.performance.timeTaken
@@ -16,13 +18,39 @@ const Score = () => {
   const router = useRouter();
 
   useEffect(() => {
-    // This ensures localStorage access only happens on the client side
-    const questions = localStorage.getItem("numberOfQuestions");
-    setNumberOfQuestions(questions ? JSON.parse(questions) : 10);
-    
+    // Safely get from localStorage
+    const getStoredValue = (key: string, defaultValue: number): number => {
+      try {
+        if (typeof window !== "undefined") {
+          const value = localStorage.getItem(key);
+          return value ? JSON.parse(value) : defaultValue;
+        }
+        return defaultValue;
+      } catch (error) {
+        console.error("Error accessing localStorage:", error);
+        return defaultValue;
+      }
+    };
+
+    const questions = getStoredValue("numberOfQuestions", 10);
+    setNumberOfQuestions(questions);
+
     const timer = setTimeout(() => setShowCalculating(false), 2000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Show loading state while initializing
+  if (numberOfQuestions === null) {
+    return (
+      <div
+        className={`min-h-screen flex items-center justify-center ${
+          lightMode ? "bg-white" : "bg-gray-900"
+        }`}
+      >
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div
