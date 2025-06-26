@@ -161,6 +161,8 @@ const QuestionDisplay = () => {
 
     dispatch(setTimeTaken(totalTime));
     dispatch(setScore(localScore));
+    console.log("tt", totalTime);
+    console.log("ls", localScore);
     router.push("/score");
   };
 
