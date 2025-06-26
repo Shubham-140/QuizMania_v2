@@ -8,17 +8,18 @@ import { useRouter } from "next/navigation";
 const Score = () => {
   const lightMode = useSelector((state: RootState) => state.mode.lightMode);
   const score = useSelector((state: RootState) => state.performance.score);
-  const questions = localStorage.getItem("numberOfQuestions");
-  const numberOfQuestions = questions ? JSON.parse(questions) : 10;
+  const [numberOfQuestions, setNumberOfQuestions] = useState(10);
   const [showCalculating, setShowCalculating] = useState(true);
   const timeTaken = useSelector(
     (state: RootState) => state.performance.timeTaken
   );
-  console.log("from score component --> ", timeTaken);
-
   const router = useRouter();
 
   useEffect(() => {
+    // This ensures localStorage access only happens on the client side
+    const questions = localStorage.getItem("numberOfQuestions");
+    setNumberOfQuestions(questions ? JSON.parse(questions) : 10);
+    
     const timer = setTimeout(() => setShowCalculating(false), 2000);
     return () => clearTimeout(timer);
   }, []);
