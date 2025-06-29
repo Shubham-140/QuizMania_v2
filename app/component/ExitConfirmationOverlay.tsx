@@ -73,7 +73,7 @@ export const ExitConfirmationOverlay = ({ setShowExitOverlay }: Props) => {
         <div className="flex gap-[clamp(12px,3vw,16px)] justify-center flex-wrap">
           {/* Cancel button */}
           <button
-            className={`flex-1 min-w-[120px] px-[clamp(20px,5vw,24px)] py-[clamp(12px,3vw,16px)] rounded-[clamp(8px,2vw,12px)] border-2 font-semibold text-[clamp(0.875rem,3vw,1rem)] transition-all duration-300 hover:-translate-y-0.5 ${
+            className={`flex-1 min-w-[120px] px-[clamp(20px,5vw,24px)] py-[clamp(12px,3vw,16px)] rounded-[clamp(8px,2vw,12px)] border-2 font-semibold text-[clamp(0.875rem,3vw,1rem)] transition-all duration-300 hover:-translate-y-0.5 cursor-pointer ${
               lightMode
                 ? "border-emerald-500 text-emerald-500 hover:bg-emerald-50"
                 : "border-emerald-500 text-emerald-500 hover:bg-emerald-900/30"
@@ -85,7 +85,7 @@ export const ExitConfirmationOverlay = ({ setShowExitOverlay }: Props) => {
 
           {/* Exit button */}
           <button
-            className={`flex-1 min-w-[120px] px-[clamp(20px,5vw,24px)] py-[clamp(12px,3vw,16px)] rounded-[clamp(8px,2vw,12px)] font-semibold text-[clamp(0.875rem,3vw,1rem)] text-white transition-all duration-300 hover:-translate-y-0.5 ${
+            className={`flex-1 min-w-[120px] px-[clamp(20px,5vw,24px)] py-[clamp(12px,3vw,16px)] rounded-[clamp(8px,2vw,12px)] font-semibold text-[clamp(0.875rem,3vw,1rem)] text-white transition-all duration-300 hover:-translate-y-0.5 cursor-pointer ${
               lightMode
                 ? "bg-red-500 shadow-lg shadow-red-500/30 hover:bg-red-600 hover:shadow-xl hover:shadow-red-500/40"
                 : "bg-red-600 shadow-lg shadow-red-500/20 hover:bg-red-700 hover:shadow-xl hover:shadow-red-500/30"

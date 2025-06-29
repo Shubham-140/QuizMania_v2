@@ -70,7 +70,7 @@ export const SubmitQuizModal = ({ setSubmitOverlay }: PropTypes) => {
         {/* Action Buttons */}
         <div className="flex justify-center gap-4 flex-wrap">
           <button
-            className={`px-6 py-3 rounded-xl border font-semibold text-base min-w-[120px] transition-all duration-200
+            className={`px-6 py-3 cursor-pointer rounded-xl border font-semibold text-base min-w-[120px] transition-all duration-200
               ${
                 lightMode
                   ? "bg-slate-50 border-slate-200 text-slate-900 hover:bg-slate-100 hover:-translate-y-0.5"
@@ -81,7 +81,7 @@ export const SubmitQuizModal = ({ setSubmitOverlay }: PropTypes) => {
             Cancel
           </button>
           <button
-            className={`px-6 py-3 rounded-xl font-semibold text-base min-w-[120px] text-white transition-all duration-200
+            className={`px-6 py-3 rounded-xl cursor-pointer font-semibold text-base min-w-[120px] text-white transition-all duration-200
               bg-emerald-500 hover:bg-emerald-600 hover:-translate-y-0.5
               ${
                 lightMode

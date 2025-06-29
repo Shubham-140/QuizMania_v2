@@ -1,13 +1,15 @@
 "use client";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 function Login() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
+  const { data: session } = useSession();
+  const pathname = usePathname();
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -25,6 +27,12 @@ function Login() {
       router.push(`/user/${username}`);
     }
   }
+
+  useEffect(() => {
+    if (session?.user) {
+      router.push("/");
+    }
+  }, [session?.user, router, pathname]);
 
   return (
     <div className="min-h-screen flex bg-gray-50">

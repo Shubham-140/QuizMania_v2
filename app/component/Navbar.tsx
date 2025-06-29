@@ -120,7 +120,7 @@ const Navbar = () => {
         {/* Theme Toggle */}
         <button
           onClick={() => dispatch(toggleMode())}
-          className={`group relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 hover:scale-105 ${
+          className={`group cursor-pointer relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 hover:scale-105 ${
             lightMode
               ? "bg-gray-100 hover:bg-gray-200 border border-gray-200 shadow-sm"
               : "bg-gray-800 hover:bg-gray-700 border border-gray-700 shadow-sm"
@@ -159,7 +159,7 @@ const Navbar = () => {
               <div className="relative">
                 <button
                   onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                  className={`group relative flex items-center justify-center w-12 h-12 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105 ${
+                  className={`group cursor-pointer relative flex items-center justify-center w-12 h-12 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105 ${
                     lightMode
                       ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25 hover:bg-emerald-600 hover:shadow-emerald-500/35"
                       : "bg-emerald-600 text-white shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 hover:shadow-emerald-500/30"

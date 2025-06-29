@@ -217,7 +217,7 @@ const Score = () => {
           <button
             onClick={() => router.push("/quiz/results")}
             className={`rounded-[clamp(0.5rem,2vw,0.75rem)] p-[clamp(0.5rem,2vw,0.75rem)] font-semibold 
-            text-[clamp(0.875rem,2vw,1rem)] transition-all duration-200 border border-emerald-500 
+            text-[clamp(0.875rem,2vw,1rem)] transition-all duration-200 border border-emerald-500  cursor-pointer
             ${
               lightMode
                 ? "text-emerald-500 hover:bg-emerald-50"

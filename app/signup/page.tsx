@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
-import React, { useState } from "react";
+import { signIn, useSession } from "next-auth/react";
+import React, { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Login() {
   const [name, setName] = useState<string>("");
@@ -9,6 +10,15 @@ export default function Login() {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const router = useRouter();
+  const { data: session } = useSession();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (session?.user) {
+      router.push("/");
+    }
+  }, [session?.user, router, pathname]);
 
   const handleSignup = async () => {
     if (!name || !password || !username || !email || !confirmPassword) {

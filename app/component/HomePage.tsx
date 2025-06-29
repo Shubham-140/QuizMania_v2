@@ -138,7 +138,7 @@ const HomePage = () => {
             </h2>
             <div className="flex justify-center gap-4 md:gap-5 mb-6 flex-wrap">
               <button
-                className={`px-6 md:px-8 py-3 md:py-4 rounded-full text-white font-semibold text-sm md:text-base transition-all duration-300 hover:-translate-y-1 ${
+                className={`px-6 md:px-8 py-3 md:py-4 rounded-full cursor-pointer text-white font-semibold text-sm md:text-base transition-all duration-300 hover:-translate-y-1 ${
                   difficulty === "easy" ? "bg-emerald-600" : "bg-emerald-500"
                 } ${
                   lightMode
@@ -150,7 +150,7 @@ const HomePage = () => {
                 Easy {difficulty === "easy" && "✓"}
               </button>
               <button
-                className={`px-6 md:px-8 py-3 md:py-4 rounded-full text-white font-semibold text-sm md:text-base transition-all duration-300 hover:-translate-y-1 ${
+                className={`px-6 md:px-8 py-3 md:py-4 rounded-full cursor-pointer text-white font-semibold text-sm md:text-base transition-all duration-300 hover:-translate-y-1 ${
                   difficulty === "medium" ? "bg-amber-600" : "bg-amber-500"
                 } ${
                   lightMode
@@ -162,7 +162,7 @@ const HomePage = () => {
                 Medium {difficulty === "medium" && "✓"}
               </button>
               <button
-                className={`px-6 md:px-8 py-3 md:py-4 rounded-full text-white font-semibold text-sm md:text-base transition-all duration-300 hover:-translate-y-1 ${
+                className={`px-6 md:px-8 py-3 md:py-4 rounded-full cursor-pointer text-white font-semibold text-sm md:text-base transition-all duration-300 hover:-translate-y-1 ${
                   difficulty === "hard" ? "bg-red-600" : "bg-red-500"
                 } ${
                   lightMode
@@ -209,7 +209,7 @@ const HomePage = () => {
           {/* Action Buttons */}
           <div className="flex flex-col gap-4 md:gap-5 mt-8 md:mt-10">
             <button
-              className={`w-full py-4 md:py-5 rounded-xl text-white font-semibold text-lg md:text-xl transition-all duration-300 hover:-translate-y-1 ${
+              className={`w-full py-4 md:py-5 cursor-pointer rounded-xl text-white font-semibold text-lg md:text-xl transition-all duration-300 hover:-translate-y-1 ${
                 lightMode
                   ? "bg-emerald-500 shadow-emerald-500/30 hover:shadow-emerald-600/40"
                   : "bg-emerald-500 shadow-emerald-500/20 hover:shadow-emerald-600/30"
@@ -235,7 +235,7 @@ const HomePage = () => {
             </button>
             <div className="flex gap-4 md:gap-5 w-full">
               <button
-                className={`flex-1 py-3 md:py-4 rounded-xl border-2 font-semibold text-sm md:text-base transition-all duration-300 hover:-translate-y-1 ${
+                className={`flex-1 py-3 cursor-pointer md:py-4 rounded-xl border-2 font-semibold text-sm md:text-base transition-all duration-300 hover:-translate-y-1 ${
                   lightMode
                     ? "border-emerald-500 text-emerald-500 hover:bg-emerald-50"
                     : "border-emerald-500 text-emerald-400 hover:bg-emerald-900"
@@ -245,7 +245,7 @@ const HomePage = () => {
                 Rules
               </button>
               <button
-                className={`flex-1 py-3 md:py-4 rounded-xl font-semibold text-sm md:text-base transition-all duration-300 hover:-translate-y-1 ${
+                className={`flex-1 cursor-pointer py-3 md:py-4 rounded-xl font-semibold text-sm md:text-base transition-all duration-300 hover:-translate-y-1 ${
                   lightMode
                     ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
                     : "bg-gray-600 text-gray-200 hover:bg-gray-700"

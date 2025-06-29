@@ -325,7 +325,7 @@ const QuestionDisplay = () => {
             {/* Navigation Buttons */}
             <div className="flex justify-between gap-4 pt-4">
               <button
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl border font-semibold 
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl border font-semibold cursor-pointer 
                   ${
                     colors.primaryText
                   } border-emerald-500 hover:bg-emerald-50/50 transition-all
@@ -345,7 +345,7 @@ const QuestionDisplay = () => {
               </button>
 
               <button
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white 
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white cursor-pointer 
                   ${
                     colors.primary
                   } hover:-translate-y-0.5 transition-all shadow-md hover:shadow-lg
