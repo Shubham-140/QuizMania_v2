@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 const About = () => {
   const lightMode = useSelector((state: RootState) => state.mode.lightMode);
-  const router = useRouter();
+  const router = useRouter(); 
 
   return (
     <div
