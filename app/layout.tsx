@@ -5,7 +5,7 @@ import Navbar from "./component/Navbar";
 import ReduxProvider from "./store/provider";
 import { AuthProvider } from "./component/SessionProvider";
 import Footer from "./component/Footer";
-import { ReduxPersistProvider } from "./component/ReduxPersistProvider";
+import { ThemeProvider } from "./component/ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,29 +23,32 @@ export const metadata: Metadata = {
     "QuizMania is a feature-rich, full-stack quiz application built with Next.js 14, TypeScript, and PostgreSQL. Test your knowledge with beautiful animations, real-time scoring, and personalized feedback — all in a modern, secure, and responsive interface.",
 };
 
+const themeInitScript = `(function(){try{var t=localStorage.getItem("quizmania-theme");if(t==="light")document.documentElement.classList.remove("dark");else document.documentElement.classList.add("dark")}catch(e){document.documentElement.classList.add("dark")}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ReduxProvider>
-          <ReduxPersistProvider>
+        <ThemeProvider>
+          <ReduxProvider>
             <AuthProvider>
               <Navbar />
               {children}
               <Footer />
             </AuthProvider>
-          </ReduxPersistProvider>
-        </ReduxProvider>
+          </ReduxProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

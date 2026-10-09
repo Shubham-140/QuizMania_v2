@@ -1,10 +1,9 @@
 "use client";
+import { useTheme } from "../component/ThemeProvider";
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
 
 export default function Signup() {
   const [name, setName] = useState<string>("");
@@ -12,10 +11,12 @@ export default function Signup() {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { data: session } = useSession();
   const pathname = usePathname();
-  const lightMode = useSelector((state: RootState) => state.mode.lightMode);
+  const { lightMode } = useTheme();
 
   useEffect(() => {
     if (session?.user) {
@@ -24,40 +25,65 @@ export default function Signup() {
   }, [session?.user, router, pathname]);
 
   const handleSignup = async () => {
-    if (!name || !password || !username || !email || !confirmPassword) {
+    setError("");
+    const trimmedName = name.trim();
+    const trimmedUsername = username.trim();
+    const trimmedEmail = email.trim();
+
+    if (
+      !trimmedName ||
+      !password ||
+      !trimmedUsername ||
+      !trimmedEmail ||
+      !confirmPassword
+    ) {
+      setError("Please fill in all fields.");
       return;
     }
     if (password !== confirmPassword) {
+      setError("Passwords do not match.");
       return;
     }
 
+    setIsSubmitting(true);
     try {
-      const response = await fetch("api/signup", {
+      const response = await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, password, username, email }),
+        body: JSON.stringify({
+          name: trimmedName,
+          password,
+          username: trimmedUsername,
+          email: trimmedEmail,
+        }),
       });
       const data = await response.json();
 
       if (!response.ok) {
-        if (data?.error === "Username already taken") {
-          console.log("username exists");
-          return;
-        }
-        if (data?.error === "Email already exists") {
-          console.log("email exists");
-          return;
-        }
+        setError(data?.error || "Signup failed. Please try again.");
         return;
       }
 
-      await signIn("credentials", {
-        username,
+      const result = await signIn("credentials", {
+        username: trimmedUsername,
         password,
-        callbackUrl: "/",
+        redirect: false,
       });
+
+      if (result?.error) {
+        setError(
+          "Account created, but sign-in failed. Please log in with your credentials."
+        );
+        router.push("/login");
+        return;
+      }
+
+      router.push("/");
+      router.refresh();
     } catch {
-      console.log("Something went wrong");
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -423,18 +449,25 @@ export default function Signup() {
               </div>
             </div>
 
+            {error && (
+              <p className="text-sm font-medium text-red-500 text-center">
+                {error}
+              </p>
+            )}
+
             {/* CTA Button */}
             <div className="pt-4">
               <button
-                type="submit"
+                type="button"
                 onClick={handleSignup}
-                className={`w-full px-6 py-3 rounded-2xl border-none bg-emerald-500 text-white font-semibold text-base cursor-pointer transition-all duration-300 hover:-translate-y-0.5 ${
+                disabled={isSubmitting}
+                className={`w-full px-6 py-3 rounded-2xl border-none bg-emerald-500 text-white font-semibold text-base cursor-pointer transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none ${
                   lightMode
                     ? "shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40"
                     : "shadow-lg shadow-emerald-500/20 hover:shadow-xl hover:shadow-emerald-500/30"
                 }`}
               >
-                Create Account
+                {isSubmitting ? "Creating account..." : "Create Account"}
               </button>
             </div>
           </div>

@@ -1,6 +1,6 @@
+"use client";
+import { useTheme } from "./ThemeProvider";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
 import { useRouter } from "next/navigation";
 
 interface QuizType {
@@ -9,7 +9,7 @@ interface QuizType {
 }
 
 export const CountdownOverlay = ({ category, difficulty }: QuizType) => {
-  const lightMode = useSelector((state: RootState) => state.mode.lightMode);
+  const { lightMode } = useTheme();
   const router = useRouter();
 
   const theme = {

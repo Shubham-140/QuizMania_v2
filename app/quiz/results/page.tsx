@@ -1,4 +1,5 @@
 "use client";
+import { useTheme } from "../../component/ThemeProvider";
 import { RootState } from "@/app/store/store";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -13,7 +14,7 @@ interface QuizQuestion {
 }
 
 const QuizAnswers: React.FC = () => {
-  const lightMode = useSelector((state: RootState) => state.mode.lightMode);
+  const { lightMode } = useTheme();
   const [quizData, setQuizData] = useState<QuizQuestion[]>([]);
   const [options, setOptions] = useState<string[][]>([]);
   const [correctIndices, setCorrectIndices] = useState<number[]>([]);

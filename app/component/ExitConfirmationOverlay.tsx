@@ -1,5 +1,5 @@
-import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
+"use client";
+import { useTheme } from "./ThemeProvider";
 import { useRouter } from "next/navigation";
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
 }
 
 export const ExitConfirmationOverlay = ({ setShowExitOverlay }: Props) => {
-  const lightMode = useSelector((state: RootState) => state.mode.lightMode);
+  const { lightMode } = useTheme();
   const router = useRouter();
 
   return (

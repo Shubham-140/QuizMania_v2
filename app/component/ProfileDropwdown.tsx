@@ -1,13 +1,12 @@
 "use client";
-import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
+import { useTheme } from "./ThemeProvider";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const ProfileDropdown = () => {
   const { data: session } = useSession();
-  const lightMode = useSelector((state: RootState) => state.mode.lightMode);
+  const { lightMode } = useTheme();
   const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [show, setShow] = useState(true);

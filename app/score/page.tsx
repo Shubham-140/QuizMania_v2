@@ -1,4 +1,5 @@
 "use client";
+import { useTheme } from "../component/ThemeProvider";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { RootState } from "../store/store";
@@ -6,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const Score = () => {
-  const lightMode = useSelector((state: RootState) => state.mode.lightMode);
+  const { lightMode } = useTheme();
   const score = useSelector((state: RootState) => state.performance.score);
   const timeTaken = useSelector(
     (state: RootState) => state.performance.timeTaken

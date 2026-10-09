@@ -1,10 +1,9 @@
 "use client";
+import { useTheme } from "../component/ThemeProvider";
 import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
 
 export default function Login() {
   const [username, setUsername] = useState<string>("");
@@ -12,7 +11,7 @@ export default function Login() {
   const router = useRouter();
   const { data: session } = useSession();
   const pathname = usePathname();
-  const lightMode = useSelector((state: RootState) => state.mode.lightMode);
+  const { lightMode } = useTheme();
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();

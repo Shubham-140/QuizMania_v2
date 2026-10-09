@@ -1,20 +1,20 @@
 "use client";
-import { useSelector } from "react-redux";
+import { useTheme } from "./ThemeProvider";
 import { useState } from "react";
 import { CountdownOverlay } from "./CountdownOverlay";
-import { RootState } from "../store/store";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const HomePage = () => {
-  const lightMode: boolean = useSelector(
-    (state: RootState) => state.mode.lightMode
-  );
+  const { lightMode } = useTheme();
+  const { data: session, status } = useSession();
   const [difficulty, setDifficulty] = useState<string>("");
   const [category, setCategory] = useState<string>("");
   const [showCountdown, setShowCountdown] = useState(false);
   const [selectCategoryWarning, setSelectCategoryWarning] = useState(false);
   const [selectDifficultyWarning, setSelectDifficultyWarning] = useState(false);
   const router = useRouter();
+  const isAuthenticated = status === "authenticated" && !!session?.user;
 
   return (
     <>
@@ -244,16 +244,18 @@ const HomePage = () => {
               >
                 Rules
               </button>
-              <button
-                className={`flex-1 cursor-pointer py-3 md:py-4 rounded-xl font-semibold text-sm md:text-base transition-all duration-300 hover:-translate-y-1 ${
-                  lightMode
-                    ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                    : "bg-gray-600 text-gray-200 hover:bg-gray-700"
-                }`}
-                onClick={() => router.push("/settings")}
-              >
-                Settings
-              </button>
+              {isAuthenticated && (
+                <button
+                  className={`flex-1 cursor-pointer py-3 md:py-4 rounded-xl font-semibold text-sm md:text-base transition-all duration-300 hover:-translate-y-1 ${
+                    lightMode
+                      ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      : "bg-gray-600 text-gray-200 hover:bg-gray-700"
+                  }`}
+                  onClick={() => router.push("/settings")}
+                >
+                  Settings
+                </button>
+              )}
             </div>
           </div>
         </div>

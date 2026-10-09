@@ -12,12 +12,10 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-import ModeReducer from "../features/color/colorSlice";
 import PerformanceReducer from "../features/performance/performanceSliceInfo";
 import UserChoicesReducer from "../features/userChoices/userChoicesSlice";
 
 const rootReducer = combineReducers({
-  mode: ModeReducer,
   performance: PerformanceReducer,
   userChoices: UserChoicesReducer,
 });
@@ -40,7 +38,8 @@ export const store = configureStore({
     }),
 });
 
-export const persistor = persistStore(store);
+// Kick off rehydration without PersistGate (avoids blocking first paint)
+persistStore(store);
 
 export type AppStore = typeof store;
 export type RootState = ReturnType<typeof rootReducer>;

@@ -1,17 +1,14 @@
 "use client";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleMode } from "../features/color/colorSlice";
 import { ExitConfirmationOverlay } from "./ExitConfirmationOverlay";
 import ProfileDropdown from "./ProfileDropwdown";
 import { useState, useEffect } from "react";
-import { RootState } from "../store/store";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useTheme } from "./ThemeProvider";
 
 const Navbar = () => {
-  const lightMode = useSelector((state: RootState) => state.mode.lightMode);
-  const dispatch = useDispatch();
+  const { lightMode, toggleMode } = useTheme();
   const [showExitOverlay, setShowExitOverlay] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -119,7 +116,7 @@ const Navbar = () => {
       <div className="z-[1001] flex items-center gap-3">
         {/* Theme Toggle */}
         <button
-          onClick={() => dispatch(toggleMode())}
+          onClick={toggleMode}
           className={`group cursor-pointer relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 hover:scale-105 ${
             lightMode
               ? "bg-gray-100 hover:bg-gray-200 border border-gray-200 shadow-sm"
@@ -246,7 +243,7 @@ const Navbar = () => {
         >
           {/* Theme Toggle in Mobile Menu */}
           <button
-            onClick={() => dispatch(toggleMode())}
+            onClick={toggleMode}
             className={`group flex items-center gap-3 rounded-xl px-6 py-3 transition-all duration-300 ${
               lightMode
                 ? "bg-gray-100 hover:bg-gray-200 text-gray-700"

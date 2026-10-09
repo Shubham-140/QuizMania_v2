@@ -1,10 +1,9 @@
 "use client";
-import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
+import { useTheme } from "../component/ThemeProvider";
 import { useState } from "react";
 
 const Feedback = () => {
-  const lightMode = useSelector((state: RootState) => state.mode.lightMode);
+  const { lightMode } = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 

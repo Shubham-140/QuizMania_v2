@@ -1,5 +1,5 @@
-import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
+"use client";
+import { useTheme } from "./ThemeProvider";
 import { useRouter } from "next/navigation";
 
 interface PropTypes {
@@ -10,7 +10,7 @@ interface PropTypes {
 }
 
 export const SubmitQuizModal = ({ setSubmitOverlay }: PropTypes) => {
-  const lightMode = useSelector((state: RootState) => state.mode.lightMode);
+  const { lightMode } = useTheme();
   const router = useRouter();
 
   return (

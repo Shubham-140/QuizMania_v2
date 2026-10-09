@@ -28,18 +28,23 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.username || !credentials?.password) return null;
 
-        const { username, password } = credentials;
+        const username = credentials.username.trim();
+        const password = credentials.password;
         const user = await prisma.user.findUnique({ where: { username } });
-        if (!user) return null;
+        if (!user?.password) return null;
 
         const isPasswordCorrect = await bcrypt.compare(
           password,
-          user.password ?? ""
+          user.password
         );
         if (!isPasswordCorrect) return null;
 
         const { password: _ignore, ...userWithoutPassword } = user;
-        return userWithoutPassword;
+        // next-auth expects `id` as a string on the User object
+        return {
+          ...userWithoutPassword,
+          id: String(user.id),
+        };
       },
     }),
   ],
@@ -52,12 +57,14 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) return { ...token, ...user };
+      if (user) {
+        return { ...token, ...user, id: String(user.id) };
+      }
       return token;
     },
     async session({ session, token }) {
       session.user = {
-        id: token.id as number,
+        id: Number(token.id),
         name: token.name,
         email: token.email,
         username: token.username as string | null,

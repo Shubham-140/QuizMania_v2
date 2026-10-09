@@ -1,4 +1,5 @@
 "use client";
+import { useTheme } from "../component/ThemeProvider";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setNumberOfQues,
@@ -53,7 +54,7 @@ declare module "next-auth" {
 
 const Settings = () => {
   const { data: session } = useSession();
-  const lightMode = useSelector((state: RootState) => state.mode.lightMode);
+  const { lightMode } = useTheme();
   const [user, setUser] = useState<UserType | null>(null);
   const totalTime = useSelector(
     (state: RootState) => state.userChoices.totalTime
@@ -71,6 +72,12 @@ const Settings = () => {
   const [description, setDescription] = useState("");
   const [username, setUsername] = useState("");
   const [quizAttended, setQuizAttended] = useState(0);
+
+  useEffect(() => {
+    if (session === null) {
+      router.replace("/login");
+    }
+  }, [session, router]);
 
   // Fetch user from DB on mount
   useEffect(() => {
@@ -145,6 +152,10 @@ const Settings = () => {
 
     setReduxHydrated(true);
   }, [dispatch]);
+
+  if (!session?.user) {
+    return null;
+  }
 
   return (
     <div

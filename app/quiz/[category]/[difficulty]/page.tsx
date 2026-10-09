@@ -1,12 +1,12 @@
 "use client";
+import { useTheme } from "../../../component/ThemeProvider";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { SubmitQuizModal } from "../../../component/SubmitQuizModal";
 import {
   setScore,
   setTimeTaken,
 } from "../../../features/performance/performanceSliceInfo";
-import { RootState } from "@/app/store/store";
 import { useParams, useRouter } from "next/navigation";
 
 interface QuizQuestion {
@@ -25,7 +25,7 @@ const QuestionDisplay = () => {
   }>();
 
   // Redux state
-  const lightMode = useSelector((state: RootState) => state.mode.lightMode);
+  const { lightMode } = useTheme();
   const questions = localStorage.getItem("numberOfQuestions");
   const numberOfQuestions = questions ? JSON.parse(questions) : 10;
   const time = localStorage.getItem("totalTime");

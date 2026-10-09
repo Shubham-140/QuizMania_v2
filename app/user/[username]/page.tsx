@@ -1,7 +1,6 @@
 "use client";
-import { useSelector } from "react-redux";
+import { useTheme } from "../../component/ThemeProvider";
 import { useParams } from "next/navigation";
-import { RootState } from "@/app/store/store";
 import { useEffect, useState } from "react";
 
 interface UserType {
@@ -16,7 +15,7 @@ interface UserType {
 }
 
 const Profile = () => {
-  const lightMode = useSelector((state: RootState) => state.mode.lightMode);
+  const { lightMode } = useTheme();
   const [user, setUser] = useState({});
   const { username } = useParams();
 

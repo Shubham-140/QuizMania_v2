@@ -1,10 +1,9 @@
 "use client";
-import { useSelector } from "react-redux";
-import { RootState } from "./store/store";
+import { useTheme } from "./component/ThemeProvider";
 import { useRouter } from "next/navigation";
 
 const Error = () => {
-  const lightMode = useSelector((state: RootState) => state.mode.lightMode);
+  const { lightMode } = useTheme();
   const router = useRouter();
 
   return (
