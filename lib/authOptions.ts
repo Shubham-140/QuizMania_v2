@@ -40,11 +40,7 @@ export const authOptions: NextAuthOptions = {
         if (!isPasswordCorrect) return null;
 
         const { password: _ignore, ...userWithoutPassword } = user;
-        // next-auth expects `id` as a string on the User object
-        return {
-          ...userWithoutPassword,
-          id: String(user.id),
-        };
+        return userWithoutPassword;
       },
     }),
   ],
@@ -57,14 +53,12 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      if (user) {
-        return { ...token, ...user, id: String(user.id) };
-      }
+      if (user) return { ...token, ...user };
       return token;
     },
     async session({ session, token }) {
       session.user = {
-        id: Number(token.id),
+        id: token.id as number,
         name: token.name,
         email: token.email,
         username: token.username as string | null,
