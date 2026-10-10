@@ -1,5 +1,6 @@
 "use client";
 import { useTheme } from "../component/ThemeProvider";
+import PageLoader from "../component/PageLoader";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { RootState } from "../store/store";
@@ -67,33 +68,9 @@ const Score = () => {
           : "bg-[radial-gradient(circle_at_10%_20%,#022c22_0%,#064e3b_90%)]"
       }`}
     >
-      {/* Calculating Score Overlay */}
       {showCalculating && (
-        <div
-          className={`fixed inset-0 z-[2000] flex flex-col justify-center items-center backdrop-blur-lg
-          ${lightMode ? "bg-white/90" : "bg-black/90"}`}
-        >
-          <div className="w-[clamp(60px,15vw,80px)] h-[clamp(60px,15vw,80px)] mb-[clamp(1rem,5vw,2rem)] relative">
-            <div
-              className={`absolute inset-0 rounded-full border-8 
-              ${lightMode ? "border-gray-200" : "border-gray-600"}`}
-            />
-            <div className="absolute inset-0 rounded-full border-8 border-transparent border-t-emerald-500 animate-spin" />
-          </div>
-
-          <h2
-            className={`text-[clamp(1.25rem,5vw,2rem)] font-bold mb-[clamp(0.5rem,3vw,1rem)] text-center px-4
-            bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent`}
-          >
-            Calculating Your Score
-          </h2>
-
-          <p
-            className={`text-center max-w-[min(300px,90vw)] px-4 text-[clamp(0.875rem,3vw,1rem)]
-            ${lightMode ? "text-gray-600" : "text-gray-400"}`}
-          >
-            Preparing your detailed performance analysis...
-          </p>
+        <div className="fixed inset-0 z-[2000]">
+          <PageLoader message="Calculating your score..." />
         </div>
       )}
 

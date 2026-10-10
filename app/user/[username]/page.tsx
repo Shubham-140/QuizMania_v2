@@ -1,5 +1,6 @@
 "use client";
 import { useTheme } from "../../component/ThemeProvider";
+import PageLoader from "../../component/PageLoader";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -16,19 +17,32 @@ interface UserType {
 
 const Profile = () => {
   const { lightMode } = useTheme();
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState<UserType | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { username } = useParams();
 
   useEffect(() => {
+    setIsLoading(true);
     (async function fetchUser() {
-      const res = await fetch(`/api/user/${username}`);
-      if (!res.ok) console.log(res);
-      const data = await res.json();
-      setUser(data);
+      try {
+        const res = await fetch(`/api/user/${username}`);
+        if (!res.ok) {
+          setUser(null);
+          return;
+        }
+        const data = await res.json();
+        setUser(data);
+      } finally {
+        setIsLoading(false);
+      }
     })();
   }, [username]);
 
-  const typedUser = user as UserType | undefined;
+  if (isLoading) {
+    return <PageLoader message="Loading profile..." />;
+  }
+
+  const typedUser = user ?? undefined;
   const displayName =
     typedUser?.name ||
     typedUser?.username ||

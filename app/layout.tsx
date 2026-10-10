@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { getServerSession } from "next-auth";
 import "./globals.css";
 import Navbar from "./component/Navbar";
 import ReduxProvider from "./store/provider";
 import { AuthProvider } from "./component/SessionProvider";
 import Footer from "./component/Footer";
 import { ThemeProvider } from "./component/ThemeProvider";
+import { authOptions } from "@/lib/authOptions";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,13 +25,16 @@ export const metadata: Metadata = {
     "QuizMania is a feature-rich, full-stack quiz application built with Next.js 14, TypeScript, and PostgreSQL. Test your knowledge with beautiful animations, real-time scoring, and personalized feedback — all in a modern, secure, and responsive interface.",
 };
 
-const themeInitScript = `(function(){try{var t=localStorage.getItem("quizmania-theme");if(t==="light")document.documentElement.classList.remove("dark");else document.documentElement.classList.add("dark")}catch(e){document.documentElement.classList.add("dark")}})();`;
+// Runs before paint so theme matches localStorage immediately (avoids half-second flash).
+const themeInitScript = `(function(){try{var t=localStorage.getItem("quizmania-theme");var light=t==="light";document.documentElement.classList.toggle("dark",!light);document.documentElement.style.colorScheme=light?"light":"dark";}catch(e){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}})();`;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession(authOptions);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -39,10 +44,11 @@ export default function RootLayout({
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
         <ThemeProvider>
           <ReduxProvider>
-            <AuthProvider>
+            <AuthProvider session={session}>
               <Navbar />
               {children}
               <Footer />

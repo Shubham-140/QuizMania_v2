@@ -4,9 +4,8 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useState,
+  useSyncExternalStore,
 } from "react";
 
 type ThemeContextValue = {
@@ -16,30 +15,46 @@ type ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-const STORAGE_KEY = "quizmania-theme";
+export const THEME_STORAGE_KEY = "quizmania-theme";
 
 function applyTheme(light: boolean) {
   document.documentElement.classList.toggle("dark", !light);
-  localStorage.setItem(STORAGE_KEY, light ? "light" : "dark");
+  document.documentElement.style.colorScheme = light ? "light" : "dark";
+  localStorage.setItem(THEME_STORAGE_KEY, light ? "light" : "dark");
+}
+
+function subscribe(onStoreChange: () => void) {
+  const observer = new MutationObserver(onStoreChange);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  window.addEventListener("storage", onStoreChange);
+  return () => {
+    observer.disconnect();
+    window.removeEventListener("storage", onStoreChange);
+  };
+}
+
+/** Reads theme already applied by the blocking layout script (before React paints). */
+function getSnapshot() {
+  return !document.documentElement.classList.contains("dark");
+}
+
+/** Matches SSR default (dark). */
+function getServerSnapshot() {
+  return false;
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // Default matches prior Redux initialState (dark)
-  const [lightMode, setLightMode] = useState(false);
-
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    const light = stored === "light";
-    setLightMode(light);
-    document.documentElement.classList.toggle("dark", !light);
-  }, []);
+  const lightMode = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot
+  );
 
   const toggleMode = useCallback(() => {
-    setLightMode((prev) => {
-      const next = !prev;
-      applyTheme(next);
-      return next;
-    });
+    applyTheme(!getSnapshot());
   }, []);
 
   const value = useMemo(

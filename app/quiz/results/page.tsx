@@ -1,5 +1,6 @@
 "use client";
 import { useTheme } from "../../component/ThemeProvider";
+import PageLoader from "../../component/PageLoader";
 import { RootState } from "@/app/store/store";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -118,24 +119,7 @@ const QuizAnswers: React.FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <div
-        className={`min-h-screen p-4 flex items-center justify-center ${
-          lightMode
-            ? "bg-gradient-to-br from-emerald-50 to-emerald-100"
-            : "bg-gradient-to-br from-gray-900 to-emerald-900/20"
-        }`}
-      >
-        <div
-          className={`${colors.cardBg} rounded-2xl p-8 ${colors.shadow} border ${colors.border}`}
-        >
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
-            <p className={`${colors.text} text-lg`}>Loading quiz results...</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <PageLoader message="Loading quiz results..." />;
   }
 
   if (!quizData || quizData.length === 0) {

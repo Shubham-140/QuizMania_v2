@@ -3,6 +3,7 @@ import { useTheme } from "../../../component/ThemeProvider";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { SubmitQuizModal } from "../../../component/SubmitQuizModal";
+import PageLoader from "../../../component/PageLoader";
 import {
   setScore,
   setTimeTaken,
@@ -179,6 +180,20 @@ const QuestionDisplay = () => {
   };
 
   const isTimeCritical = localTotalTime !== null && localTotalTime <= 20;
+
+  if (!hydrated) {
+    return <PageLoader message="Loading quiz questions..." />;
+  }
+
+  if (quizData.length === 0) {
+    return (
+      <div className="flex min-h-[70vh] items-center justify-center bg-gradient-to-br from-emerald-50 via-emerald-100 to-emerald-200 p-6 dark:from-emerald-900 dark:via-emerald-800 dark:to-emerald-700">
+        <p className="text-center text-gray-700 dark:text-gray-200">
+          No questions found. Try another category.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div

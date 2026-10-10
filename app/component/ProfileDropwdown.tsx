@@ -1,12 +1,11 @@
 "use client";
-import { useTheme } from "./ThemeProvider";
+
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const ProfileDropdown = () => {
   const { data: session } = useSession();
-  const { lightMode } = useTheme();
   const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [show, setShow] = useState(true);
@@ -29,35 +28,23 @@ const ProfileDropdown = () => {
 
   return (
     <div className="fixed inset-0 z-50 mt-2">
-      {/* Transparent overlay that does not block interaction */}
       <div className="absolute inset-0" />
 
-      {/* Dropdown */}
       <div
         ref={dropdownRef}
-        className={`absolute top-12 right-4 w-48 rounded-xl border backdrop-blur-sm overflow-hidden shadow-xl mt-1 ${
-          lightMode
-            ? "bg-white/95 border-slate-200 shadow-black/10"
-            : "bg-slate-900/95 border-slate-600 shadow-black/30"
-        }`}
+        className="absolute top-12 right-4 mt-1 w-48 overflow-hidden rounded-xl border border-slate-200 bg-white/95 shadow-xl shadow-black/10 backdrop-blur-sm dark:border-slate-600 dark:bg-slate-900/95 dark:shadow-black/30"
       >
-        {/* Top gradient border */}
-        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-500 to-blue-500"></div>
+        <div className="absolute top-0 right-0 left-0 h-0.5 bg-gradient-to-r from-emerald-500 to-blue-500" />
 
         <div className="py-2">
-          {/* Your Profile */}
           <div
-            className={`flex items-center px-4 py-3 cursor-pointer transition-all duration-200 hover:translate-x-1 ${
-              lightMode
-                ? "hover:bg-slate-50 text-gray-700 hover:text-gray-900"
-                : "hover:bg-slate-800 text-gray-300 hover:text-white"
-            }`}
+            className="flex cursor-pointer items-center px-4 py-3 text-gray-700 transition-all duration-200 hover:translate-x-1 hover:bg-slate-50 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-white"
             onClick={() => {
               const username = session?.user?.username;
               router.push(`/user/${username}`);
             }}
           >
-            <div className="w-5 h-5 mr-3 flex-shrink-0">
+            <div className="mr-3 flex h-5 w-5 flex-shrink-0">
               <svg
                 width="20"
                 height="20"
@@ -70,25 +57,16 @@ const ProfileDropdown = () => {
                 <circle cx="12" cy="7" r="4"></circle>
               </svg>
             </div>
-            <span className="font-medium text-sm">Your Profile</span>
+            <span className="text-sm font-medium">Your Profile</span>
           </div>
 
-          <hr
-            className={`my-1 ${
-              lightMode ? "border-slate-200" : "border-slate-700"
-            }`}
-          />
+          <hr className="my-1 border-slate-200 dark:border-slate-700" />
 
-          {/* Logout */}
           <div
-            className={`flex items-center px-4 py-3 cursor-pointer transition-all duration-200 hover:translate-x-1 ${
-              lightMode
-                ? "hover:bg-red-50 text-gray-700 hover:text-red-600"
-                : "hover:bg-red-900/20 text-gray-300 hover:text-red-400"
-            }`}
+            className="flex cursor-pointer items-center px-4 py-3 text-gray-700 transition-all duration-200 hover:translate-x-1 hover:bg-red-50 hover:text-red-600 dark:text-gray-300 dark:hover:bg-red-900/20 dark:hover:text-red-400"
             onClick={() => signOut()}
           >
-            <div className="w-5 h-5 mr-3 flex-shrink-0">
+            <div className="mr-3 flex h-5 w-5 flex-shrink-0">
               <svg
                 width="20"
                 height="20"
@@ -102,7 +80,7 @@ const ProfileDropdown = () => {
                 <line x1="21" y1="12" x2="9" y2="12"></line>
               </svg>
             </div>
-            <span className="font-medium text-sm">Logout</span>
+            <span className="text-sm font-medium">Logout</span>
           </div>
         </div>
       </div>

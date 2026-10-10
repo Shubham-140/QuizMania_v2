@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { RootState } from "@/app/store/store";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import PageLoader from "../component/PageLoader";
 
 interface UserType {
   name: string;
@@ -53,7 +54,7 @@ declare module "next-auth" {
 }
 
 const Settings = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { lightMode } = useTheme();
   const [user, setUser] = useState<UserType | null>(null);
   const totalTime = useSelector(
@@ -72,6 +73,7 @@ const Settings = () => {
   const [description, setDescription] = useState("");
   const [username, setUsername] = useState("");
   const [quizAttended, setQuizAttended] = useState(0);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
   useEffect(() => {
     if (session === null) {
@@ -81,17 +83,25 @@ const Settings = () => {
 
   // Fetch user from DB on mount
   useEffect(() => {
-    if (!session?.user?.username) return;
+    if (!session?.user?.username) {
+      if (status !== "loading") setIsLoadingProfile(false);
+      return;
+    }
+    setIsLoadingProfile(true);
     (async function fetchUser() {
-      const res = await fetch(`/api/user/${session?.user?.username}`);
-      const userData = await res.json();
-      setName(userData.name ?? "");
-      setAge(userData.age ?? 0);
-      setDescription(userData.description ?? "");
-      setUsername(userData.username ?? "");
-      setQuizAttended(userData.quizAttended ?? 0);
+      try {
+        const res = await fetch(`/api/user/${session?.user?.username}`);
+        const userData = await res.json();
+        setName(userData.name ?? "");
+        setAge(userData.age ?? 0);
+        setDescription(userData.description ?? "");
+        setUsername(userData.username ?? "");
+        setQuizAttended(userData.quizAttended ?? 0);
+      } finally {
+        setIsLoadingProfile(false);
+      }
     })();
-  }, [session?.user?.username]);
+  }, [session?.user?.username, status]);
 
   // Save changes to DB and re-fetch updated user
   async function handleSaveChanges() {
@@ -154,6 +164,10 @@ const Settings = () => {
 
     setReduxHydrated(true);
   }, [dispatch]);
+
+  if (status === "loading" || isLoadingProfile) {
+    return <PageLoader message="Loading settings..." />;
+  }
 
   if (!session?.user) {
     return null;
