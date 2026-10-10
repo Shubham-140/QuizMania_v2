@@ -123,9 +123,11 @@ const Settings = () => {
       setDescription(updatedUser.description ?? "");
       setUsername(updatedUser.username ?? "");
 
-      console.log("Profile updated successfully", user);
     } catch (error) {
-      console.log("Update error:", error);
+      console.error(
+        "Update error:",
+        error instanceof Error ? error.message : "unknown"
+      );
     }
   }
 

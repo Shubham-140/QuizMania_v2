@@ -154,7 +154,6 @@ const QuestionDisplay = () => {
       options,
     };
 
-    console.log(quizDatas);
     localStorage.setItem("quiz_results", JSON.stringify(quizDatas));
 
     dispatch(setTimeTaken(totalTime));
