@@ -3,14 +3,13 @@ import GitHubProvider from "next-auth/providers/github";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import { NextAuthOptions } from "next-auth";
-// import { GitHubProfile } from "@/types/next-auth";
 
 interface GitHubProfile {
   id: number;
   login: string;
   avatar_url: string;
-  name: string;
-  email: string;
+  name?: string | null;
+  email?: string | null;
 }
 
 export const authOptions: NextAuthOptions = {
@@ -52,7 +51,19 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account, profile }) {
+      if (account?.provider === "github" && profile) {
+        const githubProfile = profile as GitHubProfile;
+        const githubId = String(githubProfile.id);
+        const dbUser = await prisma.user.findUnique({
+          where: { gitHubId: githubId },
+        });
+        if (dbUser) {
+          const { password: _ignore, ...rest } = dbUser;
+          return { ...token, ...rest };
+        }
+      }
+
       if (user) return { ...token, ...user };
       return token;
     },
@@ -75,34 +86,68 @@ export const authOptions: NextAuthOptions = {
     },
     async signIn({ account, profile }) {
       try {
-        if (account?.provider === "github") {
-          const githubProfile = profile as GitHubProfile;
-          const githubId = githubProfile.id.toString();
+        if (account?.provider !== "github") return true;
 
-          let existingUser = await prisma.user.findUnique({
-            where: { gitHubId: githubId },
+        const githubProfile = profile as GitHubProfile;
+        if (!githubProfile?.id || !githubProfile.login) {
+          console.error("GitHub profile missing id/login");
+          return false;
+        }
+
+        const githubId = String(githubProfile.id);
+
+        let existingUser = await prisma.user.findUnique({
+          where: { gitHubId: githubId },
+        });
+
+        if (!existingUser && githubProfile.email) {
+          existingUser = await prisma.user.findUnique({
+            where: { email: githubProfile.email },
+          });
+        }
+
+        if (!existingUser) {
+          // Prefer GitHub login as username so profile/settings routes work
+          const usernameTaken = await prisma.user.findUnique({
+            where: { username: githubProfile.login },
           });
 
-          if (!existingUser && githubProfile.email) {
-            existingUser = await prisma.user.findUnique({
-              where: { email: githubProfile.email },
-            });
-          }
-
-          if (!existingUser) {
-            await prisma.user.create({
-              data: {
-                gitHubId: githubId,
-                gitHubUsername: githubProfile.login,
-                gitHubAvatarUrl: githubProfile.avatar_url,
-                name: githubProfile.name,
-                email: githubProfile.email,
-              },
-            });
-          }
-
+          await prisma.user.create({
+            data: {
+              gitHubId: githubId,
+              gitHubUsername: githubProfile.login,
+              gitHubAvatarUrl: githubProfile.avatar_url,
+              name: githubProfile.name ?? githubProfile.login,
+              email: githubProfile.email ?? null,
+              username: usernameTaken
+                ? `${githubProfile.login}_${githubId.slice(-4)}`
+                : githubProfile.login,
+            },
+          });
           return true;
         }
+
+        let username = existingUser.username;
+        if (!username) {
+          const usernameTaken = await prisma.user.findUnique({
+            where: { username: githubProfile.login },
+          });
+          username = usernameTaken
+            ? `${githubProfile.login}_${githubId.slice(-4)}`
+            : githubProfile.login;
+        }
+
+        // Link GitHub to an existing email account if needed
+        await prisma.user.update({
+          where: { id: existingUser.id },
+          data: {
+            gitHubId: githubId,
+            gitHubUsername: githubProfile.login,
+            gitHubAvatarUrl: githubProfile.avatar_url,
+            name: existingUser.name ?? githubProfile.name ?? githubProfile.login,
+            username,
+          },
+        });
 
         return true;
       } catch (error) {

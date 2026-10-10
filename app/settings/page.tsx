@@ -85,11 +85,11 @@ const Settings = () => {
     (async function fetchUser() {
       const res = await fetch(`/api/user/${session?.user?.username}`);
       const userData = await res.json();
-      setName(userData.name);
-      setAge(userData.age);
-      setDescription(userData.description);
-      setUsername(userData.username);
-      setQuizAttended(userData.quizAttended);
+      setName(userData.name ?? "");
+      setAge(userData.age ?? 0);
+      setDescription(userData.description ?? "");
+      setUsername(userData.username ?? "");
+      setQuizAttended(userData.quizAttended ?? 0);
     })();
   }, [session?.user?.username]);
 
@@ -118,10 +118,10 @@ const Settings = () => {
       const refreshed = await fetch(`/api/user/${username}`);
       const updatedUser = await refreshed.json();
       setUser(updatedUser);
-      setName(updatedUser.name);
-      setAge(updatedUser.age);
-      setDescription(updatedUser.description);
-      setUsername(updatedUser.username);
+      setName(updatedUser.name ?? "");
+      setAge(updatedUser.age ?? 0);
+      setDescription(updatedUser.description ?? "");
+      setUsername(updatedUser.username ?? "");
 
       console.log("Profile updated successfully", user);
     } catch (error) {
@@ -213,7 +213,7 @@ const Settings = () => {
                 </label>
                 <input
                   type="text"
-                  value={username}
+                  value={username ?? ""}
                   readOnly
                   className={`w-full bg-slate-50 border rounded-lg py-2 px-3 text-sm cursor-not-allowed ${
                     lightMode
@@ -233,7 +233,7 @@ const Settings = () => {
                 </label>
                 <input
                   type="number"
-                  value={quizAttended}
+                  value={quizAttended ?? 0}
                   readOnly
                   className={`w-full bg-slate-50 border rounded-lg py-2 px-3 text-sm cursor-not-allowed ${
                     lightMode
@@ -257,7 +257,7 @@ const Settings = () => {
                 </label>
                 <input
                   type="text"
-                  value={name}
+                  value={name ?? ""}
                   onChange={(e) => setName(e.target.value)}
                   className={`w-full bg-slate-50 border rounded-lg py-2 px-3 text-sm ${
                     lightMode
@@ -279,8 +279,12 @@ const Settings = () => {
                 </label>
                 <input
                   type="number"
-                  value={age}
-                  onChange={(e) => setAge(Number(e.target.value))}
+                  value={age ?? 0}
+                  onChange={(e) =>
+                    setAge(
+                      e.target.value === "" ? 0 : Number(e.target.value)
+                    )
+                  }
                   className={`w-full bg-slate-50 border rounded-lg py-2 px-3 text-sm ${
                     lightMode
                       ? "border-slate-200 text-slate-900"
@@ -302,7 +306,7 @@ const Settings = () => {
               About You
             </label>
             <textarea
-              value={description}
+              value={description ?? ""}
               onChange={(e) => setDescription(e.target.value)}
               className={`w-full bg-slate-50 border rounded-lg py-2 px-3 text-sm ${
                 lightMode
