@@ -2,7 +2,7 @@ import "next-auth";
 
 declare module "next-auth" {
   interface Session {
-    user?: {
+    user: {
       id: number;
       name?: string | null;
       email?: string | null;
@@ -17,5 +17,20 @@ declare module "next-auth" {
       gitHubUsername?: string | null;
       gitHubAvatarUrl?: string | null;
     };
+  }
+
+  interface User {
+    id: number;
+    name?: string | null;
+    email?: string | null;
+    username?: string | null;
+    age?: number | null;
+    quizAttended?: number;
+    createdAt?: Date;
+    profilePic?: string | null;
+    role?: string;
+    gitHubId?: string | null;
+    gitHubUsername?: string | null;
+    gitHubAvatarUrl?: string | null;
   }
 }
