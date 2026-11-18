@@ -38,6 +38,17 @@ export async function PUT(req: Request) {
     const updatedUser = await prisma.user.update({
       where: { email: session.user.email },
       data: updateData,
+      select: {
+        name: true,
+        username: true,
+        gitHubUsername: true,
+        profilePic: true,
+        description: true,
+        role: true,
+        quizAttended: true,
+        createdAt: true,
+        age: true,
+      },
     });
 
     return NextResponse.json(updatedUser);
