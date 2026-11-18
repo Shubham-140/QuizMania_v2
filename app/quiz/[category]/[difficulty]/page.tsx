@@ -27,10 +27,12 @@ const QuestionDisplay = () => {
 
   // Redux state
   const { lightMode } = useTheme();
-  const questions = localStorage.getItem("numberOfQuestions");
-  const numberOfQuestions = questions ? JSON.parse(questions) : 10;
-  const time = localStorage.getItem("totalTime");
-  const totalTime = time ? JSON.parse(time) : 120;
+  const [settings, setSettings] = useState<{
+    numberOfQuestions: number;
+    totalTime: number;
+  } | null>(null);
+  const numberOfQuestions = settings?.numberOfQuestions ?? 10;
+  const totalTime = settings?.totalTime ?? 120;
 
   // Local state
   const [index, setIndex] = useState(0);
@@ -76,10 +78,19 @@ const QuestionDisplay = () => {
 
   // Effects
   useEffect(() => {
-    if (totalTime !== null) {
-      setLocalTotalTime(totalTime);
+    const questions = localStorage.getItem("numberOfQuestions");
+    const time = localStorage.getItem("totalTime");
+    setSettings({
+      numberOfQuestions: questions ? JSON.parse(questions) : 10,
+      totalTime: time ? JSON.parse(time) : 120,
+    });
+  }, []);
+
+  useEffect(() => {
+    if (settings) {
+      setLocalTotalTime(settings.totalTime);
     }
-  }, [totalTime]);
+  }, [settings]);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -107,8 +118,10 @@ const QuestionDisplay = () => {
   }, []);
 
   useEffect(() => {
-    fetchQuizData();
-  }, [category, difficulty, numberOfQuestions]);
+    if (settings) {
+      fetchQuizData();
+    }
+  }, [category, difficulty, settings]);
 
   useEffect(() => {
     if (hydrated && quizData.length > 0) {
