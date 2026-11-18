@@ -2,13 +2,33 @@ import { authOptions } from "@/lib/authOptions";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import { z } from "zod";
 
-interface UserType {
-  name: string;
-  age: number | null;
-  description: string;
-  profilePic: string;
-}
+const updateUserSchema = z
+  .object({
+    name: z
+      .string()
+      .trim()
+      .min(1, "Name can't be empty")
+      .max(50, "Name can be at most 50 characters"),
+    age: z
+      .number("Age must be a number")
+      .int("Age must be a whole number")
+      .min(0, "Age can't be negative")
+      .max(120, "Age can be at most 120")
+      .nullable()
+      .transform((age) => age || null),
+    description: z
+      .string()
+      .trim()
+      .max(200, "Description can be at most 200 characters")
+      .transform((description) => description || null),
+    profilePic: z.url("Profile picture must be a valid URL").nullable(),
+  })
+  .partial()
+  .refine((data) => Object.keys(data).length > 0, {
+    message: "At least one field must be provided",
+  });
 
 export async function PUT(req: Request) {
   const session = await getServerSession(authOptions);
@@ -16,28 +36,25 @@ export async function PUT(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  let body: unknown;
   try {
-    const body = await req.json();
-    const { name, age, description, profilePic } = body;
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
 
-    // Add validation
-    if (!name && !age && !description && !profilePic) {
-      return NextResponse.json(
-        { error: "At least one field must be provided" },
-        { status: 400 }
-      );
-    }
+  const result = updateUserSchema.safeParse(body);
+  if (!result.success) {
+    return NextResponse.json(
+      { error: result.error.issues[0].message },
+      { status: 400 }
+    );
+  }
 
-    // Use Partial<UserType> for partial updates
-    const updateData: Partial<UserType> = {};
-    if (name) updateData.name = name;
-    if (age !== undefined) updateData.age = parseInt(age);
-    if (description) updateData.description = description;
-    if (profilePic) updateData.profilePic = profilePic;
-
+  try {
     const updatedUser = await prisma.user.update({
       where: { email: session.user.email },
-      data: updateData,
+      data: result.data,
       select: {
         name: true,
         username: true,
