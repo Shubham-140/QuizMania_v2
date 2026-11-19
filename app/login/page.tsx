@@ -4,6 +4,7 @@ import { signIn } from "next-auth/react";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import AuthLayout from "../component/AuthLayout";
+import FormField from "../component/FormField";
 
 const featureIcon = (path: string) => (
   <svg
@@ -71,38 +72,25 @@ export default function Login() {
       subtitle="Sign in to continue your quiz journey"
     >
       <form onSubmit={handleLogin} className="space-y-4">
-        <div>
-          <label htmlFor="username" className="field-label">
-            Username
-          </label>
-          <input
-            id="username"
-            name="username"
-            type="text"
-            required
-            onChange={(e) => setUsername(e.target.value)}
-            value={username}
-            className="field"
-            placeholder="Enter your username"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="password" className="field-label">
-            Password
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            required
-            className="field"
-            placeholder="Enter your password"
-          />
-        </div>
+        <FormField
+          id="username"
+          label="Username"
+          type="text"
+          required
+          placeholder="Enter your username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <FormField
+          id="password"
+          label="Password"
+          type="password"
+          autoComplete="current-password"
+          required
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
         <div className="flex items-center justify-center pt-2">
           <div className="text-sm">
