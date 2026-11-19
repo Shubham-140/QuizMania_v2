@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { getServerSession } from "next-auth";
 import "./globals.css";
 import Navbar from "./component/Navbar";
@@ -11,8 +11,8 @@ import { authOptions } from "@/lib/authOptions";
 import { THEME_COOKIE_MAX_AGE, THEME_KEY } from "@/lib/theme";
 import { cookies } from "next/headers";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const appFont = Plus_Jakarta_Sans({
+  variable: "--font-app",
   subsets: ["latin"],
 });
 
@@ -51,7 +51,7 @@ export default async function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${appFont.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
         <ThemeProvider initialLight={initialLight}>

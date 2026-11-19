@@ -224,7 +224,7 @@ const QuestionDisplay = () => {
 
   return (
     <div
-      className={`min-h-[calc(100vh-56px)] p-4 flex justify-center items-center font-inter 
+      className={`min-h-[calc(100vh-56px)] p-4 flex justify-center items-center 
       ${
         lightMode
           ? "bg-gradient-to-br from-emerald-50 to-emerald-100"

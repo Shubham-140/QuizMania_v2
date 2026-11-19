@@ -13,7 +13,7 @@ export const SubmitQuizModal = ({ setSubmitOverlay, onSubmit }: PropTypes) => {
 
   return (
     <div
-      className={`fixed inset-0 z-[1000] flex justify-center items-center p-4 font-inter backdrop-blur-md
+      className={`fixed inset-0 z-[1000] flex justify-center items-center p-4 backdrop-blur-md
       ${lightMode ? "bg-black/50" : "bg-black/70"}`}
     >
       <div

@@ -83,7 +83,7 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
 
   return (
     <div
-      className={`min-h-screen p-4 flex justify-center items-center font-inter ${
+      className={`min-h-screen p-4 flex justify-center items-center ${
         lightMode
           ? "bg-[radial-gradient(circle_at_10%_20%,#f0fdf4_0%,#dcfce7_90%)]"
           : "bg-[radial-gradient(circle_at_10%_20%,#022c22_0%,#064e3b_90%)]"

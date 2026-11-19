@@ -58,7 +58,7 @@ const Score = () => {
 
   return (
     <div
-      className={`min-h-screen p-4 flex justify-center items-center font-inter 
+      className={`min-h-screen p-4 flex justify-center items-center 
       ${
         lightMode
           ? "bg-[radial-gradient(circle_at_10%_20%,#f0fdf4_0%,#dcfce7_90%)]"
