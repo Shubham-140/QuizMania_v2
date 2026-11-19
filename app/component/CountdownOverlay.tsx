@@ -63,7 +63,6 @@ export const CountdownOverlay = ({ category, difficulty }: QuizType) => {
         padding: "20px",
       }}
     >
-      {/* "Quiz starts in" message */}
       <div
         style={{
           fontSize: "clamp(1.5rem, 6vw, 2.5rem)",
@@ -78,10 +77,9 @@ export const CountdownOverlay = ({ category, difficulty }: QuizType) => {
         Quiz starts in...
       </div>
 
-      {/* Countdown number - Fixed visibility */}
       <div
         style={{
-          fontSize: "clamp(5rem, 20vw, 10rem)", // Reduced maximum size
+          fontSize: "clamp(5rem, 20vw, 10rem)",
           fontWeight: 800,
           background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
           WebkitBackgroundClip: "text",
@@ -92,20 +90,19 @@ export const CountdownOverlay = ({ category, difficulty }: QuizType) => {
           textShadow: `0 4px 12px ${
             lightMode ? "rgba(16, 185, 129, 0.3)" : "rgba(16, 185, 129, 0.2)"
           }`,
-          padding: "0 20px", // Added padding
+          padding: "0 20px",
           boxSizing: "border-box",
-          width: "100%", // Ensure full width
+          width: "100%",
           textAlign: "center",
         }}
       >
         {count > 0 ? count : "GO!"}
       </div>
 
-      {/* Progress indicator */}
       {count > 0 && (
         <div
           style={{
-            width: "clamp(180px, 50vw, 300px)", // Smaller width
+            width: "clamp(180px, 50vw, 300px)",
             height: "6px",
             backgroundColor: lightMode ? "#e5e7eb" : "#4b5563",
             borderRadius: "3px",
@@ -125,7 +122,6 @@ export const CountdownOverlay = ({ category, difficulty }: QuizType) => {
         </div>
       )}
 
-      {/* Animation styles */}
       <style>{`
         @keyframes pulse {
           0% { transform: scale(1); opacity: 0.9; }

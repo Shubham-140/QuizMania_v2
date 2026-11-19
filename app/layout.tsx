@@ -25,7 +25,6 @@ export const metadata: Metadata = {
     "QuizMania is a feature-rich, full-stack quiz application built with Next.js 14, TypeScript, and PostgreSQL. Test your knowledge with beautiful animations, real-time scoring, and personalized feedback — all in a modern, secure, and responsive interface.",
 };
 
-// Runs before paint so theme matches localStorage immediately (avoids half-second flash).
 const themeInitScript = `(function(){try{var t=localStorage.getItem("quizmania-theme");var light=t==="light";document.documentElement.classList.toggle("dark",!light);document.documentElement.style.colorScheme=light?"light":"dark";}catch(e){document.documentElement.classList.add("dark");document.documentElement.style.colorScheme="dark";}})();`;
 
 export default async function RootLayout({

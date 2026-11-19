@@ -52,7 +52,6 @@ const Navbar = () => {
         </h1>
       </Link>
 
-      {/* Desktop nav */}
       <div className="hidden items-center gap-8 md:flex">
         {navItems.map((item) =>
           isQuizActive ? (
@@ -84,7 +83,6 @@ const Navbar = () => {
           aria-label="Toggle theme"
         >
           <div className="relative h-5 w-5 transition-transform duration-500 group-hover:rotate-180">
-            {/* Sun: only in light mode (no .dark on html) */}
             <svg
               className="h-5 w-5 text-amber-500 dark:hidden"
               fill="currentColor"
@@ -97,7 +95,6 @@ const Navbar = () => {
                 clipRule="evenodd"
               />
             </svg>
-            {/* Moon: only in dark mode */}
             <svg
               className="hidden h-5 w-5 text-indigo-400 dark:block"
               fill="currentColor"
@@ -109,7 +106,6 @@ const Navbar = () => {
           </div>
         </button>
 
-        {/* Desktop auth — reserve space while session hydrates */}
         <div className="relative hidden h-12 min-w-[48px] items-center md:flex">
           {!authReady ? (
             <div className="h-12 w-12 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-700" />
@@ -149,7 +145,6 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Mobile hamburger */}
         <button
           className="ml-1 flex h-12 w-12 flex-col items-center justify-center gap-1.5 rounded-xl border border-gray-200 bg-gray-100 transition-all duration-300 hover:bg-gray-200 md:hidden dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -173,7 +168,6 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile menu */}
       <div
         className={`fixed inset-0 z-[999] flex flex-col items-center justify-center gap-8 bg-white/95 backdrop-blur-sm transition-opacity duration-300 md:hidden dark:bg-slate-900/95 ${
           mobileMenuOpen ? "opacity-100" : "pointer-events-none opacity-0"

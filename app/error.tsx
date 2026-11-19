@@ -21,10 +21,8 @@ const Error = () => {
             : "bg-slate-900/95 border-slate-600 shadow-xl shadow-black/30"
         }`}
       >
-        {/* Top gradient border */}
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 z-10"></div>
 
-        {/* Error Icon */}
         <div className="mb-8">
           <div className="w-24 h-24 bg-red-500 rounded-full flex justify-center items-center mx-auto mb-6">
             <svg
@@ -41,13 +39,11 @@ const Error = () => {
             </svg>
           </div>
 
-          {/* Error Text */}
           <h1 className="text-4xl md:text-6xl font-extrabold mb-2 bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
             Oops!
           </h1>
         </div>
 
-        {/* Header */}
         <div className="mb-8">
           <h2
             className={`text-2xl md:text-4xl font-bold mb-4 ${
@@ -67,9 +63,7 @@ const Error = () => {
           </p>
         </div>
 
-        {/* Decorative Error Info Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          {/* Info 1 */}
           <div
             className={`border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 ${
               lightMode
@@ -107,7 +101,6 @@ const Error = () => {
             </p>
           </div>
 
-          {/* Info 2 */}
           <div
             className={`border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 ${
               lightMode
@@ -145,7 +138,6 @@ const Error = () => {
             </p>
           </div>
 
-          {/* Info 3 */}
           <div
             className={`border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 ${
               lightMode
@@ -183,7 +175,6 @@ const Error = () => {
           </div>
         </div>
 
-        {/* CTA Button */}
         <div className="flex justify-center">
           <button
             className={`px-6 md:px-8 py-3 md:py-4 rounded-full border-none bg-emerald-500 text-white font-semibold text-base md:text-lg cursor-pointer transition-all duration-300 hover:-translate-y-0.5 ${

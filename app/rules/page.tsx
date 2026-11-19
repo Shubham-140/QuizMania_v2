@@ -4,10 +4,8 @@ const RulesComponent = () => {
   return (
     <div className="min-h-screen p-4 md:p-8 flex justify-center items-center font-sans bg-gradient-to-br from-green-50 via-green-100 to-green-200 dark:from-emerald-900 dark:via-emerald-800 dark:to-emerald-700">
       <div className="w-full max-w-4xl rounded-xl md:rounded-2xl p-6 md:p-12 backdrop-blur-sm border relative overflow-hidden bg-white/95 border-slate-200 shadow-xl shadow-black/5 dark:bg-slate-900/95 dark:border-slate-600 dark:shadow-black/30">
-        {/* Top gradient border */}
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 z-10"></div>
 
-        {/* Header */}
         <div className="text-center mb-8 md:mb-12">
           <h1 className="text-2xl md:text-4xl font-extrabold mb-2 bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">
             Quiz Rules
@@ -17,9 +15,7 @@ const RulesComponent = () => {
           </p>
         </div>
 
-        {/* Rules Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 md:mb-12">
-          {/* Rule 1 */}
           <div className="border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 bg-white/95 border-slate-200 hover:shadow-lg hover:shadow-black/5 dark:bg-slate-900/95 dark:border-slate-600 dark:hover:shadow-black/20">
             <div className="w-12 h-12 bg-emerald-500 rounded-xl flex justify-center items-center mb-4">
               <span className="text-white font-bold text-xl">1</span>
@@ -34,7 +30,6 @@ const RulesComponent = () => {
             </p>
           </div>
 
-          {/* Rule 2 */}
           <div className="border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 bg-white/95 border-slate-200 hover:shadow-lg hover:shadow-black/5 dark:bg-slate-900/95 dark:border-slate-600 dark:hover:shadow-black/20">
             <div className="w-12 h-12 bg-emerald-500 rounded-xl flex justify-center items-center mb-4">
               <span className="text-white font-bold text-xl">2</span>
@@ -48,7 +43,6 @@ const RulesComponent = () => {
             </p>
           </div>
 
-          {/* Rule 3 */}
           <div className="border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 bg-white/95 border-slate-200 hover:shadow-lg hover:shadow-black/5 dark:bg-slate-900/95 dark:border-slate-600 dark:hover:shadow-black/20">
             <div className="w-12 h-12 bg-emerald-500 rounded-xl flex justify-center items-center mb-4">
               <span className="text-white font-bold text-xl">3</span>
@@ -63,7 +57,6 @@ const RulesComponent = () => {
             </p>
           </div>
 
-          {/* Rule 4 */}
           <div className="border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 bg-white/95 border-slate-200 hover:shadow-lg hover:shadow-black/5 dark:bg-slate-900/95 dark:border-slate-600 dark:hover:shadow-black/20">
             <div className="w-12 h-12 bg-emerald-500 rounded-xl flex justify-center items-center mb-4">
               <span className="text-white font-bold text-xl">4</span>
@@ -78,7 +71,6 @@ const RulesComponent = () => {
           </div>
         </div>
 
-        {/* CTA */}
         <div className="text-center">
           <Link
             href="/"

@@ -21,10 +21,8 @@ const NotFound = () => {
             : "bg-slate-900/95 border-slate-600 shadow-xl shadow-black/30"
         }`}
       >
-        {/* Top gradient border */}
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 z-10"></div>
 
-        {/* 404 Icon */}
         <div className="mb-8">
           <div className="w-24 h-24 bg-emerald-500 rounded-full flex justify-center items-center mx-auto mb-6">
             <svg
@@ -41,13 +39,11 @@ const NotFound = () => {
             </svg>
           </div>
 
-          {/* 404 Text */}
           <h1 className="text-6xl md:text-8xl font-extrabold mb-2 bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">
             404
           </h1>
         </div>
 
-        {/* Header */}
         <div className="mb-8">
           <h2
             className={`text-2xl md:text-4xl font-bold mb-4 ${
@@ -67,9 +63,7 @@ const NotFound = () => {
           </p>
         </div>
 
-        {/* Decorative Elements */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          {/* Suggestion 1 */}
           <div
             className={`border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 ${
               lightMode
@@ -106,7 +100,6 @@ const NotFound = () => {
             </p>
           </div>
 
-          {/* Suggestion 2 */}
           <div
             className={`border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 ${
               lightMode
@@ -143,7 +136,6 @@ const NotFound = () => {
             </p>
           </div>
 
-          {/* Suggestion 3 */}
           <div
             className={`border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 ${
               lightMode
@@ -182,7 +174,6 @@ const NotFound = () => {
           </div>
         </div>
 
-        {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <button
             className={`px-6 md:px-8 py-3 md:py-4 rounded-full border-none bg-emerald-500 text-white font-semibold text-base md:text-lg cursor-pointer transition-all duration-300 hover:-translate-y-0.5 ${

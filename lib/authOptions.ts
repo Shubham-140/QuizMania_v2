@@ -41,7 +41,6 @@ async function upsertGitHubUser(
   githubId: string,
   githubProfile: GitHubProfile
 ) {
-  // Raw GitHub profile has `login`; normalized profile may only have `name`
   const login =
     githubProfile.login ||
     githubProfile.name ||
@@ -106,11 +105,8 @@ export const authOptions: NextAuthOptions = {
     GitHubProvider({
       clientId: githubClientId!,
       clientSecret: githubClientSecret!,
-      // Required after GitHub RFC 9207 (`iss` in OAuth callback)
       issuer: "https://github.com/login/oauth",
-      // Avoid PKCE cookie issues on localhost / App Router
       checks: ["state"],
-      // Keep raw GitHub fields available to callbacks
       profile(profile) {
         return {
           id: String(profile.id),
@@ -225,8 +221,6 @@ export const authOptions: NextAuthOptions = {
 
         const githubProfile = profile as GitHubProfile;
         const githubId = account.providerAccountId;
-        // profile here is the RAW GitHub userinfo (has login)
-        // user may include our custom profile() fields
         const login =
           githubProfile?.login ||
           (user as { login?: string; username?: string })?.login ||

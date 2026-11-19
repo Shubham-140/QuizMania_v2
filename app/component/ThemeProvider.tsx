@@ -36,12 +36,10 @@ function subscribe(onStoreChange: () => void) {
   };
 }
 
-/** Reads theme already applied by the blocking layout script (before React paints). */
 function getSnapshot() {
   return !document.documentElement.classList.contains("dark");
 }
 
-/** Matches SSR default (dark). */
 function getServerSnapshot() {
   return false;
 }

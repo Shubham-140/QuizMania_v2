@@ -90,9 +90,7 @@ const Profile = () => {
             : "bg-slate-900/95 border border-slate-600 shadow-xl shadow-black/30"
         }`}
       >
-        {/* Profile Header */}
         <div className="flex flex-col md:flex-row gap-8 items-start mb-8">
-          {/* Profile Picture (Kept as in original) */}
           <div
             className={`w-32 h-32 rounded-full border-4 ${
               lightMode ? "border-white" : "border-slate-800"
@@ -121,7 +119,6 @@ const Profile = () => {
             )}
           </div>
 
-          {/* Profile Info */}
           <div className="flex-1">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
               <div>
@@ -155,7 +152,6 @@ const Profile = () => {
               </div>
             </div>
 
-            {/* Description */}
             <div
               className={`p-4 rounded-lg ${
                 lightMode ? "bg-gray-50" : "bg-slate-800/50"
@@ -168,9 +164,7 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Stats Section - Horizontal Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Quiz Stats */}
           <div
             className={`p-6 rounded-xl ${
               lightMode ? "bg-gray-50" : "bg-slate-800/50"
@@ -216,7 +210,6 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Member Since */}
           <div
             className={`p-6 rounded-xl ${
               lightMode ? "bg-gray-50" : "bg-slate-800/50"

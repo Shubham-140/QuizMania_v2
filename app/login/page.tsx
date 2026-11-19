@@ -9,6 +9,7 @@ import GitHubSignInButton from "../component/GitHubSignInButton";
 export default function Login() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState("");
   const router = useRouter();
   const { data: session } = useSession();
   const pathname = usePathname();
@@ -16,6 +17,7 @@ export default function Login() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
+    setError("");
 
     const result = await signIn("credentials", {
       username: username.trim(),
@@ -25,7 +27,7 @@ export default function Login() {
     });
 
     if (result?.error) {
-      console.log(result.error);
+      setError("Invalid username or password");
     } else {
       router.push(`/user/${username}`);
     }
@@ -45,7 +47,6 @@ export default function Login() {
           : "bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-700"
       }`}
     >
-      {/* Left side - Enhanced branded section */}
       <div
         className={`hidden md:flex md:w-2/5 items-center justify-center p-8 relative overflow-hidden ${
           lightMode
@@ -53,7 +54,6 @@ export default function Login() {
             : "bg-gradient-to-br from-emerald-800 via-emerald-700 to-blue-700"
         }`}
       >
-        {/* Floating elements */}
         <div
           className={`absolute top-20 left-20 w-16 h-16 rounded-2xl rotate-45 animate-bounce delay-1000 ${
             lightMode ? "bg-emerald-200/50" : "bg-emerald-600/30"
@@ -70,7 +70,6 @@ export default function Login() {
           }`}
         ></div>
 
-        {/* Main content */}
         <div className="text-center p-8 relative z-10">
           <h1
             className={`text-3xl md:text-4xl font-extrabold mb-4 ${
@@ -87,7 +86,6 @@ export default function Login() {
             Continue your journey and climb the leaderboards
           </p>
 
-          {/* Feature highlights */}
           <div className="grid grid-cols-1 gap-4 max-w-sm mx-auto">
             <div
               className={`p-4 rounded-2xl border transition-all duration-300 hover:-translate-y-1 ${
@@ -191,7 +189,6 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Right side - Form */}
       <div className="w-full md:w-3/5 flex items-center justify-center p-4 md:p-8">
         <div
           className={`w-full max-w-lg rounded-xl md:rounded-2xl p-6 md:p-8 backdrop-blur-sm border relative overflow-hidden ${
@@ -200,10 +197,8 @@ export default function Login() {
               : "bg-slate-900/95 border-slate-600 shadow-xl shadow-black/30"
           }`}
         >
-          {/* Top gradient border */}
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 z-10"></div>
 
-          {/* Header */}
           <div className="text-center mb-6 md:mb-8">
             <h2 className="text-2xl md:text-3xl font-extrabold mb-2 bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">
               Welcome Back
@@ -217,12 +212,10 @@ export default function Login() {
             </p>
           </div>
 
-          {/* GitHub OAuth Button — form POST so state cookies are set reliably */}
           <div className="mb-6">
             <GitHubSignInButton lightMode={lightMode} />
           </div>
 
-          {/* Divider */}
           <div className="mb-6 relative">
             <div className="absolute inset-0 flex items-center">
               <div
@@ -244,7 +237,6 @@ export default function Login() {
             </div>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label
@@ -308,8 +300,12 @@ export default function Login() {
               </div>
             </div>
 
-            {/* CTA Button */}
             <div className="pt-4">
+              {error && (
+                <p role="alert" className="mb-3 text-center text-sm text-red-500">
+                  {error}
+                </p>
+              )}
               <button
                 type="submit"
                 className={`w-full px-6 py-3 rounded-2xl border-none bg-emerald-500 text-white font-semibold text-base cursor-pointer transition-all duration-300 hover:-translate-y-0.5 ${

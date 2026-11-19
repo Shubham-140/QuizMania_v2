@@ -24,10 +24,8 @@ export const SubmitQuizModal = ({ setSubmitOverlay, onSubmit }: PropTypes) => {
             : "bg-slate-900/96 border border-slate-700 shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
         }`}
       >
-        {/* Gradient top border */}
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 z-10" />
 
-        {/* Warning Icon */}
         <div
           className={`w-20 h-20 rounded-full flex justify-center items-center mx-auto mb-6 border-2
           ${
@@ -48,7 +46,6 @@ export const SubmitQuizModal = ({ setSubmitOverlay, onSubmit }: PropTypes) => {
           </svg>
         </div>
 
-        {/* Title */}
         <h2
           className={`text-[clamp(1.5rem,5vw,1.75rem)] font-bold mb-4 leading-tight
           ${lightMode ? "text-slate-900" : "text-slate-50"}`}
@@ -56,7 +53,6 @@ export const SubmitQuizModal = ({ setSubmitOverlay, onSubmit }: PropTypes) => {
           Submit Your Quiz?
         </h2>
 
-        {/* Message */}
         <p
           className={`text-[clamp(1rem,3vw,1.125rem)] mb-8 leading-relaxed
           ${lightMode ? "text-slate-600" : "text-slate-400"}`}
@@ -65,7 +61,6 @@ export const SubmitQuizModal = ({ setSubmitOverlay, onSubmit }: PropTypes) => {
           to make changes after submission.
         </p>
 
-        {/* Action Buttons */}
         <div className="flex justify-center gap-4 flex-wrap">
           <button
             className={`px-6 py-3 cursor-pointer rounded-xl border font-semibold text-base min-w-[120px] transition-all duration-200

@@ -9,7 +9,6 @@ const Footer = () => {
   return (
     <footer className="border-t mt-auto font-sans transition-colors duration-300 bg-white/95 backdrop-blur-sm border-gray-200 dark:bg-gray-900/95 dark:border-gray-600">
       <div className="max-w-[1200px] mx-auto px-5 md:px-10 py-8 md:py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-        {/* Logo Section */}
         <div className="flex flex-col gap-6">
           <div className="flex items-center gap-3 group">
             <div className="w-10 h-10 rounded-lg flex justify-center items-center text-xl font-extrabold text-white shadow-lg -rotate-6 transition-all duration-300 group-hover:rotate-0 group-hover:scale-105 bg-emerald-500 shadow-emerald-500/30 dark:shadow-emerald-500/20">
@@ -25,7 +24,6 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* Quick Links */}
         <div>
           <h3 className="text-lg font-semibold mb-6 text-emerald-600 dark:text-emerald-400">
             Quick Links
@@ -55,7 +53,6 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Contact Info */}
         <div>
           <h3 className="text-lg font-semibold mb-6 text-emerald-600 dark:text-emerald-400">
             Contact
@@ -76,13 +73,11 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Developer Hub */}
         <div>
           <h3 className="text-lg font-semibold mb-6 text-emerald-600 dark:text-emerald-400">
             Developer Hub
           </h3>
           <div className="flex gap-4 flex-wrap">
-            {/* GitHub Link */}
             {isQuizActive ? (
               <div className="rounded-lg px-4 py-2 flex items-center gap-2 bg-gray-100/50 text-gray-500 dark:bg-gray-700/50 dark:text-gray-400">
                 <span className="text-emerald-500 dark:text-emerald-400">
@@ -103,7 +98,6 @@ const Footer = () => {
               </Link>
             )}
 
-            {/* LeetCode Link */}
             {isQuizActive ? (
               <div className="rounded-lg px-4 py-2 flex items-center gap-2 bg-gray-100/50 text-gray-500 dark:bg-gray-700/50 dark:text-gray-400">
                 <span className="text-emerald-500 dark:text-emerald-400">
@@ -127,7 +121,6 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Copyright */}
       <div className="border-t py-5 text-center text-sm border-gray-200 text-gray-500 dark:border-gray-600 dark:text-gray-400">
         © {new Date().getFullYear()} QuizMania. All rights reserved.
       </div>

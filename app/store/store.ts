@@ -38,7 +38,6 @@ export const store = configureStore({
     }),
 });
 
-// Kick off rehydration without PersistGate (avoids blocking first paint)
 persistStore(store);
 
 export type AppStore = typeof store;

@@ -30,7 +30,6 @@ export const ExitConfirmationOverlay = ({ setShowExitOverlay }: Props) => {
         }`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Warning icon with animated pulse effect */}
         <div
           className={`mx-auto mb-[clamp(16px,4vw,24px)] w-[clamp(60px,15vw,80px)] h-[clamp(60px,15vw,80px)] rounded-full flex items-center justify-center border-2 ${
             lightMode
@@ -53,14 +52,12 @@ export const ExitConfirmationOverlay = ({ setShowExitOverlay }: Props) => {
           </svg>
         </div>
 
-        {/* Title with gradient text */}
         <h2
           className={`text-[clamp(1.25rem,5vw,1.75rem)] font-extrabold mb-[clamp(8px,2vw,12px)] leading-tight bg-gradient-to-r from-emerald-500 to-emerald-600 bg-clip-text text-transparent`}
         >
           Are you sure you want to leave?
         </h2>
 
-        {/* Description */}
         <p
           className={`mb-[clamp(20px,5vw,28px)] text-[clamp(0.875rem,3vw,1rem)] leading-relaxed ${
             lightMode ? "text-gray-600" : "text-gray-300"
@@ -69,9 +66,7 @@ export const ExitConfirmationOverlay = ({ setShowExitOverlay }: Props) => {
           Your current quiz progress will be lost if you exit now.
         </p>
 
-        {/* Buttons container */}
         <div className="flex gap-[clamp(12px,3vw,16px)] justify-center flex-wrap">
-          {/* Cancel button */}
           <button
             className={`flex-1 min-w-[120px] px-[clamp(20px,5vw,24px)] py-[clamp(12px,3vw,16px)] rounded-[clamp(8px,2vw,12px)] border-2 font-semibold text-[clamp(0.875rem,3vw,1rem)] transition-all duration-300 hover:-translate-y-0.5 cursor-pointer ${
               lightMode
@@ -83,7 +78,6 @@ export const ExitConfirmationOverlay = ({ setShowExitOverlay }: Props) => {
             Cancel
           </button>
 
-          {/* Exit button */}
           <button
             className={`flex-1 min-w-[120px] px-[clamp(20px,5vw,24px)] py-[clamp(12px,3vw,16px)] rounded-[clamp(8px,2vw,12px)] font-semibold text-[clamp(0.875rem,3vw,1rem)] text-white transition-all duration-300 hover:-translate-y-0.5 cursor-pointer ${
               lightMode
@@ -99,7 +93,6 @@ export const ExitConfirmationOverlay = ({ setShowExitOverlay }: Props) => {
           </button>
         </div>
 
-        {/* Animations */}
         <style jsx>{`
           @keyframes fadeInUp {
             from {

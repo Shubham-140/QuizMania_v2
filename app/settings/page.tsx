@@ -32,13 +32,13 @@ const Settings = () => {
   const router = useRouter();
   const [reduxHydrated, setReduxHydrated] = useState(false);
 
-  // Local form state
   const [name, setName] = useState("");
   const [age, setAge] = useState<number>(0);
   const [description, setDescription] = useState("");
   const [username, setUsername] = useState("");
   const [quizAttended, setQuizAttended] = useState(0);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [saveError, setSaveError] = useState("");
 
   useEffect(() => {
     if (session === null) {
@@ -46,7 +46,6 @@ const Settings = () => {
     }
   }, [session, router]);
 
-  // Fetch user from DB on mount
   useEffect(() => {
     if (!session?.user?.username) {
       if (status !== "loading") setIsLoadingProfile(false);
@@ -68,8 +67,8 @@ const Settings = () => {
     })();
   }, [session?.user?.username, status]);
 
-  // Save changes to DB and re-fetch updated user
   async function handleSaveChanges() {
+    setSaveError("");
     try {
       const res = await fetch("/api/user/update", {
         method: "PUT",
@@ -85,11 +84,10 @@ const Settings = () => {
 
       const data = await res.json();
       if (!res.ok) {
-        console.log("Save failed", data);
+        setSaveError(data.error ?? "Could not save your profile");
         return;
       }
 
-      // Re-fetch updated user
       const refreshed = await fetch(`/api/user/${username}`);
       const updatedUser = await refreshed.json();
       setUser(updatedUser);
@@ -98,15 +96,11 @@ const Settings = () => {
       setDescription(updatedUser.description ?? "");
       setUsername(updatedUser.username ?? "");
 
-    } catch (error) {
-      console.error(
-        "Update error:",
-        error instanceof Error ? error.message : "unknown"
-      );
+    } catch {
+      setSaveError("Could not save your profile");
     }
   }
 
-  // Redux hydration
   useEffect(() => {
     if (!reduxHydrated) return;
 
@@ -164,11 +158,9 @@ const Settings = () => {
             lightMode ? "text-slate-900" : "text-slate-50"
           }`}
         >
-          {/* ... svg icon ... */}
           User Settings
         </h2>
 
-        {/* Profile Settings Section */}
         <div className="mb-8">
           <h3
             className={`text-lg font-semibold mb-4 pb-2 border-b ${
@@ -181,9 +173,7 @@ const Settings = () => {
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Left Column */}
             <div>
-              {/* Username */}
               <div className="mb-6">
                 <label
                   className={`block font-medium mb-2 text-sm ${
@@ -225,9 +215,7 @@ const Settings = () => {
               </div>
             </div>
 
-            {/* Right Column */}
             <div>
-              {/* Name */}
               <div className="mb-6">
                 <label
                   className={`block font-medium mb-2 text-sm ${
@@ -249,7 +237,6 @@ const Settings = () => {
                 />
               </div>
 
-              {/* Age */}
               <div className="mb-6">
                 <label
                   className={`block font-medium mb-2 text-sm ${
@@ -277,7 +264,6 @@ const Settings = () => {
             </div>
           </div>
 
-          {/* Description - Full Width */}
           <div className="mb-6">
             <label
               className={`block font-medium mb-2 text-sm ${
@@ -299,8 +285,12 @@ const Settings = () => {
             />
           </div>
 
-          {/* Profile Save Button */}
-          <div className="flex justify-end">
+          <div className="flex items-center justify-end gap-4">
+            {saveError && (
+              <p role="alert" className="text-sm text-red-500">
+                {saveError}
+              </p>
+            )}
             <button
               className={`px-6 py-2 rounded-lg border-none text-white font-medium text-sm cursor-pointer transition-all
               bg-emerald-500 shadow-[0_2px_6px_${
@@ -316,7 +306,6 @@ const Settings = () => {
           </div>
         </div>
 
-        {/* Quiz Settings Section */}
         <div>
           <h3
             className={`text-lg font-semibold mb-4 pb-2 border-b ${
@@ -329,7 +318,6 @@ const Settings = () => {
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Number of Questions */}
             <div className="mb-6">
               <label
                 className={`block font-medium mb-2 text-sm ${
@@ -358,7 +346,6 @@ const Settings = () => {
               </select>
             </div>
 
-            {/* Time Limit */}
             <div className="mb-6">
               <label
                 className={`block font-medium mb-2 text-sm ${

@@ -88,10 +88,8 @@ const Feedback = () => {
             : "bg-slate-900/95 border-slate-600 shadow-xl shadow-black/30"
         }`}
       >
-        {/* Top gradient border */}
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 z-10"></div>
 
-        {/* Header */}
         <div className="text-center mb-6 md:mb-10">
           <h1 className="text-2xl md:text-3xl font-extrabold mb-2 bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">
             Send Feedback
@@ -105,14 +103,12 @@ const Feedback = () => {
           </p>
         </div>
 
-        {/* Form */}
         <form
           action="https://formspree.io/f/xnnvoqrg"
           method="POST"
           className="grid gap-6"
           onSubmit={handleSubmit}
         >
-          {/* Name Field */}
           <div>
             <label
               htmlFor="name"
@@ -135,7 +131,6 @@ const Feedback = () => {
             />
           </div>
 
-          {/* Email Field */}
           <div>
             <label
               htmlFor="email"
@@ -158,7 +153,6 @@ const Feedback = () => {
             />
           </div>
 
-          {/* Feedback Type */}
           <div>
             <label
               className={`block font-semibold mb-2 text-sm ${
@@ -185,7 +179,6 @@ const Feedback = () => {
                 <option value="other">Other</option>
               </select>
 
-              {/* Custom dropdown arrow */}
               <div
                 className={`absolute top-1/2 right-4 transform -translate-y-1/2 pointer-events-none ${
                   lightMode ? "text-gray-600" : "text-gray-400"
@@ -204,7 +197,6 @@ const Feedback = () => {
             </div>
           </div>
 
-          {/* Message Field */}
           <div>
             <label
               htmlFor="message"
@@ -228,11 +220,9 @@ const Feedback = () => {
             ></textarea>
           </div>
 
-          {/* Hidden fields for Formspree */}
           <input type="hidden" name="_subject" value="New QuizMania Feedback" />
           <input type="hidden" name="_next" value="/" />
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={isSubmitting}
@@ -246,7 +236,6 @@ const Feedback = () => {
           </button>
         </form>
 
-        {/* Thank You Note */}
         <p
           className={`text-center text-sm mt-8 ${
             lightMode ? "text-gray-600" : "text-gray-400"

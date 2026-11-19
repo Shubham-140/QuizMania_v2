@@ -29,7 +29,6 @@ const QuizAnswers: React.FC = () => {
         if (storedData) {
           const data = JSON.parse(storedData);
 
-          // Set each piece of data to its respective state
           setQuizData(data.quizData || []);
           setOptions(data.options || []);
           setCorrectIndices(data.correctIndices || []);

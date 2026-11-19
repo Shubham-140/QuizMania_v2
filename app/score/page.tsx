@@ -22,10 +22,8 @@ const Score = () => {
   const router = useRouter();
 
   useEffect(() => {
-    // Set client-side flag
     setIsClient(true);
 
-    // Safely get from localStorage
     const getStoredValue = (key: string, defaultValue: number): number => {
       try {
         if (typeof window !== "undefined") {
@@ -46,7 +44,6 @@ const Score = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Don't render until client-side hydration is complete
   if (!isClient || numberOfQuestions === null) {
     return (
       <div
@@ -74,7 +71,6 @@ const Score = () => {
         </div>
       )}
 
-      {/* Score Display Content */}
       <div
         className={`w-full max-w-[min(800px,95vw)] rounded-[clamp(1rem,3vw,1.5rem)] 
         p-[clamp(1rem,3vw,2rem)] relative overflow-hidden backdrop-blur-md
@@ -84,10 +80,8 @@ const Score = () => {
             : "bg-slate-900/96 border border-slate-700 shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
         }`}
       >
-        {/* Gradient top border */}
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 z-10" />
 
-        {/* Header */}
         <div className="text-center mb-[clamp(1rem,3vw,2rem)]">
           <h1
             className={`text-[clamp(1.25rem,4vw,2rem)] font-extrabold mb-[clamp(0.25rem,1vw,0.5rem)] 
@@ -103,7 +97,6 @@ const Score = () => {
           </p>
         </div>
 
-        {/* Score Card */}
         <div
           className={`rounded-[clamp(0.75rem,2vw,1rem)] p-[clamp(1rem,2vw,1.5rem)] text-center 
           mb-[clamp(1rem,3vw,2rem)] border
@@ -127,9 +120,7 @@ const Score = () => {
           </div>
         </div>
 
-        {/* Stats Grid */}
         <div className="grid grid-cols-3 gap-[clamp(0.75rem,2vw,1rem)] mb-[clamp(1rem,3vw,2rem)]">
-          {/* Correct Answers */}
           <div
             className={`rounded-[clamp(0.5rem,2vw,0.75rem)] p-[clamp(0.75rem,2vw,1rem)] text-center border
             ${
@@ -149,7 +140,6 @@ const Score = () => {
             </div>
           </div>
 
-          {/* Incorrect Answers */}
           <div
             className={`rounded-[clamp(0.5rem,2vw,0.75rem)] p-[clamp(0.75rem,2vw,1rem)] text-center border
             ${
@@ -169,7 +159,6 @@ const Score = () => {
             </div>
           </div>
 
-          {/* Time Taken */}
           <div
             className={`rounded-[clamp(0.5rem,2vw,0.75rem)] p-[clamp(0.75rem,2vw,1rem)] text-center border
             ${
@@ -190,7 +179,6 @@ const Score = () => {
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-[clamp(0.75rem,2vw,1rem)]">
           <button
             onClick={() => router.push("/quiz/results")}

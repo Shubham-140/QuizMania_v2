@@ -96,7 +96,6 @@ export default function Signup() {
           : "bg-gradient-to-br from-emerald-900 via-emerald-800 to-emerald-700"
       }`}
     >
-      {/* Right side - Enhanced branded section (now on the left) */}
       <div
         className={`hidden md:flex md:w-2/5 items-center justify-center p-8 relative overflow-hidden ${
           lightMode
@@ -104,7 +103,6 @@ export default function Signup() {
             : "bg-gradient-to-br from-emerald-800 via-emerald-700 to-blue-700"
         }`}
       >
-        {/* Floating elements */}
         <div
           className={`absolute top-20 left-20 w-16 h-16 rounded-2xl rotate-45 animate-bounce delay-1000 ${
             lightMode ? "bg-emerald-200/50" : "bg-emerald-600/30"
@@ -121,7 +119,6 @@ export default function Signup() {
           }`}
         ></div>
 
-        {/* Main content */}
         <div className="text-center p-8 relative z-10">
           <h1
             className={`text-3xl md:text-4xl font-extrabold mb-4 ${
@@ -139,7 +136,6 @@ export default function Signup() {
             quiz platform
           </p>
 
-          {/* Feature highlights */}
           <div className="grid grid-cols-1 gap-4 max-w-sm mx-auto">
             <div
               className={`p-4 rounded-2xl border transition-all duration-300 hover:-translate-y-1 ${
@@ -247,10 +243,8 @@ export default function Signup() {
               : "bg-slate-900/95 border-slate-600 shadow-xl shadow-black/30"
           }`}
         >
-          {/* Top gradient border */}
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 z-10"></div>
 
-          {/* Header */}
           <div className="text-center mb-6 md:mb-8">
             <h2 className="text-2xl md:text-3xl font-extrabold mb-2 bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">
               Join QuizMania
@@ -264,12 +258,10 @@ export default function Signup() {
             </p>
           </div>
 
-          {/* GitHub OAuth Button — form POST so state cookies are set reliably */}
           <div className="mb-6">
             <GitHubSignInButton lightMode={lightMode} />
           </div>
 
-          {/* Divider */}
           <div className="mb-6 relative">
             <div className="absolute inset-0 flex items-center">
               <div
@@ -291,7 +283,6 @@ export default function Signup() {
             </div>
           </div>
 
-          {/* Form */}
           <div className="space-y-4">
             <div>
               <label
@@ -434,7 +425,6 @@ export default function Signup() {
               </p>
             )}
 
-            {/* CTA Button */}
             <div className="pt-4">
               <button
                 type="button"

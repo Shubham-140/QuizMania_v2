@@ -32,10 +32,8 @@ const HomePage = () => {
               : "bg-gray-800/95 border border-gray-600 shadow-black/30"
           }`}
         >
-          {/* Gradient top border */}
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 z-10"></div>
 
-          {/* Logo and Title */}
           <div className="relative mb-8 md:mb-12">
             <div
               className={`w-16 h-16 md:w-24 md:h-24 mx-auto rounded-xl flex justify-center items-center text-3xl md:text-4xl font-extrabold text-white -rotate-6 transition-all duration-300 hover:rotate-0 hover:scale-105 ${
@@ -60,7 +58,6 @@ const HomePage = () => {
             </p>
           </div>
 
-          {/* Category Selection */}
           <div className="mb-8 md:mb-10 text-left">
             <h2
               className={`mb-4 text-xs md:text-sm font-semibold uppercase tracking-wider ${
@@ -127,7 +124,6 @@ const HomePage = () => {
             )}
           </div>
 
-          {/* Difficulty Selection */}
           <div className="mb-8 md:mb-10 text-left">
             <h2
               className={`mb-4 text-xs md:text-sm font-semibold uppercase tracking-wider ${
@@ -206,7 +202,6 @@ const HomePage = () => {
             )}
           </div>
 
-          {/* Action Buttons */}
           <div className="flex flex-col gap-4 md:gap-5 mt-8 md:mt-10">
             <button
               className={`w-full py-4 md:py-5 cursor-pointer rounded-xl text-white font-semibold text-lg md:text-xl transition-all duration-300 hover:-translate-y-1 ${

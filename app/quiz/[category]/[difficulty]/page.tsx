@@ -25,7 +25,6 @@ const QuestionDisplay = () => {
     difficulty: string;
   }>();
 
-  // Redux state
   const { lightMode } = useTheme();
   const [settings, setSettings] = useState<{
     numberOfQuestions: number;
@@ -34,7 +33,6 @@ const QuestionDisplay = () => {
   const numberOfQuestions = settings?.numberOfQuestions ?? 10;
   const totalTime = settings?.totalTime ?? 120;
 
-  // Local state
   const [index, setIndex] = useState(0);
   const [quizData, setQuizData] = useState<QuizQuestion[]>([]);
   const [hydrated, setHydrated] = useState(false);
@@ -45,7 +43,6 @@ const QuestionDisplay = () => {
   const [localTotalTime, setLocalTotalTime] = useState<number | null>(null);
   const submittedRef = useRef(false);
 
-  // Theme configuration
   const theme = {
     light: {
       text: "text-gray-900",
@@ -77,7 +74,6 @@ const QuestionDisplay = () => {
 
   const colors = lightMode ? theme.light : theme.dark;
 
-  // Effects
   useEffect(() => {
     const questions = localStorage.getItem("numberOfQuestions");
     const time = localStorage.getItem("totalTime");
@@ -235,16 +231,13 @@ const QuestionDisplay = () => {
           : "bg-gradient-to-br from-gray-900 to-emerald-900/20"
       }`}
     >
-      {/* Main Quiz Card */}
       <div className="w-full max-w-4xl h-[calc(100vh-56px)] flex flex-col justify-between gap-4">
         <div
           className={`relative rounded-2xl p-6 md:p-8 h-full flex flex-col 
           ${colors.cardBg} ${colors.shadow} border ${colors.border} backdrop-blur-md overflow-hidden`}
         >
-          {/* Gradient top border */}
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 z-10" />
 
-          {/* Header with question counter and timer */}
           <div className="flex justify-between items-center mb-6">
             <div
               className={`text-sm font-semibold tracking-wider ${colors.primaryText}`}
@@ -285,7 +278,6 @@ const QuestionDisplay = () => {
             )}
           </div>
 
-          {/* Question and Options */}
           <div className="flex-1 flex flex-col overflow-hidden">
             <div className="overflow-y-auto scrollbar-hide flex-1">
               <h2
@@ -367,7 +359,6 @@ const QuestionDisplay = () => {
               </div>
             </div>
 
-            {/* Navigation Buttons */}
             <div className="flex justify-between gap-4 pt-4">
               <button
                 className={`flex items-center gap-2 px-6 py-3 rounded-xl border font-semibold cursor-pointer 
@@ -424,7 +415,6 @@ const QuestionDisplay = () => {
         </div>
       </div>
 
-      {/* Submit Quiz Modal */}
       {submitOverlay && (
         <SubmitQuizModal
           setSubmitOverlay={setSubmitOverlay}
