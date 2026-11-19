@@ -251,7 +251,7 @@ export default function Signup() {
           </div>
 
           <div className="mb-6">
-            <GitHubSignInButton lightMode={lightMode} />
+            <GitHubSignInButton />
           </div>
 
           <div className="mb-6 relative">

@@ -45,6 +45,18 @@
   @apply border border-slate-200 bg-white/95 shadow-xl shadow-black/5 dark:border-slate-600 dark:bg-slate-900/95 dark:shadow-black/30;
 }
 
+@utility field {
+  @apply w-full px-4 py-3 border rounded-2xl text-sm transition-all duration-300 bg-white/95 border-slate-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 dark:bg-slate-900/95 dark:border-slate-600 dark:text-white;
+}
+
+@utility field-label {
+  @apply block text-sm font-semibold mb-2 text-gray-900 dark:text-white;
+}
+
+@utility btn-primary {
+  @apply w-full px-6 py-3 rounded-2xl border-none bg-emerald-500 text-white font-semibold text-base cursor-pointer transition-all duration-300 hover:-translate-y-0.5 shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 dark:shadow-emerald-500/20 dark:hover:shadow-emerald-500/30;
+}
+
 @utility hover-lift {
   @apply transition-all duration-300 hover:-translate-y-1;
 }

@@ -3,12 +3,11 @@
 import { getCsrfToken } from "next-auth/react";
 import { useEffect, useState } from "react";
 
-type Props = {
-  lightMode: boolean;
+export default function GitHubSignInButton({
+  className,
+}: {
   className?: string;
-};
-
-export default function GitHubSignInButton({ lightMode, className }: Props) {
+}) {
   const [csrfToken, setCsrfToken] = useState("");
 
   useEffect(() => {
@@ -24,11 +23,7 @@ export default function GitHubSignInButton({ lightMode, className }: Props) {
       <button
         type="submit"
         disabled={!csrfToken}
-        className={`w-full flex cursor-pointer justify-center items-center gap-3 py-3 px-4 border rounded-2xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed ${
-          lightMode
-            ? "bg-white/95 border-slate-200 text-gray-700 hover:shadow-lg hover:shadow-black/5"
-            : "bg-slate-900/95 border-slate-600 text-white hover:shadow-lg hover:shadow-black/20"
-        }`}
+        className="w-full flex cursor-pointer justify-center items-center gap-3 py-3 px-4 border rounded-2xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed bg-white/95 border-slate-200 text-gray-700 hover:shadow-lg hover:shadow-black/5 dark:bg-slate-900/95 dark:border-slate-600 dark:text-white dark:hover:shadow-black/20"
       >
         <div className="w-5 h-5 bg-gray-800 rounded-lg flex items-center justify-center">
           <svg
