@@ -1,17 +1,54 @@
 "use client";
-import { useTheme } from "../component/ThemeProvider";
+import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setNumberOfQues,
   setTotalTime,
 } from "../features/userChoices/userChoicesSlice";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { RootState } from "@/app/store/store";
-import { useRouter } from "next/navigation";
 import type { SettingsUser } from "@/lib/users";
 
+const sectionTitle =
+  "text-lg font-semibold mb-4 pb-2 border-b border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300";
+const control =
+  "w-full border rounded-lg py-2 px-3 text-sm border-slate-200 text-slate-900 dark:border-slate-600 dark:text-slate-50";
+const readOnlyControl = `${control} cursor-not-allowed bg-slate-100 dark:bg-slate-700`;
+const editableControl = `${control} bg-slate-50 dark:bg-slate-800`;
+const selectControl = `${editableControl} pr-8 cursor-pointer select-arrow`;
+
+const questionOptions = [5, 10, 15, 20];
+const timeOptions = [
+  { value: 60, label: "1 minute" },
+  { value: 120, label: "2 minutes" },
+  { value: 180, label: "3 minutes" },
+  { value: 300, label: "5 minutes" },
+  { value: 999999, label: "No limit" },
+];
+
+function Field({
+  id,
+  label,
+  children,
+}: {
+  id: string;
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="mb-6">
+      <label
+        htmlFor={id}
+        className="block font-medium mb-2 text-sm text-slate-700 dark:text-slate-300"
+      >
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
+
 export default function SettingsForm({ user }: { user: SettingsUser }) {
-  const { lightMode } = useTheme();
   const totalTime = useSelector(
     (state: RootState) => state.userChoices.totalTime
   );
@@ -19,7 +56,6 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
     (state: RootState) => state.userChoices.numberOfQuestions
   );
   const dispatch = useDispatch();
-  const router = useRouter();
   const [reduxHydrated, setReduxHydrated] = useState(false);
 
   const [name, setName] = useState(user.name ?? "");
@@ -82,157 +118,77 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
   }, [dispatch]);
 
   return (
-    <div
-      className={`min-h-screen p-4 flex justify-center items-center ${
-        lightMode
-          ? "bg-[radial-gradient(circle_at_10%_20%,#f0fdf4_0%,#dcfce7_90%)]"
-          : "bg-[radial-gradient(circle_at_10%_20%,#022c22_0%,#064e3b_90%)]"
-      }`}
-    >
-      <div
-        className={`w-full max-w-4xl rounded-2xl p-8 relative overflow-hidden ${
-          lightMode ? "bg-white/96" : "bg-slate-900/96"
-        } ${
-          lightMode ? "border border-slate-200" : "border border-slate-700"
-        } ${
-          lightMode
-            ? "shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
-            : "shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
-        } backdrop-blur-md`}
-      >
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 z-10"></div>
+    <div className="min-h-screen p-4 flex justify-center items-center bg-[radial-gradient(circle_at_10%_20%,#f0fdf4_0%,#dcfce7_90%)] dark:bg-[radial-gradient(circle_at_10%_20%,#022c22_0%,#064e3b_90%)]">
+      <div className="w-full max-w-4xl rounded-2xl p-8 relative overflow-hidden border backdrop-blur-md bg-white/96 border-slate-200 shadow-[0_20px_40px_rgba(0,0,0,0.08)] dark:bg-slate-900/96 dark:border-slate-700 dark:shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
+        <div className="accent-bar"></div>
 
-        <h2
-          className={`flex items-center gap-2 text-xl font-bold mb-6 ${
-            lightMode ? "text-slate-900" : "text-slate-50"
-          }`}
-        >
+        <h2 className="flex items-center gap-2 text-xl font-bold mb-6 text-slate-900 dark:text-slate-50">
           User Settings
         </h2>
 
         <div className="mb-8">
-          <h3
-            className={`text-lg font-semibold mb-4 pb-2 border-b ${
-              lightMode
-                ? "border-slate-200 text-slate-700"
-                : "border-slate-700 text-slate-300"
-            }`}
-          >
-            Profile Information
-          </h3>
+          <h3 className={sectionTitle}>Profile Information</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <div className="mb-6">
-                <label
-                  className={`block font-medium mb-2 text-sm ${
-                    lightMode ? "text-slate-700" : "text-slate-300"
-                  }`}
-                >
-                  Username
-                </label>
+              <Field id="username" label="Username">
                 <input
+                  id="username"
                   type="text"
-                  value={username ?? ""}
+                  value={username}
                   readOnly
-                  className={`w-full bg-slate-50 border rounded-lg py-2 px-3 text-sm cursor-not-allowed ${
-                    lightMode
-                      ? "border-slate-200 text-slate-900 bg-slate-100"
-                      : "border-slate-600 text-slate-50 bg-slate-700"
-                  }`}
+                  className={readOnlyControl}
                 />
-              </div>
+              </Field>
 
-              <div className="mb-6">
-                <label
-                  className={`block font-medium mb-2 text-sm ${
-                    lightMode ? "text-slate-700" : "text-slate-300"
-                  }`}
-                >
-                  Quiz Attended
-                </label>
+              <Field id="quizAttended" label="Quiz Attended">
                 <input
+                  id="quizAttended"
                   type="number"
                   value={quizAttended ?? 0}
                   readOnly
-                  className={`w-full bg-slate-50 border rounded-lg py-2 px-3 text-sm cursor-not-allowed ${
-                    lightMode
-                      ? "border-slate-200 text-slate-900 bg-slate-100"
-                      : "border-slate-600 text-slate-50 bg-slate-700"
-                  }`}
+                  className={readOnlyControl}
                 />
-              </div>
+              </Field>
             </div>
 
             <div>
-              <div className="mb-6">
-                <label
-                  className={`block font-medium mb-2 text-sm ${
-                    lightMode ? "text-slate-700" : "text-slate-300"
-                  }`}
-                >
-                  Full Name
-                </label>
+              <Field id="fullName" label="Full Name">
                 <input
+                  id="fullName"
                   type="text"
-                  value={name ?? ""}
+                  value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className={`w-full bg-slate-50 border rounded-lg py-2 px-3 text-sm ${
-                    lightMode
-                      ? "border-slate-200 text-slate-900"
-                      : "border-slate-600 text-slate-50"
-                  } ${lightMode ? "bg-slate-50" : "bg-slate-800"}`}
+                  className={editableControl}
                   placeholder="Your full name"
                 />
-              </div>
+              </Field>
 
-              <div className="mb-6">
-                <label
-                  className={`block font-medium mb-2 text-sm ${
-                    lightMode ? "text-slate-700" : "text-slate-300"
-                  }`}
-                >
-                  Age
-                </label>
+              <Field id="age" label="Age">
                 <input
+                  id="age"
                   type="number"
-                  value={age ?? 0}
+                  value={age}
                   onChange={(e) =>
-                    setAge(
-                      e.target.value === "" ? 0 : Number(e.target.value)
-                    )
+                    setAge(e.target.value === "" ? 0 : Number(e.target.value))
                   }
-                  className={`w-full bg-slate-50 border rounded-lg py-2 px-3 text-sm ${
-                    lightMode
-                      ? "border-slate-200 text-slate-900"
-                      : "border-slate-600 text-slate-50"
-                  } ${lightMode ? "bg-slate-50" : "bg-slate-800"}`}
+                  className={editableControl}
                   placeholder="Enter your age"
                 />
-              </div>
+              </Field>
             </div>
           </div>
 
-          <div className="mb-6">
-            <label
-              className={`block font-medium mb-2 text-sm ${
-                lightMode ? "text-slate-700" : "text-slate-300"
-              }`}
-            >
-              About You
-            </label>
+          <Field id="description" label="About You">
             <textarea
-              value={description ?? ""}
+              id="description"
+              value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className={`w-full bg-slate-50 border rounded-lg py-2 px-3 text-sm ${
-                lightMode
-                  ? "border-slate-200 text-slate-900"
-                  : "border-slate-600 text-slate-50"
-              } ${lightMode ? "bg-slate-50" : "bg-slate-800"}`}
+              className={editableControl}
               placeholder="Tell us about yourself..."
               rows={3}
             />
-          </div>
+          </Field>
 
           <div className="flex items-center justify-end gap-4">
             {saveError && (
@@ -241,13 +197,7 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
               </p>
             )}
             <button
-              className={`px-6 py-2 rounded-lg border-none text-white font-medium text-sm cursor-pointer transition-all
-              bg-emerald-500 shadow-[0_2px_6px_${
-                lightMode ? "rgba(16,185,129,0.3)" : "rgba(16,185,129,0.2)"
-              }]
-              hover:-translate-y-0.5 hover:shadow-[0_4px_10px_${
-                lightMode ? "rgba(16,185,129,0.4)" : "rgba(16,185,129,0.3)"
-              }]`}
+              className="px-6 py-2 rounded-lg text-white font-medium text-sm cursor-pointer transition-all bg-emerald-500 hover:-translate-y-0.5 shadow-[0_2px_6px_rgba(16,185,129,0.3)] hover:shadow-[0_4px_10px_rgba(16,185,129,0.4)] dark:shadow-[0_2px_6px_rgba(16,185,129,0.2)] dark:hover:shadow-[0_4px_10px_rgba(16,185,129,0.3)]"
               onClick={handleSaveChanges}
             >
               Save Profile
@@ -256,86 +206,47 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
         </div>
 
         <div>
-          <h3
-            className={`text-lg font-semibold mb-4 pb-2 border-b ${
-              lightMode
-                ? "border-slate-200 text-slate-700"
-                : "border-slate-700 text-slate-300"
-            }`}
-          >
-            Quiz Preferences
-          </h3>
+          <h3 className={sectionTitle}>Quiz Preferences</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="mb-6">
-              <label
-                className={`block font-medium mb-2 text-sm ${
-                  lightMode ? "text-slate-700" : "text-slate-300"
-                }`}
-              >
-                Number of Questions
-              </label>
+            <Field id="numberOfQuestions" label="Number of Questions">
               <select
-                className={`w-full bg-slate-50 border rounded-lg py-2 px-3 text-sm cursor-pointer appearance-none ${
-                  lightMode
-                    ? "border-slate-200 text-slate-900"
-                    : "border-slate-600 text-slate-50"
-                } ${lightMode ? "bg-slate-50" : "bg-slate-800"}
-              bg-[url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='${
-                lightMode ? "%231a1a1a" : "%23f8fafc"
-              }' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")]
-              bg-no-repeat bg-[right_0.5rem_center] bg-[length:0.75rem] pr-8`}
+                id="numberOfQuestions"
+                className={selectControl}
                 onChange={(e) => dispatch(setNumberOfQues(e.target.value))}
                 value={numberOfQuestions}
               >
-                <option value="5">5 Questions</option>
-                <option value="10">10 Questions</option>
-                <option value="15">15 Questions</option>
-                <option value="20">20 Questions</option>
+                {questionOptions.map((count) => (
+                  <option key={count} value={count}>
+                    {count} Questions
+                  </option>
+                ))}
               </select>
-            </div>
+            </Field>
 
-            <div className="mb-6">
-              <label
-                className={`block font-medium mb-2 text-sm ${
-                  lightMode ? "text-slate-700" : "text-slate-300"
-                }`}
-              >
-                Time Limit
-              </label>
+            <Field id="totalTime" label="Time Limit">
               <select
-                className={`w-full bg-slate-50 border rounded-lg py-2 px-3 text-sm cursor-pointer appearance-none ${
-                  lightMode
-                    ? "border-slate-200 text-slate-900"
-                    : "border-slate-600 text-slate-50"
-                } ${lightMode ? "bg-slate-50" : "bg-slate-800"}
-              bg-[url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='${
-                lightMode ? "%231a1a1a" : "%23f8fafc"
-              }' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")]
-              bg-no-repeat bg-[right_0.5rem_center] bg-[length:0.75rem] pr-8`}
+                id="totalTime"
+                className={selectControl}
                 onChange={(e) => dispatch(setTotalTime(e.target.value))}
                 value={totalTime}
               >
-                <option value="60">1 minute</option>
-                <option value="120">2 minutes</option>
-                <option value="180">3 minutes</option>
-                <option value="300">5 minutes</option>
-                <option value="999999">No limit</option>
+                {timeOptions.map(({ value, label }) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
               </select>
-            </div>
+            </Field>
           </div>
         </div>
         <div className="float-right mt-3">
-          <button
-            onClick={() => router.push("/")}
-            className={`px-6 py-2 rounded-lg border ${
-              lightMode
-                ? "border-slate-300 text-slate-700 hover:bg-slate-50"
-                : "border-slate-600 text-slate-300 hover:bg-slate-800"
-            } font-medium text-sm cursor-pointer transition-all`}
+          <Link
+            href="/"
+            className="inline-block text-center px-6 py-2 rounded-lg border font-medium text-sm transition-all border-slate-300 text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800"
           >
             Go to Home
-          </button>
+          </Link>
         </div>
       </div>
     </div>
