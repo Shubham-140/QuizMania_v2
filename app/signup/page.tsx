@@ -1,9 +1,9 @@
 "use client";
 import { useTheme } from "../component/ThemeProvider";
 import Link from "next/link";
-import { signIn, useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import GitHubSignInButton from "../component/GitHubSignInButton";
 
 export default function Signup() {
@@ -15,15 +15,7 @@ export default function Signup() {
   const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const { data: session } = useSession();
-  const pathname = usePathname();
   const { lightMode } = useTheme();
-
-  useEffect(() => {
-    if (session?.user) {
-      router.push("/");
-    }
-  }, [session?.user, router, pathname]);
 
   const handleSignup = async () => {
     setError("");

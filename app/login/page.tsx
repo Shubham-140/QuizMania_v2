@@ -1,9 +1,9 @@
 "use client";
 import { useTheme } from "../component/ThemeProvider";
 import Link from "next/link";
-import { signIn, useSession } from "next-auth/react";
-import React, { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import GitHubSignInButton from "../component/GitHubSignInButton";
 
 export default function Login() {
@@ -11,8 +11,6 @@ export default function Login() {
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState("");
   const router = useRouter();
-  const { data: session } = useSession();
-  const pathname = usePathname();
   const { lightMode } = useTheme();
 
   async function handleLogin(e: React.FormEvent) {
@@ -32,12 +30,6 @@ export default function Login() {
       router.push(`/user/${username}`);
     }
   }
-
-  useEffect(() => {
-    if (session?.user) {
-      router.push("/");
-    }
-  }, [session?.user, router, pathname]);
 
   return (
     <div
