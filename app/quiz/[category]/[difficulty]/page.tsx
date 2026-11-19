@@ -1,5 +1,4 @@
 "use client";
-import { useTheme } from "../../../component/ThemeProvider";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { SubmitQuizModal } from "../../../component/SubmitQuizModal";
@@ -17,6 +16,16 @@ interface QuizQuestion {
   [key: string]: string | string[];
 }
 
+const text = "text-gray-900 dark:text-gray-50";
+const accentText = "text-emerald-500 dark:text-emerald-400";
+const primaryBg = "bg-emerald-500 dark:bg-emerald-600";
+const optionBase =
+  "p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-gray-200 dark:hover:shadow-gray-800 hover:border-emerald-500 relative overflow-hidden";
+const optionSelected =
+  "bg-emerald-50 border-emerald-500 shadow-md shadow-emerald-500/20 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/30";
+const optionIdle =
+  "bg-gray-50 border-gray-200 hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-800";
+
 const QuestionDisplay = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -25,7 +34,6 @@ const QuestionDisplay = () => {
     difficulty: string;
   }>();
 
-  const { lightMode } = useTheme();
   const [settings, setSettings] = useState<{
     numberOfQuestions: number;
     totalTime: number;
@@ -42,37 +50,6 @@ const QuestionDisplay = () => {
   const [submitOverlay, setSubmitOverlay] = useState(false);
   const [localTotalTime, setLocalTotalTime] = useState<number | null>(null);
   const submittedRef = useRef(false);
-
-  const theme = {
-    light: {
-      text: "text-gray-900",
-      border: "border-gray-200",
-      primaryText: "text-emerald-500",
-      secondary: "bg-gray-50",
-      cardBg: "bg-white/96",
-      shadow: "shadow-[0_20px_40px_rgba(0,0,0,0.08)]",
-      optionHover: "hover:bg-emerald-50",
-      danger: "bg-red-500",
-      primary: "bg-emerald-500",
-      primaryLight: "bg-emerald-100",
-      primaryDark: "bg-emerald-600",
-    },
-    dark: {
-      text: "text-gray-50",
-      border: "border-gray-700",
-      primary: "bg-emerald-600",
-      primaryLight: "bg-emerald-900/30",
-      primaryDark: "bg-emerald-700",
-      primaryText: "text-emerald-400",
-      secondary: "bg-gray-800",
-      cardBg: "bg-gray-900/96",
-      shadow: "shadow-[0_20px_40px_rgba(0,0,0,0.3)]",
-      optionHover: "hover:bg-emerald-900/30",
-      danger: "bg-red-600",
-    },
-  };
-
-  const colors = lightMode ? theme.light : theme.dark;
 
   useEffect(() => {
     const questions = localStorage.getItem("numberOfQuestions");
@@ -223,37 +200,24 @@ const QuestionDisplay = () => {
   }
 
   return (
-    <div
-      className={`min-h-[calc(100vh-56px)] p-4 flex justify-center items-center 
-      ${
-        lightMode
-          ? "bg-gradient-to-br from-emerald-50 to-emerald-100"
-          : "bg-gradient-to-br from-gray-900 to-emerald-900/20"
-      }`}
-    >
+    <div className="quiz-bg min-h-[calc(100vh-56px)] p-4 flex justify-center items-center">
       <div className="w-full max-w-4xl h-[calc(100vh-56px)] flex flex-col justify-between gap-4">
-        <div
-          className={`relative rounded-2xl p-6 md:p-8 h-full flex flex-col 
-          ${colors.cardBg} ${colors.shadow} border ${colors.border} backdrop-blur-md overflow-hidden`}
-        >
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 z-10" />
+        <div className="quiz-card relative p-6 md:p-8 h-full flex flex-col backdrop-blur-md overflow-hidden">
+          <div className="accent-bar" />
 
           <div className="flex justify-between items-center mb-6">
             <div
-              className={`text-sm font-semibold tracking-wider ${colors.primaryText}`}
+              className={`text-sm font-semibold tracking-wider ${accentText}`}
             >
               QUESTION {index + 1} OF {numberOfQuestions}
             </div>
 
             {totalTime !== 999999 && (
               <div
-                className={`flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-white 
-                ${isTimeCritical ? colors.danger : colors.primary} 
-                ${
-                  isTimeCritical ? "animate-pulse border-2 border-white/30" : ""
-                }
-                transition-all duration-300 shadow-md ${
-                  isTimeCritical ? "shadow-red-500/30" : "shadow-emerald-500/30"
+                className={`flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-white transition-all duration-300 shadow-md ${
+                  isTimeCritical
+                    ? "bg-red-500 dark:bg-red-600 animate-pulse border-2 border-white/30 shadow-red-500/30"
+                    : `${primaryBg} shadow-emerald-500/30`
                 }`}
               >
                 <svg
@@ -281,7 +245,7 @@ const QuestionDisplay = () => {
           <div className="flex-1 flex flex-col overflow-hidden">
             <div className="overflow-y-auto scrollbar-hide flex-1">
               <h2
-                className={`text-xl md:text-2xl font-bold mb-6 leading-snug ${colors.text}`}
+                className={`text-xl md:text-2xl font-bold mb-6 leading-snug ${text}`}
               >
                 {hydrated && quizData[index]?.question}
               </h2>
@@ -294,48 +258,19 @@ const QuestionDisplay = () => {
                   return (
                     <div
                       key={option}
-                      className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-200
-                        ${
-                          isSelected
-                            ? `${
-                                lightMode
-                                  ? "bg-emerald-50"
-                                  : "bg-emerald-900/20"
-                              } border-emerald-500`
-                            : `${colors.secondary} ${colors.border}`
-                        }
-                        ${isSelected ? "shadow-md shadow-emerald-500/20" : ""}
-                        hover:-translate-y-0.5 hover:shadow-md ${
-                          lightMode
-                            ? "hover:shadow-gray-200"
-                            : "hover:shadow-gray-800"
-                        }
-                        hover:border-emerald-500 ${
-                          isSelected
-                            ? `${
-                                lightMode
-                                  ? "hover:bg-emerald-100"
-                                  : "hover:bg-emerald-900/30"
-                              }`
-                            : `${
-                                lightMode
-                                  ? "hover:bg-gray-100"
-                                  : "hover:bg-gray-800"
-                              }`
-                        }
-                        relative overflow-hidden`}
+                      className={`${optionBase} ${
+                        isSelected ? optionSelected : optionIdle
+                      }`}
                       onClick={() => handleSelect(index, ind)}
                     >
                       <div
-                        className={`flex items-center gap-3 font-medium 
-                        ${isSelected ? colors.primaryText : colors.text}`}
+                        className={`flex items-center gap-3 font-medium ${
+                          isSelected ? accentText : text
+                        }`}
                       >
                         <div
-                          className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center
-                          ${
-                            isSelected
-                              ? "bg-emerald-500 text-white"
-                              : `border ${colors.text}`
+                          className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
+                            isSelected ? "bg-emerald-500 text-white" : `border ${text}`
                           }`}
                         >
                           {optionLetter}
@@ -361,11 +296,7 @@ const QuestionDisplay = () => {
 
             <div className="flex justify-between gap-4 pt-4">
               <button
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl border font-semibold cursor-pointer 
-                  ${
-                    colors.primaryText
-                  } border-emerald-500 hover:bg-emerald-50/50 transition-all
-                  ${index === 0 ? "opacity-50 cursor-not-allowed" : ""}`}
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl border font-semibold cursor-pointer border-emerald-500 hover:bg-emerald-50/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed ${accentText}`}
                 onClick={() => index > 0 && setIndex(index - 1)}
                 disabled={index === 0}
               >
@@ -381,15 +312,11 @@ const QuestionDisplay = () => {
               </button>
 
               <button
-                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white cursor-pointer 
-                  ${
-                    colors.primary
-                  } hover:-translate-y-0.5 transition-all shadow-md hover:shadow-lg
-                  ${
-                    index === numberOfQuestions - 1
-                      ? "shadow-emerald-500/30 hover:shadow-emerald-500/40"
-                      : ""
-                  }`}
+                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white cursor-pointer hover:-translate-y-0.5 transition-all shadow-md hover:shadow-lg ${primaryBg} ${
+                  index === numberOfQuestions - 1
+                    ? "shadow-emerald-500/30 hover:shadow-emerald-500/40"
+                    : ""
+                }`}
                 onClick={() => {
                   if (index === numberOfQuestions - 1) {
                     setSubmitOverlay(true);
