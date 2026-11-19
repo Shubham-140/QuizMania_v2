@@ -9,6 +9,7 @@ export const getPublicUser = cache(async (username: string) => {
       username: true,
       gitHubUsername: true,
       profilePic: true,
+      gitHubAvatarUrl: true,
       description: true,
       role: true,
       quizAttended: true,

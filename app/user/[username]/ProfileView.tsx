@@ -1,5 +1,6 @@
 "use client";
 import { useTheme } from "../../component/ThemeProvider";
+import Image from "next/image";
 import type { PublicUser } from "@/lib/users";
 
 const formatCategory = (category: string) =>
@@ -25,6 +26,7 @@ export default function ProfileView({ user }: { user: PublicUser }) {
     user.gitHubUsername ||
     "User";
   const displayHandle = user.username || user.gitHubUsername || "";
+  const avatarUrl = user.profilePic || user.gitHubAvatarUrl;
 
   return (
     <div
@@ -47,10 +49,13 @@ export default function ProfileView({ user }: { user: PublicUser }) {
               lightMode ? "border-white" : "border-slate-800"
             } shadow-lg flex-shrink-0 overflow-hidden`}
           >
-            {user.profilePic ? (
-              <img
-                src={user.profilePic}
+            {avatarUrl ? (
+              <Image
+                src={avatarUrl}
                 alt={displayName}
+                width={128}
+                height={128}
+                priority
                 className="w-full h-full object-cover"
               />
             ) : (

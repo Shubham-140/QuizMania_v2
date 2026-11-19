@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { isAllowedImageUrl } from "@/lib/images";
 
 const updateUserSchema = z
   .object({
@@ -23,7 +24,10 @@ const updateUserSchema = z
       .trim()
       .max(200, "Description can be at most 200 characters")
       .transform((description) => description || null),
-    profilePic: z.url("Profile picture must be a valid URL").nullable(),
+    profilePic: z
+      .url("Profile picture must be a valid URL")
+      .refine(isAllowedImageUrl, "Profile picture host is not allowed")
+      .nullable(),
   })
   .partial()
   .refine((data) => Object.keys(data).length > 0, {
