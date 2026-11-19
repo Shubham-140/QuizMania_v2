@@ -1,17 +1,15 @@
 "use client";
+import { useState } from "react";
 import { useTheme } from "./ThemeProvider";
-import { useRouter } from "next/navigation";
 
 interface PropTypes {
-  selectedIndex: number[];
-  correctIndices: number[];
-  localTotalTime: number;
   setSubmitOverlay: React.Dispatch<React.SetStateAction<boolean>>;
+  onSubmit: () => Promise<void>;
 }
 
-export const SubmitQuizModal = ({ setSubmitOverlay }: PropTypes) => {
+export const SubmitQuizModal = ({ setSubmitOverlay, onSubmit }: PropTypes) => {
   const { lightMode } = useTheme();
-  const router = useRouter();
+  const [submitting, setSubmitting] = useState(false);
 
   return (
     <div
@@ -82,20 +80,19 @@ export const SubmitQuizModal = ({ setSubmitOverlay }: PropTypes) => {
           </button>
           <button
             className={`px-6 py-3 rounded-xl cursor-pointer font-semibold text-base min-w-[120px] text-white transition-all duration-200
-              bg-emerald-500 hover:bg-emerald-600 hover:-translate-y-0.5
+              bg-emerald-500 hover:bg-emerald-600 hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-60
               ${
                 lightMode
                   ? "shadow-[0_4px_12px_rgba(16,185,129,0.3)] hover:shadow-[0_6px_16px_rgba(16,185,129,0.4)]"
                   : "shadow-[0_4px_12px_rgba(16,185,129,0.2)] hover:shadow-[0_6px_16px_rgba(16,185,129,0.3)]"
               }`}
+            disabled={submitting}
             onClick={async () => {
-              await fetch("/api/user/quizAttended", {
-                method: "PATCH",
-              });
-              router.push("/score");
+              setSubmitting(true);
+              await onSubmit();
             }}
           >
-            Submit Quiz
+            {submitting ? "Submitting..." : "Submit Quiz"}
           </button>
         </div>
       </div>

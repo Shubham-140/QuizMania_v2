@@ -24,4 +24,20 @@ model User{
   gitHubId String? @unique
   gitHubUsername String? @unique
   gitHubAvatarUrl String?
+
+  quizResults QuizResult[]
+}
+
+model QuizResult {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category       String
+  difficulty     String
+  score          Int
+  totalQuestions Int
+  timeTaken      Int
+  createdAt      DateTime @default(now())
+
+  @@index([userId, createdAt])
 }

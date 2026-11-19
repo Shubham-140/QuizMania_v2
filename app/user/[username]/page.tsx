@@ -4,6 +4,16 @@ import PageLoader from "../../component/PageLoader";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+interface QuizResultType {
+  id: number;
+  category: string;
+  difficulty: string;
+  score: number;
+  totalQuestions: number;
+  timeTaken: number;
+  createdAt: string;
+}
+
 interface UserType {
   name: string;
   username: string;
@@ -13,7 +23,22 @@ interface UserType {
   role: string;
   quizAttended: number;
   createdAt: Date;
+  quizResults: QuizResultType[];
 }
+
+const formatCategory = (category: string) =>
+  category
+    .split("_")
+    .map((word) =>
+      word === "and" ? "&" : word.charAt(0).toUpperCase() + word.slice(1)
+    )
+    .join(" ");
+
+const formatDuration = (seconds: number) => {
+  const minutes = Math.floor(seconds / 60);
+  const rest = seconds % 60;
+  return minutes > 0 ? `${minutes}m ${rest}s` : `${rest}s`;
+};
 
 const Profile = () => {
   const { lightMode } = useTheme();
@@ -248,6 +273,82 @@ const Profile = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        <div
+          className={`mt-6 p-6 rounded-xl ${
+            lightMode ? "bg-gray-50" : "bg-slate-800/50"
+          }`}
+        >
+          <h3
+            className={`text-lg font-semibold mb-4 ${
+              lightMode ? "text-gray-700" : "text-gray-300"
+            }`}
+          >
+            Recent Quizzes
+          </h3>
+
+          {typedUser?.quizResults?.length ? (
+            <ul className="space-y-3">
+              {typedUser.quizResults.map((result) => {
+                const percent = Math.round(
+                  (result.score / result.totalQuestions) * 100
+                );
+                return (
+                  <li
+                    key={result.id}
+                    className={`flex items-center justify-between gap-4 rounded-lg border px-4 py-3 ${
+                      lightMode
+                        ? "bg-white border-slate-200"
+                        : "bg-slate-900/60 border-slate-700"
+                    }`}
+                  >
+                    <div>
+                      <p
+                        className={`font-medium ${
+                          lightMode ? "text-gray-900" : "text-white"
+                        }`}
+                      >
+                        {formatCategory(result.category)}
+                      </p>
+                      <p
+                        className={`text-sm capitalize ${
+                          lightMode ? "text-gray-500" : "text-gray-400"
+                        }`}
+                      >
+                        {result.difficulty} ·{" "}
+                        {formatDuration(result.timeTaken)} ·{" "}
+                        {new Date(result.createdAt).toLocaleDateString(
+                          "en-US",
+                          { day: "numeric", month: "short", year: "numeric" }
+                        )}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p
+                        className={`text-lg font-bold ${
+                          lightMode ? "text-emerald-600" : "text-emerald-400"
+                        }`}
+                      >
+                        {result.score}/{result.totalQuestions}
+                      </p>
+                      <p
+                        className={`text-xs ${
+                          lightMode ? "text-gray-500" : "text-gray-400"
+                        }`}
+                      >
+                        {percent}%
+                      </p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className={lightMode ? "text-gray-500" : "text-gray-400"}>
+              No quizzes attempted yet.
+            </p>
+          )}
         </div>
       </div>
     </div>

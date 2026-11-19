@@ -1,6 +1,6 @@
 "use client";
 import { useTheme } from "../../../component/ThemeProvider";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { SubmitQuizModal } from "../../../component/SubmitQuizModal";
 import PageLoader from "../../../component/PageLoader";
@@ -43,6 +43,7 @@ const QuestionDisplay = () => {
   const [selectedIndex, setSelectedIndex] = useState<(number | null)[]>([]);
   const [submitOverlay, setSubmitOverlay] = useState(false);
   const [localTotalTime, setLocalTotalTime] = useState<number | null>(null);
+  const submittedRef = useRef(false);
 
   // Theme configuration
   const theme = {
@@ -104,7 +105,7 @@ const QuestionDisplay = () => {
 
   useEffect(() => {
     if (localTotalTime === 0) {
-      calculateScore();
+      submitQuiz();
     }
   }, [localTotalTime]);
 
@@ -154,24 +155,41 @@ const QuestionDisplay = () => {
     setSelectedIndex(new Array(numberOfQuestions).fill(null));
   };
 
-  const calculateScore = () => {
-    let localScore = 0;
-    for (let i = 0; i < numberOfQuestions; i++) {
+  const submitQuiz = async () => {
+    if (submittedRef.current) return;
+    submittedRef.current = true;
+
+    let score = 0;
+    for (let i = 0; i < quizData.length; i++) {
       if (selectedIndex[i] === correctIndices[i]) {
-        localScore++;
+        score++;
       }
     }
-    const quizDatas = {
-      quizData,
-      correctIndices,
-      selectedIndex,
-      options,
-    };
+    const timeTaken = totalTime - (localTotalTime ?? 0);
 
-    localStorage.setItem("quiz_results", JSON.stringify(quizDatas));
+    localStorage.setItem(
+      "quiz_results",
+      JSON.stringify({ quizData, correctIndices, selectedIndex, options })
+    );
+    dispatch(setTimeTaken(timeTaken));
+    dispatch(setScore(score));
 
-    dispatch(setTimeTaken(totalTime));
-    dispatch(setScore(localScore));
+    try {
+      await fetch("/api/quiz-results", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          category,
+          difficulty,
+          score,
+          totalQuestions: quizData.length,
+          timeTaken,
+        }),
+      });
+    } catch (error) {
+      console.error("Could not save quiz result", error);
+    }
+
     router.push("/score");
   };
 
@@ -384,27 +402,6 @@ const QuestionDisplay = () => {
                 onClick={() => {
                   if (index === numberOfQuestions - 1) {
                     setSubmitOverlay(true);
-                    const quizDatas = {
-                      quizData,
-                      correctIndices,
-                      selectedIndex,
-                      options,
-                    };
-                    localStorage.setItem(
-                      "quiz_results",
-                      JSON.stringify(quizDatas)
-                    );
-                    const elapsedTime = totalTime - (localTotalTime || 0);
-                    console.log(elapsedTime);
-                    dispatch(setTimeTaken(elapsedTime));
-                    let localScore = 0;
-                    for (let i = 0; i < numberOfQuestions; i++) {
-                      if (selectedIndex[i] === correctIndices[i]) {
-                        localScore++;
-                      }
-                    }
-                    dispatch(setScore(localScore));
-                    console.log(localScore);
                   } else {
                     setIndex(index + 1);
                   }
@@ -431,9 +428,7 @@ const QuestionDisplay = () => {
       {submitOverlay && (
         <SubmitQuizModal
           setSubmitOverlay={setSubmitOverlay}
-          correctIndices={correctIndices}
-          selectedIndex={selectedIndex as number[]}
-          localTotalTime={localTotalTime || 0}
+          onSubmit={submitQuiz}
         />
       )}
     </div>

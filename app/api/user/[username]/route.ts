@@ -7,7 +7,7 @@ export async function GET(
   context: { params: Promise<{ username: string }> }
 ): Promise<NextResponse> {
   try {
-    const { username } = await context.params; // Await the params Promise
+    const { username } = await context.params;
 
     const user = await prisma.user.findUnique({
       where: { username },
@@ -21,6 +21,19 @@ export async function GET(
         quizAttended: true,
         createdAt: true,
         age: true,
+        quizResults: {
+          orderBy: { createdAt: "desc" },
+          take: 5,
+          select: {
+            id: true,
+            category: true,
+            difficulty: true,
+            score: true,
+            totalQuestions: true,
+            timeTaken: true,
+            createdAt: true,
+          },
+        },
       },
     });
 
