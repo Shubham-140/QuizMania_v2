@@ -1,5 +1,4 @@
 "use client";
-import { useTheme } from "./ThemeProvider";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -9,27 +8,7 @@ interface QuizType {
 }
 
 export const CountdownOverlay = ({ category, difficulty }: QuizType) => {
-  const { lightMode } = useTheme();
   const router = useRouter();
-
-  const theme = {
-    light: {
-      primary: "#10b981",
-      primaryDark: "#059669",
-      secondary: "#3b82f6",
-      text: "#333333",
-      background: "#ffffff",
-    },
-    dark: {
-      primary: "#10b981",
-      primaryDark: "#059669",
-      secondary: "#60a5fa",
-      text: "#f5f5f5",
-      background: "#1a1a1a",
-    },
-  };
-
-  const colors = lightMode ? theme.light : theme.dark;
   const [count, setCount] = useState(3);
 
   useEffect(() => {
@@ -42,93 +21,23 @@ export const CountdownOverlay = ({ category, difficulty }: QuizType) => {
   }, [count, category, difficulty, router]);
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: lightMode
-          ? "rgba(255,255,255,0.9)"
-          : "rgba(0,0,0,0.9)",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 1000,
-        backdropFilter: "blur(8px)",
-        WebkitBackdropFilter: "blur(8px)",
-        textAlign: "center",
-        padding: "20px",
-      }}
-    >
-      <div
-        style={{
-          fontSize: "clamp(1.5rem, 6vw, 2.5rem)",
-          fontWeight: 600,
-          color: colors.text,
-          marginBottom: "clamp(0.5rem, 3vw, 1.5rem)",
-          textShadow: `0 2px 4px ${
-            lightMode ? "rgba(0,0,0,0.1)" : "rgba(0,0,0,0.3)"
-          }`,
-        }}
-      >
+    <div className="fixed inset-0 z-[1000] flex flex-col justify-center items-center p-5 text-center backdrop-blur-sm bg-[rgba(255,255,255,0.9)] dark:bg-[rgba(0,0,0,0.9)]">
+      <div className="text-[clamp(1.5rem,6vw,2.5rem)] font-semibold mb-[clamp(0.5rem,3vw,1.5rem)] text-[#333333] [text-shadow:0_2px_4px_rgba(0,0,0,0.1)] dark:text-[#f5f5f5] dark:[text-shadow:0_2px_4px_rgba(0,0,0,0.3)]">
         Quiz starts in...
       </div>
 
-      <div
-        style={{
-          fontSize: "clamp(5rem, 20vw, 10rem)",
-          fontWeight: 800,
-          background: `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`,
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          lineHeight: 1,
-          margin: "0.5rem 0",
-          animation: "pulse 1s infinite alternate",
-          textShadow: `0 4px 12px ${
-            lightMode ? "rgba(16, 185, 129, 0.3)" : "rgba(16, 185, 129, 0.2)"
-          }`,
-          padding: "0 20px",
-          boxSizing: "border-box",
-          width: "100%",
-          textAlign: "center",
-        }}
-      >
+      <div className="w-full box-border px-5 my-2 text-center text-[clamp(5rem,20vw,10rem)] font-extrabold leading-none animate-count-pulse bg-[linear-gradient(135deg,#10b981,#3b82f6)] bg-clip-text [-webkit-text-fill-color:transparent] [text-shadow:0_4px_12px_rgba(16,185,129,0.3)] dark:bg-[linear-gradient(135deg,#10b981,#60a5fa)] dark:[text-shadow:0_4px_12px_rgba(16,185,129,0.2)]">
         {count > 0 ? count : "GO!"}
       </div>
 
       {count > 0 && (
-        <div
-          style={{
-            width: "clamp(180px, 50vw, 300px)",
-            height: "6px",
-            backgroundColor: lightMode ? "#e5e7eb" : "#4b5563",
-            borderRadius: "3px",
-            overflow: "hidden",
-            marginTop: "clamp(1rem, 4vw, 2rem)",
-          }}
-        >
+        <div className="w-[clamp(180px,50vw,300px)] h-1.5 rounded-[3px] overflow-hidden mt-[clamp(1rem,4vw,2rem)] bg-[#e5e7eb] dark:bg-[#4b5563]">
           <div
-            style={{
-              width: `${(4 - count) * 33.33}%`,
-              height: "100%",
-              background: `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})`,
-              borderRadius: "3px",
-              transition: "width 0.5s ease",
-            }}
+            className="h-full rounded-[3px] transition-[width] duration-500 ease-[ease] bg-[linear-gradient(90deg,#10b981,#3b82f6)] dark:bg-[linear-gradient(90deg,#10b981,#60a5fa)]"
+            style={{ width: `${(4 - count) * 33.33}%` }}
           />
         </div>
       )}
-
-      <style>{`
-        @keyframes pulse {
-          0% { transform: scale(1); opacity: 0.9; }
-          50% { transform: scale(1.05); opacity: 1; }
-          100% { transform: scale(1); opacity: 0.9; }
-        }
-      `}</style>
     </div>
   );
 };
