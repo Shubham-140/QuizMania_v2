@@ -63,7 +63,7 @@ export default function AuthLayout({
           <div className="accent-bar"></div>
 
           <div className="text-center mb-6 md:mb-8">
-            <h2 className="text-2xl md:text-3xl font-extrabold mb-2 bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">
+            <h2 className="text-gradient text-2xl md:text-3xl font-extrabold mb-2">
               {title}
             </h2>
             <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">

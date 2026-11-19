@@ -89,7 +89,7 @@ export default function StatusPage({
         <div className="flex justify-center">
           <Link
             href="/"
-            className="px-6 md:px-8 py-3 md:py-4 rounded-full bg-emerald-500 text-white font-semibold text-base md:text-lg transition-all duration-300 hover:-translate-y-0.5 shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 dark:shadow-emerald-500/20 dark:hover:shadow-emerald-500/30"
+            className="btn-pill"
           >
             {actionLabel}
           </Link>

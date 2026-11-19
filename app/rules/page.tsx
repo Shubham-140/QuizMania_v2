@@ -1,13 +1,18 @@
 import Link from "next/link";
+import FeatureTile from "../component/FeatureTile";
 
-const RulesComponent = () => {
+const step = (number: number) => (
+  <span className="text-white font-bold text-xl">{number}</span>
+);
+
+export default function Rules() {
   return (
-    <div className="min-h-screen p-4 md:p-8 flex justify-center items-center font-sans bg-gradient-to-br from-green-50 via-green-100 to-green-200 dark:from-emerald-900 dark:via-emerald-800 dark:to-emerald-700">
-      <div className="w-full max-w-4xl rounded-xl md:rounded-2xl p-6 md:p-12 backdrop-blur-sm border relative overflow-hidden bg-white/95 border-slate-200 shadow-xl shadow-black/5 dark:bg-slate-900/95 dark:border-slate-600 dark:shadow-black/30">
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 z-10"></div>
+    <div className="page-bg min-h-screen p-4 md:p-8 flex justify-center items-center">
+      <div className="card w-full max-w-4xl rounded-xl md:rounded-2xl p-6 md:p-12 backdrop-blur-sm relative overflow-hidden">
+        <div className="accent-bar"></div>
 
         <div className="text-center mb-8 md:mb-12">
-          <h1 className="text-2xl md:text-4xl font-extrabold mb-2 bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent">
+          <h1 className="text-gradient text-2xl md:text-4xl font-extrabold mb-2">
             Quiz Rules
           </h1>
           <p className="text-sm md:text-lg text-gray-600 dark:text-gray-400">
@@ -16,72 +21,32 @@ const RulesComponent = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 md:mb-12">
-          <div className="border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 bg-white/95 border-slate-200 hover:shadow-lg hover:shadow-black/5 dark:bg-slate-900/95 dark:border-slate-600 dark:hover:shadow-black/20">
-            <div className="w-12 h-12 bg-emerald-500 rounded-xl flex justify-center items-center mb-4">
-              <span className="text-white font-bold text-xl">1</span>
-            </div>
-            <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
-              10 Questions Per Quiz
-            </h3>
-            <p className="leading-relaxed text-gray-600 dark:text-gray-400">
-              Each quiz consists of{" "}
-              <span className="font-semibold">10 questions</span> from your
-              selected category.
-            </p>
-          </div>
-
-          <div className="border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 bg-white/95 border-slate-200 hover:shadow-lg hover:shadow-black/5 dark:bg-slate-900/95 dark:border-slate-600 dark:hover:shadow-black/20">
-            <div className="w-12 h-12 bg-emerald-500 rounded-xl flex justify-center items-center mb-4">
-              <span className="text-white font-bold text-xl">2</span>
-            </div>
-            <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
-              15 Second Timer
-            </h3>
-            <p className="leading-relaxed text-gray-600 dark:text-gray-400">
-              You have <span className="font-semibold">15 seconds</span> to
-              answer each question.
-            </p>
-          </div>
-
-          <div className="border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 bg-white/95 border-slate-200 hover:shadow-lg hover:shadow-black/5 dark:bg-slate-900/95 dark:border-slate-600 dark:hover:shadow-black/20">
-            <div className="w-12 h-12 bg-emerald-500 rounded-xl flex justify-center items-center mb-4">
-              <span className="text-white font-bold text-xl">3</span>
-            </div>
-            <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
-              Scoring System
-            </h3>
-            <p className="leading-relaxed text-gray-600 dark:text-gray-400">
-              Correct answers earn{" "}
-              <span className="font-semibold">10 points</span> each, decreasing
-              by 1 per second after 5 seconds.
-            </p>
-          </div>
-
-          <div className="border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 bg-white/95 border-slate-200 hover:shadow-lg hover:shadow-black/5 dark:bg-slate-900/95 dark:border-slate-600 dark:hover:shadow-black/20">
-            <div className="w-12 h-12 bg-emerald-500 rounded-xl flex justify-center items-center mb-4">
-              <span className="text-white font-bold text-xl">4</span>
-            </div>
-            <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">
-              No Penalties
-            </h3>
-            <p className="leading-relaxed text-gray-600 dark:text-gray-400">
-              There&apos;s <span className="font-semibold">no penalty</span> for
-              wrong answers - only points for correct ones!
-            </p>
-          </div>
+          <FeatureTile icon={step(1)} title="10 Questions Per Quiz">
+            Each quiz consists of{" "}
+            <span className="font-semibold">10 questions</span> from your
+            selected category.
+          </FeatureTile>
+          <FeatureTile icon={step(2)} title="15 Second Timer">
+            You have <span className="font-semibold">15 seconds</span> to
+            answer each question.
+          </FeatureTile>
+          <FeatureTile icon={step(3)} title="Scoring System">
+            Correct answers earn{" "}
+            <span className="font-semibold">10 points</span> each, decreasing
+            by 1 per second after 5 seconds.
+          </FeatureTile>
+          <FeatureTile icon={step(4)} title="No Penalties">
+            There&apos;s <span className="font-semibold">no penalty</span> for
+            wrong answers - only points for correct ones!
+          </FeatureTile>
         </div>
 
         <div className="text-center">
-          <Link
-            href="/"
-            className="inline-block px-6 md:px-8 py-3 md:py-4 rounded-full border-none bg-emerald-500 text-white font-semibold text-base md:text-lg cursor-pointer transition-all duration-300 hover:-translate-y-0.5 shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 dark:shadow-emerald-500/20 dark:hover:shadow-emerald-500/30"
-          >
+          <Link href="/" className="btn-pill">
             Got It - Let&apos;s Play!
           </Link>
         </div>
       </div>
     </div>
   );
-};
-
-export default RulesComponent;
+}

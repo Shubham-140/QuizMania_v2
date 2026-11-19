@@ -61,6 +61,14 @@
   @apply border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 bg-white/95 border-slate-200 hover:shadow-lg hover:shadow-black/5 dark:bg-slate-900/95 dark:border-slate-600 dark:hover:shadow-black/20;
 }
 
+@utility btn-pill {
+  @apply inline-block px-6 md:px-8 py-3 md:py-4 rounded-full bg-emerald-500 text-white font-semibold text-base md:text-lg transition-all duration-300 hover:-translate-y-0.5 shadow-lg shadow-emerald-500/30 hover:shadow-xl hover:shadow-emerald-500/40 dark:shadow-emerald-500/20 dark:hover:shadow-emerald-500/30;
+}
+
+@utility text-gradient {
+  @apply bg-gradient-to-r from-emerald-500 to-blue-500 bg-clip-text text-transparent;
+}
+
 @utility hover-lift {
   @apply transition-all duration-300 hover:-translate-y-1;
 }
