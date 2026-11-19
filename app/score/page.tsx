@@ -1,14 +1,17 @@
 "use client";
-import { useTheme } from "../component/ThemeProvider";
 import PageLoader from "../component/PageLoader";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { RootState } from "../store/store";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
-const Score = () => {
-  const { lightMode } = useTheme();
+const box =
+  "text-center border bg-slate-50 border-slate-200 dark:bg-slate-800 dark:border-slate-700";
+const mutedText = "opacity-80 text-slate-900 dark:text-slate-50";
+const actionClass =
+  "rounded-[clamp(0.5rem,2vw,0.75rem)] p-[clamp(0.5rem,2vw,0.75rem)] font-semibold text-[clamp(0.875rem,2vw,1rem)] transition-all duration-200";
+
+export default function Score() {
   const score = useSelector((state: RootState) => state.performance.score);
   const timeTaken = useSelector(
     (state: RootState) => state.performance.timeTaken
@@ -19,7 +22,6 @@ const Score = () => {
   );
   const [showCalculating, setShowCalculating] = useState(true);
   const [isClient, setIsClient] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
@@ -46,163 +48,82 @@ const Score = () => {
 
   if (!isClient || numberOfQuestions === null) {
     return (
-      <div
-        className={`min-h-screen flex items-center justify-center ${
-          lightMode ? "bg-white" : "bg-gray-900"
-        }`}
-      >
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
       </div>
     );
   }
 
+  const stats = [
+    { label: "Correct", value: score, color: "text-emerald-500" },
+    {
+      label: "Incorrect",
+      value: numberOfQuestions - score,
+      color: "text-red-500",
+    },
+    { label: "Time Taken", value: `${timeTaken}s`, color: "text-emerald-500" },
+  ];
+
   return (
-    <div
-      className={`min-h-screen p-4 flex justify-center items-center 
-      ${
-        lightMode
-          ? "bg-[radial-gradient(circle_at_10%_20%,#f0fdf4_0%,#dcfce7_90%)]"
-          : "bg-[radial-gradient(circle_at_10%_20%,#022c22_0%,#064e3b_90%)]"
-      }`}
-    >
+    <div className="page-bg-soft min-h-screen p-4 flex justify-center items-center">
       {showCalculating && (
         <div className="fixed inset-0 z-[2000]">
           <PageLoader message="Calculating your score..." />
         </div>
       )}
 
-      <div
-        className={`w-full max-w-[min(800px,95vw)] rounded-[clamp(1rem,3vw,1.5rem)] 
-        p-[clamp(1rem,3vw,2rem)] relative overflow-hidden backdrop-blur-md
-        ${
-          lightMode
-            ? "bg-white/96 border border-slate-200 shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
-            : "bg-slate-900/96 border border-slate-700 shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
-        }`}
-      >
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-500 to-blue-500 z-10" />
+      <div className="card-soft w-full max-w-[min(800px,95vw)] rounded-[clamp(1rem,3vw,1.5rem)] p-[clamp(1rem,3vw,2rem)] relative overflow-hidden">
+        <div className="accent-bar" />
 
         <div className="text-center mb-[clamp(1rem,3vw,2rem)]">
-          <h1
-            className={`text-[clamp(1.25rem,4vw,2rem)] font-extrabold mb-[clamp(0.25rem,1vw,0.5rem)] 
-            text-emerald-500`}
-          >
+          <h1 className="text-[clamp(1.25rem,4vw,2rem)] font-extrabold mb-[clamp(0.25rem,1vw,0.5rem)] text-emerald-500">
             Quiz Completed!
           </h1>
-          <p
-            className={`text-[clamp(0.875rem,2vw,1rem)] opacity-80 
-            ${lightMode ? "text-slate-900" : "text-slate-50"}`}
-          >
+          <p className={`text-[clamp(0.875rem,2vw,1rem)] ${mutedText}`}>
             Here&apos;s how you performed
           </p>
         </div>
 
         <div
-          className={`rounded-[clamp(0.75rem,2vw,1rem)] p-[clamp(1rem,2vw,1.5rem)] text-center 
-          mb-[clamp(1rem,3vw,2rem)] border
-          ${
-            lightMode
-              ? "bg-slate-50 border-slate-200"
-              : "bg-slate-800 border-slate-700"
-          }`}
+          className={`${box} rounded-[clamp(0.75rem,2vw,1rem)] p-[clamp(1rem,2vw,1.5rem)] mb-[clamp(1rem,3vw,2rem)]`}
         >
-          <div
-            className="text-[clamp(1.5rem,8vw,3.5rem)] font-extrabold mb-[clamp(0.25rem,1vw,0.5rem)]
-            bg-gradient-to-br from-emerald-500 to-blue-500 bg-clip-text text-transparent"
-          >
+          <div className="text-[clamp(1.5rem,8vw,3.5rem)] font-extrabold mb-[clamp(0.25rem,1vw,0.5rem)] bg-gradient-to-br from-emerald-500 to-blue-500 bg-clip-text text-transparent">
             {score}/{numberOfQuestions}
           </div>
-          <div
-            className={`text-[clamp(0.875rem,2vw,1rem)] font-semibold 
-            ${lightMode ? "text-slate-900" : "text-slate-50"}`}
-          >
+          <div className="text-[clamp(0.875rem,2vw,1rem)] font-semibold text-slate-900 dark:text-slate-50">
             Your Score
           </div>
         </div>
 
         <div className="grid grid-cols-3 gap-[clamp(0.75rem,2vw,1rem)] mb-[clamp(1rem,3vw,2rem)]">
-          <div
-            className={`rounded-[clamp(0.5rem,2vw,0.75rem)] p-[clamp(0.75rem,2vw,1rem)] text-center border
-            ${
-              lightMode
-                ? "bg-slate-50 border-slate-200"
-                : "bg-slate-800 border-slate-700"
-            }`}
-          >
-            <div className="text-[clamp(1.25rem,3vw,1.5rem)] font-bold mb-[clamp(0.125rem,0.5vw,0.25rem)] text-emerald-500">
-              {score}
-            </div>
+          {stats.map(({ label, value, color }) => (
             <div
-              className={`text-[clamp(0.75rem,2vw,0.875rem)] opacity-80 
-              ${lightMode ? "text-slate-900" : "text-slate-50"}`}
+              key={label}
+              className={`${box} rounded-[clamp(0.5rem,2vw,0.75rem)] p-[clamp(0.75rem,2vw,1rem)]`}
             >
-              Correct
+              <div
+                className={`text-[clamp(1.25rem,3vw,1.5rem)] font-bold mb-[clamp(0.125rem,0.5vw,0.25rem)] ${color}`}
+              >
+                {value}
+              </div>
+              <div className={`text-[clamp(0.75rem,2vw,0.875rem)] ${mutedText}`}>
+                {label}
+              </div>
             </div>
-          </div>
-
-          <div
-            className={`rounded-[clamp(0.5rem,2vw,0.75rem)] p-[clamp(0.75rem,2vw,1rem)] text-center border
-            ${
-              lightMode
-                ? "bg-slate-50 border-slate-200"
-                : "bg-slate-800 border-slate-700"
-            }`}
-          >
-            <div className="text-[clamp(1.25rem,3vw,1.5rem)] font-bold mb-[clamp(0.125rem,0.5vw,0.25rem)] text-red-500">
-              {numberOfQuestions - score}
-            </div>
-            <div
-              className={`text-[clamp(0.75rem,2vw,0.875rem)] opacity-80 
-              ${lightMode ? "text-slate-900" : "text-slate-50"}`}
-            >
-              Incorrect
-            </div>
-          </div>
-
-          <div
-            className={`rounded-[clamp(0.5rem,2vw,0.75rem)] p-[clamp(0.75rem,2vw,1rem)] text-center border
-            ${
-              lightMode
-                ? "bg-slate-50 border-slate-200"
-                : "bg-slate-800 border-slate-700"
-            }`}
-          >
-            <div className="text-[clamp(1.25rem,3vw,1.5rem)] font-bold mb-[clamp(0.125rem,0.5vw,0.25rem)] text-emerald-500">
-              {timeTaken}s
-            </div>
-            <div
-              className={`text-[clamp(0.75rem,2vw,0.875rem)] opacity-80 
-              ${lightMode ? "text-slate-900" : "text-slate-50"}`}
-            >
-              Time Taken
-            </div>
-          </div>
+          ))}
         </div>
 
         <div className="grid grid-cols-2 gap-[clamp(0.75rem,2vw,1rem)]">
-          <button
-            onClick={() => router.push("/quiz/results")}
-            className={`rounded-[clamp(0.5rem,2vw,0.75rem)] p-[clamp(0.5rem,2vw,0.75rem)] font-semibold 
-            text-[clamp(0.875rem,2vw,1rem)] transition-all duration-200 border border-emerald-500  cursor-pointer
-            ${
-              lightMode
-                ? "text-emerald-500 hover:bg-emerald-50"
-                : "text-emerald-400 hover:bg-emerald-900/30"
-            }`}
+          <Link
+            href="/quiz/results"
+            className={`${actionClass} text-center border border-emerald-500 text-emerald-500 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/30`}
           >
             Review Answers
-          </button>
+          </Link>
 
           <Link
             href="/"
-            className={`rounded-[clamp(0.5rem,2vw,0.75rem)] p-[clamp(0.5rem,2vw,0.75rem)] font-semibold 
-            text-[clamp(0.875rem,2vw,1rem)] transition-all duration-200 text-white bg-emerald-500 
-            flex justify-center items-center hover:-translate-y-0.5
-            ${
-              lightMode
-                ? "shadow-[0_4px_12px_rgba(16,185,129,0.3)] hover:shadow-[0_6px_16px_rgba(16,185,129,0.4)]"
-                : "shadow-[0_4px_12px_rgba(16,185,129,0.2)] hover:shadow-[0_6px_16px_rgba(16,185,129,0.3)]"
-            }`}
+            className={`${actionClass} flex justify-center items-center text-white bg-emerald-500 hover:-translate-y-0.5 shadow-[0_4px_12px_rgba(16,185,129,0.3)] hover:shadow-[0_6px_16px_rgba(16,185,129,0.4)] dark:shadow-[0_4px_12px_rgba(16,185,129,0.2)] dark:hover:shadow-[0_6px_16px_rgba(16,185,129,0.3)]`}
           >
             Go to HomePage
           </Link>
@@ -210,6 +131,4 @@ const Score = () => {
       </div>
     </div>
   );
-};
-
-export default Score;
+}

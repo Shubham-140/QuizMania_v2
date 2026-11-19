@@ -118,8 +118,8 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
   }, [dispatch]);
 
   return (
-    <div className="min-h-screen p-4 flex justify-center items-center bg-[radial-gradient(circle_at_10%_20%,#f0fdf4_0%,#dcfce7_90%)] dark:bg-[radial-gradient(circle_at_10%_20%,#022c22_0%,#064e3b_90%)]">
-      <div className="w-full max-w-4xl rounded-2xl p-8 relative overflow-hidden border backdrop-blur-md bg-white/96 border-slate-200 shadow-[0_20px_40px_rgba(0,0,0,0.08)] dark:bg-slate-900/96 dark:border-slate-700 dark:shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
+    <div className="page-bg-soft min-h-screen p-4 flex justify-center items-center">
+      <div className="card-soft w-full max-w-4xl rounded-2xl p-8 relative overflow-hidden">
         <div className="accent-bar"></div>
 
         <h2 className="flex items-center gap-2 text-xl font-bold mb-6 text-slate-900 dark:text-slate-50">
