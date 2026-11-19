@@ -7,6 +7,7 @@ import {
   useMemo,
   useSyncExternalStore,
 } from "react";
+import { THEME_COOKIE_MAX_AGE, THEME_KEY } from "@/lib/theme";
 
 type ThemeContextValue = {
   lightMode: boolean;
@@ -15,12 +16,12 @@ type ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-export const THEME_STORAGE_KEY = "quizmania-theme";
-
 function applyTheme(light: boolean) {
+  const theme = light ? "light" : "dark";
   document.documentElement.classList.toggle("dark", !light);
-  document.documentElement.style.colorScheme = light ? "light" : "dark";
-  localStorage.setItem(THEME_STORAGE_KEY, light ? "light" : "dark");
+  document.documentElement.style.colorScheme = theme;
+  localStorage.setItem(THEME_KEY, theme);
+  document.cookie = `${THEME_KEY}=${theme}; path=/; max-age=${THEME_COOKIE_MAX_AGE}; samesite=lax`;
 }
 
 function subscribe(onStoreChange: () => void) {
@@ -40,15 +41,17 @@ function getSnapshot() {
   return !document.documentElement.classList.contains("dark");
 }
 
-function getServerSnapshot() {
-  return false;
-}
-
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+export function ThemeProvider({
+  children,
+  initialLight,
+}: {
+  children: React.ReactNode;
+  initialLight: boolean;
+}) {
   const lightMode = useSyncExternalStore(
     subscribe,
     getSnapshot,
-    getServerSnapshot
+    () => initialLight
   );
 
   const toggleMode = useCallback(() => {
