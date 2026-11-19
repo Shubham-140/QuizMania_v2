@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getPublicUser } from "@/lib/users";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -8,34 +8,7 @@ export async function GET(
 ): Promise<NextResponse> {
   try {
     const { username } = await context.params;
-
-    const user = await prisma.user.findUnique({
-      where: { username },
-      select: {
-        name: true,
-        username: true,
-        gitHubUsername: true,
-        profilePic: true,
-        description: true,
-        role: true,
-        quizAttended: true,
-        createdAt: true,
-        age: true,
-        quizResults: {
-          orderBy: { createdAt: "desc" },
-          take: 5,
-          select: {
-            id: true,
-            category: true,
-            difficulty: true,
-            score: true,
-            totalQuestions: true,
-            timeTaken: true,
-            createdAt: true,
-          },
-        },
-      },
-    });
+    const user = await getPublicUser(username);
 
     return user
       ? NextResponse.json(user)
