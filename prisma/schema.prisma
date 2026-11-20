@@ -28,19 +28,28 @@ model User {
   quizAttempts QuizAttempt[]
 }
 
+enum QuizAttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+  EXPIRED
+}
+
 model QuizAttempt {
-  id             String    @id @default(cuid())
+  id             String            @id @default(cuid())
   userId         String
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   category       String
   difficulty     String
+  status         QuizAttemptStatus @default(IN_PROGRESS)
   timeLimit      Int?
-  score          Int       @default(0)
+  expiresAt      DateTime?
+  score          Int               @default(0)
   totalQuestions Int
-  timeTaken      Int       @default(0)
-  answers        Json      @default("[]")
-  createdAt      DateTime  @default(now())
+  timeTaken      Int               @default(0)
+  answers        Json              @default("[]")
+  createdAt      DateTime          @default(now())
   completedAt    DateTime?
 
   @@index([userId, completedAt])
+  @@index([status, expiresAt])
 }
