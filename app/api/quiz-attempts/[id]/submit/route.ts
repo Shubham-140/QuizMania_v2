@@ -1,6 +1,7 @@
 import { authOptions } from "@/lib/authOptions";
 import { prisma } from "@/lib/prisma";
 import { getAttempt, secondsElapsed } from "@/lib/quizAttempts";
+import { scoreAttempt } from "@/lib/quizScoring";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -51,19 +52,12 @@ export async function POST(
     );
   }
 
-  const answers = attempt.answers.map((answer, i) => {
-    const pick = selected[i];
-    return {
-      ...answer,
-      selectedIndex: pick !== null && pick < answer.options.length ? pick : null,
-    };
-  });
-  const score = answers.filter(
-    (answer) => answer.selectedIndex === answer.correctIndex
-  ).length;
-  const elapsed = secondsElapsed(attempt);
-  const timeTaken =
-    attempt.timeLimit === null ? elapsed : Math.min(elapsed, attempt.timeLimit);
+  const { answers, score, timeTaken } = scoreAttempt(
+    attempt.answers,
+    selected,
+    secondsElapsed(attempt),
+    attempt.timeLimit
+  );
 
   try {
     const completed = await prisma.$transaction(async (tx) => {
