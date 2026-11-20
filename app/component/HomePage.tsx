@@ -3,19 +3,13 @@ import { useState } from "react";
 import { CountdownOverlay } from "./CountdownOverlay";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { categories, NO_TIME_LIMIT } from "@/lib/quizOptions";
 
-const categories = [
-  { value: "general_knowledge", label: "General Knowledge" },
-  { value: "film", label: "Movies & Film" },
-  { value: "music", label: "Music" },
-  { value: "science", label: "Science" },
-  { value: "arts_and_literature", label: "Arts & Literature" },
-  { value: "history", label: "History" },
-  { value: "geography", label: "Geography" },
-  { value: "society_and_culture", label: "Society & Culture" },
-  { value: "food_and_drink", label: "Food & Drink" },
-  { value: "sports", label: "Sports" },
-];
+const readSetting = (key: string, fallback: number) => {
+  const stored = localStorage.getItem(key);
+  const value = stored ? Number(JSON.parse(stored)) : fallback;
+  return Number.isFinite(value) ? value : fallback;
+};
 
 const difficulties = [
   {
@@ -76,6 +70,7 @@ const HomePage = () => {
   const [showCountdown, setShowCountdown] = useState(false);
   const [selectCategoryWarning, setSelectCategoryWarning] = useState(false);
   const [selectDifficultyWarning, setSelectDifficultyWarning] = useState(false);
+  const [startError, setStartError] = useState("");
   const router = useRouter();
   const isAuthenticated = status === "authenticated" && !!session?.user;
 
@@ -93,7 +88,41 @@ const HomePage = () => {
       showWarning(setSelectDifficultyWarning);
       return;
     }
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
+    }
+    setStartError("");
     setShowCountdown(true);
+  };
+
+  const createAttempt = async () => {
+    const totalTime = readSetting("totalTime", 120);
+    try {
+      const response = await fetch("/api/quiz-attempts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          category,
+          difficulty,
+          numberOfQuestions: readSetting("numberOfQuestions", 10),
+          timeLimit: totalTime === NO_TIME_LIMIT ? null : totalTime,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error ?? "Couldn't start the quiz");
+      }
+      router.push(`/quiz/${data.id}`);
+    } catch (error) {
+      console.error("Could not start quiz", error);
+      setShowCountdown(false);
+      setStartError(
+        error instanceof Error
+          ? error.message
+          : "Couldn't start the quiz. Please try again."
+      );
+    }
   };
 
   return (
@@ -156,6 +185,7 @@ const HomePage = () => {
             {selectDifficultyWarning && (
               <Warning message="Please select a difficulty level to continue" />
             )}
+            {startError && <Warning message={startError} />}
           </div>
 
           <div className="flex flex-col gap-4 md:gap-5 mt-8 md:mt-10">
@@ -185,7 +215,7 @@ const HomePage = () => {
         </div>
       </div>
       {showCountdown && (
-        <CountdownOverlay category={category} difficulty={difficulty} />
+        <CountdownOverlay onFinish={createAttempt} />
       )}
     </>
   );

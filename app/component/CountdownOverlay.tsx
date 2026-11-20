@@ -1,24 +1,21 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
-interface QuizType {
-  category: string;
-  difficulty: string;
-}
-
-export const CountdownOverlay = ({ category, difficulty }: QuizType) => {
-  const router = useRouter();
+export const CountdownOverlay = ({ onFinish }: { onFinish: () => void }) => {
   const [count, setCount] = useState(3);
+  const onFinishRef = useRef(onFinish);
+
+  useEffect(() => {
+    onFinishRef.current = onFinish;
+  });
 
   useEffect(() => {
     if (count > 0) {
       const timer = setTimeout(() => setCount(count - 1), 1000);
       return () => clearTimeout(timer);
-    } else {
-      router.push(`/quiz/${category}/${difficulty}`);
     }
-  }, [count, category, difficulty, router]);
+    onFinishRef.current();
+  }, [count]);
 
   return (
     <div className="fixed inset-0 z-[1000] flex flex-col justify-center items-center p-5 text-center backdrop-blur-sm bg-[rgba(255,255,255,0.9)] dark:bg-[rgba(0,0,0,0.9)]">
