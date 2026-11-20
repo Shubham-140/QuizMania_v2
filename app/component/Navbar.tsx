@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useTheme } from "./ThemeProvider";
+import { isQuizInProgress } from "@/lib/quizRoutes";
 
 const navItems = ["Home", "About", "Rules", "Feedback"] as const;
 
@@ -71,7 +72,7 @@ const Navbar = () => {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const { data: session, status } = useSession();
   const pathname = usePathname();
-  const isQuizActive = /^\/quiz\/[^/]+\/[^/]+\/?$/.test(pathname);
+  const isQuizActive = isQuizInProgress(pathname);
   const authReady = status !== "loading";
 
   const getUserInitial = () => {

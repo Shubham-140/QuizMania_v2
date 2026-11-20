@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { isQuizInProgress } from "@/lib/quizRoutes";
 
 const heading =
   "text-lg font-semibold mb-6 text-emerald-600 dark:text-emerald-400";
@@ -28,7 +29,7 @@ const devLinks = [
 
 const Footer = () => {
   const pathname = usePathname();
-  const isQuizActive = /^\/quiz\/[^\/]+\/[^\/]+\/?$/.test(pathname);
+  const isQuizActive = isQuizInProgress(pathname);
 
   return (
     <footer className="border-t mt-auto transition-colors duration-300 bg-white/95 backdrop-blur-sm border-gray-200 dark:bg-gray-900/95 dark:border-gray-600">

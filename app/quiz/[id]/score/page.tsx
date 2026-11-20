@@ -1,9 +1,14 @@
-"use client";
-import PageLoader from "../component/PageLoader";
-import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { RootState } from "../store/store";
 import Link from "next/link";
+import { notFound, redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import type { Metadata } from "next";
+import { authOptions } from "@/lib/authOptions";
+import { getAttempt } from "@/lib/quizAttempts";
+import CalculatingOverlay from "./CalculatingOverlay";
+
+export const metadata: Metadata = {
+  title: "Your Score | QuizMania",
+};
 
 const box =
   "text-center border bg-slate-50 border-slate-200 dark:bg-slate-800 dark:border-slate-700";
@@ -11,66 +16,36 @@ const mutedText = "opacity-80 text-slate-900 dark:text-slate-50";
 const actionClass =
   "rounded-[clamp(0.5rem,2vw,0.75rem)] p-[clamp(0.5rem,2vw,0.75rem)] font-semibold text-[clamp(0.875rem,2vw,1rem)] transition-all duration-200";
 
-export default function Score() {
-  const score = useSelector((state: RootState) => state.performance.score);
-  const timeTaken = useSelector(
-    (state: RootState) => state.performance.timeTaken
-  );
+export default async function ScorePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) notFound();
 
-  const [numberOfQuestions, setNumberOfQuestions] = useState<number | null>(
-    null
-  );
-  const [showCalculating, setShowCalculating] = useState(true);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-
-    const getStoredValue = (key: string, defaultValue: number): number => {
-      try {
-        if (typeof window !== "undefined") {
-          const value = localStorage.getItem(key);
-          return value ? JSON.parse(value) : defaultValue;
-        }
-        return defaultValue;
-      } catch (error) {
-        console.error("Error accessing localStorage:", error);
-        return defaultValue;
-      }
-    };
-
-    const questions = getStoredValue("numberOfQuestions", 10);
-    setNumberOfQuestions(questions);
-
-    const timer = setTimeout(() => setShowCalculating(false), 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!isClient || numberOfQuestions === null) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
-      </div>
-    );
-  }
+  const result = await getAttempt(id, session.user.id);
+  if (!result) notFound();
+  if (!result.completedAt) redirect(`/quiz/${result.id}`);
 
   const stats = [
-    { label: "Correct", value: score, color: "text-emerald-500" },
+    { label: "Correct", value: result.score, color: "text-emerald-500" },
     {
       label: "Incorrect",
-      value: numberOfQuestions - score,
+      value: result.totalQuestions - result.score,
       color: "text-red-500",
     },
-    { label: "Time Taken", value: `${timeTaken}s`, color: "text-emerald-500" },
+    {
+      label: "Time Taken",
+      value: `${result.timeTaken}s`,
+      color: "text-emerald-500",
+    },
   ];
 
   return (
     <div className="page-bg-soft min-h-screen p-4 flex justify-center items-center">
-      {showCalculating && (
-        <div className="fixed inset-0 z-[2000]">
-          <PageLoader message="Calculating your score..." />
-        </div>
-      )}
+      <CalculatingOverlay />
 
       <div className="card-soft w-full max-w-[min(800px,95vw)] rounded-[clamp(1rem,3vw,1.5rem)] p-[clamp(1rem,3vw,2rem)] relative overflow-hidden">
         <div className="accent-bar" />
@@ -88,7 +63,7 @@ export default function Score() {
           className={`${box} rounded-[clamp(0.75rem,2vw,1rem)] p-[clamp(1rem,2vw,1.5rem)] mb-[clamp(1rem,3vw,2rem)]`}
         >
           <div className="text-[clamp(1.5rem,8vw,3.5rem)] font-extrabold mb-[clamp(0.25rem,1vw,0.5rem)] bg-gradient-to-br from-emerald-500 to-blue-500 bg-clip-text text-transparent">
-            {score}/{numberOfQuestions}
+            {result.score}/{result.totalQuestions}
           </div>
           <div className="text-[clamp(0.875rem,2vw,1rem)] font-semibold text-slate-900 dark:text-slate-50">
             Your Score
@@ -115,7 +90,7 @@ export default function Score() {
 
         <div className="grid grid-cols-2 gap-[clamp(0.75rem,2vw,1rem)]">
           <Link
-            href="/quiz/results"
+            href={`/quiz/${result.id}/review`}
             className={`${actionClass} text-center border border-emerald-500 text-emerald-500 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/30`}
           >
             Review Answers
