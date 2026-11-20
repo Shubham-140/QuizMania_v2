@@ -34,9 +34,12 @@ const ATTEMPT_ID = "cattempt00000000000000001";
 
 const attempt = (overrides: Record<string, unknown> = {}) => ({
   id: ATTEMPT_ID,
+  userId: USER_ID,
   category: "science",
   difficulty: "easy",
+  status: "IN_PROGRESS",
   timeLimit: 120,
+  expiresAt: new Date(Date.now() + 90_000),
   score: 0,
   totalQuestions: 2,
   timeTaken: 0,
@@ -86,8 +89,10 @@ describe("POST /api/quiz-attempts/[id]/submit", () => {
     );
   });
 
-  it("returns 409 when the attempt is already completed", async () => {
-    findFirst.mockResolvedValue(attempt({ completedAt: new Date() }));
+  it("returns 409 when the attempt is already submitted", async () => {
+    findFirst.mockResolvedValue(
+      attempt({ status: "SUBMITTED", completedAt: new Date() })
+    );
 
     const response = await submit({ selected: [0, 1] });
 
@@ -112,8 +117,9 @@ describe("POST /api/quiz-attempts/[id]/submit", () => {
     expect(saved.where).toEqual({
       id: ATTEMPT_ID,
       userId: USER_ID,
-      completedAt: null,
+      status: "IN_PROGRESS",
     });
+    expect(saved.data.status).toBe("SUBMITTED");
     expect(saved.data.score).toBe(1);
     expect(saved.data.timeTaken).toBeGreaterThanOrEqual(30);
     expect(saved.data.completedAt).toBeInstanceOf(Date);
@@ -130,5 +136,32 @@ describe("POST /api/quiz-attempts/[id]/submit", () => {
 
     expect(response.status).toBe(409);
     expect(updateUser).not.toHaveBeenCalled();
+  });
+
+  it("finishes an attempt submitted long after its deadline using the saved picks", async () => {
+    const expiresAt = new Date(Date.now() - 2 * 60 * 60 * 1000);
+    const expired = attempt({
+      expiresAt,
+      createdAt: new Date(expiresAt.getTime() - 120_000),
+      answers: [
+        { question: "Q1", options: ["A", "B"], correctIndex: 0, selectedIndex: 0 },
+        { question: "Q2", options: ["A", "B"], correctIndex: 1, selectedIndex: null },
+      ],
+    });
+    findFirst
+      .mockResolvedValueOnce(expired)
+      .mockResolvedValueOnce({ ...expired, status: "EXPIRED", completedAt: expiresAt });
+
+    const response = await submit({ selected: [1, 1] });
+
+    expect(response.status).toBe(409);
+    const finished = updateMany.mock.calls[0][0];
+    expect(finished.data).toMatchObject({
+      status: "EXPIRED",
+      score: 1,
+      timeTaken: 120,
+      completedAt: expiresAt,
+    });
+    expect(updateMany).toHaveBeenCalledTimes(1);
   });
 });

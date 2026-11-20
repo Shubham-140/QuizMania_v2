@@ -1,56 +1,16 @@
-import { authOptions } from "@/lib/authOptions";
 import { prisma } from "@/lib/prisma";
-import { getAttempt, secondsElapsed } from "@/lib/quizAttempts";
+import { secondsElapsed } from "@/lib/quizAttempts";
+import { readSelection } from "@/lib/quizAttemptRequest";
 import { scoreAttempt } from "@/lib/quizScoring";
-import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { z } from "zod";
-
-const submitSchema = z.object({
-  selected: z.array(z.number().int().min(0).nullable()).max(50),
-});
 
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-  const userId = session.user.id;
-  const { id } = await params;
-
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-  }
-
-  const parsed = submitSchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json(
-      { error: parsed.error.issues[0].message },
-      { status: 400 }
-    );
-  }
-
-  const attempt = await getAttempt(id, userId);
-  if (!attempt) {
-    return NextResponse.json({ error: "Quiz not found" }, { status: 404 });
-  }
-  if (attempt.completedAt) {
-    return NextResponse.json({ id: attempt.id }, { status: 409 });
-  }
-
-  const { selected } = parsed.data;
-  if (selected.length !== attempt.answers.length) {
-    return NextResponse.json(
-      { error: "Answer count doesn't match the quiz" },
-      { status: 400 }
-    );
-  }
+  const request = await readSelection(req, params);
+  if (!request.ok) return request.response;
+  const { userId, attempt, selected } = request;
 
   const { answers, score, timeTaken } = scoreAttempt(
     attempt.answers,
@@ -58,12 +18,15 @@ export async function POST(
     secondsElapsed(attempt),
     attempt.timeLimit
   );
+  const now = new Date();
+  const completedAt =
+    attempt.expiresAt && now > attempt.expiresAt ? attempt.expiresAt : now;
 
   try {
     const completed = await prisma.$transaction(async (tx) => {
       const { count } = await tx.quizAttempt.updateMany({
-        where: { id, userId, completedAt: null },
-        data: { answers, score, timeTaken, completedAt: new Date() },
+        where: { id: attempt.id, userId, status: "IN_PROGRESS" },
+        data: { status: "SUBMITTED", answers, score, timeTaken, completedAt },
       });
       if (count === 0) return false;
       await tx.user.update({

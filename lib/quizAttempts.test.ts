@@ -2,7 +2,12 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/prisma", () => ({ prisma: {} }));
 
-import { isAttemptId, quizAnswerSchema, secondsLeft } from "./quizAttempts";
+import {
+  hasExpired,
+  isAttemptId,
+  quizAnswerSchema,
+  secondsLeft,
+} from "./quizAttempts";
 import { isQuizInProgress } from "./quizRoutes";
 
 const validAnswer = {
@@ -47,16 +52,32 @@ describe("secondsLeft", () => {
   });
 
   it("returns null when the quiz has no time limit", () => {
-    expect(secondsLeft({ createdAt: new Date(), timeLimit: null })).toBeNull();
+    expect(secondsLeft({ expiresAt: null })).toBeNull();
   });
 
-  it("counts down from when the attempt started and stops at zero", () => {
+  it("counts down to the deadline and stops at zero", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-01-01T00:01:30Z"));
-    const createdAt = new Date("2026-01-01T00:00:00Z");
 
-    expect(secondsLeft({ createdAt, timeLimit: 120 })).toBe(30);
-    expect(secondsLeft({ createdAt, timeLimit: 60 })).toBe(0);
+    expect(secondsLeft({ expiresAt: new Date("2026-01-01T00:02:00Z") })).toBe(30);
+    expect(secondsLeft({ expiresAt: new Date("2026-01-01T00:01:00Z") })).toBe(0);
+  });
+});
+
+describe("hasExpired", () => {
+  const deadline = new Date("2026-01-01T00:02:00Z");
+  const at = (time: string) => new Date(time).getTime();
+
+  it("allows a short grace period after the deadline", () => {
+    const attempt = { status: "IN_PROGRESS", expiresAt: deadline };
+    expect(hasExpired(attempt, at("2026-01-01T00:02:03Z"))).toBe(false);
+    expect(hasExpired(attempt, at("2026-01-01T00:02:10Z"))).toBe(true);
+  });
+
+  it("never expires untimed or finished attempts", () => {
+    const later = at("2026-01-02T00:00:00Z");
+    expect(hasExpired({ status: "IN_PROGRESS", expiresAt: null }, later)).toBe(false);
+    expect(hasExpired({ status: "SUBMITTED", expiresAt: deadline }, later)).toBe(false);
   });
 });
 

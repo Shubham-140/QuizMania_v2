@@ -95,6 +95,8 @@ export async function POST(req: Request) {
         category,
         difficulty,
         timeLimit,
+        expiresAt:
+          timeLimit === null ? null : new Date(Date.now() + timeLimit * 1000),
         totalQuestions: answers.length,
         answers,
       },

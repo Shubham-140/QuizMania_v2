@@ -1,7 +1,14 @@
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
+import { finishExpiredAttempts } from "@/lib/quizAttempts";
 
 export const getPublicUser = cache(async (username: string) => {
+  const owner = await prisma.user.findUnique({
+    where: { username },
+    select: { id: true },
+  });
+  if (owner) await finishExpiredAttempts(owner.id);
+
   return prisma.user.findUnique({
     where: { username },
     select: {
