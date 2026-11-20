@@ -3,6 +3,27 @@ import GitHubProvider from "next-auth/providers/github";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import { NextAuthOptions } from "next-auth";
+import type { JWT } from "next-auth/jwt";
+
+async function upgradeLegacyToken(token: JWT) {
+  const matchers = [
+    typeof token.gitHubId === "string" ? { gitHubId: token.gitHubId } : null,
+    typeof token.username === "string" ? { username: token.username } : null,
+    token.email ? { email: token.email } : null,
+  ].filter((matcher) => matcher !== null);
+
+  const current = matchers.length
+    ? await prisma.user.findFirst({
+        where: { OR: matchers },
+        select: { id: true },
+      })
+    : null;
+
+  if (current) return { ...token, id: current.id };
+
+  const { id: _legacyId, ...signedOut } = token;
+  return signedOut;
+}
 
 interface GitHubProfile {
   id?: number | string;
@@ -189,6 +210,9 @@ export const authOptions: NextAuthOptions = {
                 : user.createdAt,
           };
         }
+        if (typeof token.id === "number") {
+          return upgradeLegacyToken(token);
+        }
         return token;
       } catch (error) {
         console.error(
@@ -200,7 +224,7 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       session.user = {
-        id: String(token.id),
+        id: typeof token.id === "string" ? token.id : "",
         name: token.name,
         email: token.email,
         username: (token.username as string | null) ?? null,
