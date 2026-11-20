@@ -16,11 +16,12 @@ A full-stack quiz app built with Next.js, TypeScript and PostgreSQL. Pick a cate
 
 Each quiz is a `QuizAttempt` stored in the database, and the server owns everything that decides the result.
 
-1. Starting a quiz creates an attempt. The server fetches the questions, shuffles the options and stores them together with the correct answers.
+1. Starting a quiz creates an attempt with a deadline. The server fetches the questions, shuffles the options and stores them together with the correct answers.
 2. The quiz page at `/quiz/[id]` loads the attempt without the correct answers, so they never reach the browser.
-3. The timer is calculated from when the attempt was created, so refreshing the page doesn't reset it. The quiz submits itself when time runs out.
-4. On submit, the server scores the picks against the stored answers, caps the time taken at the limit and marks the attempt complete. A second submit for the same attempt is rejected.
-5. The score and review pages at `/quiz/[id]/score` and `/quiz/[id]/review` are only visible to the attempt's owner. Anyone else gets a 404.
+3. Each pick is saved to the server as soon as it's made, one request at a time with only the latest picks sent. Refreshing, closing the tab or switching devices keeps both the answers and the remaining time.
+4. On submit, the server scores the picks against the stored answers, caps the time taken at the limit and marks the attempt as submitted. A second submit for the same attempt is rejected.
+5. If the deadline passes without a submit, the attempt is finished as of the deadline using the picks saved by then, and marked as expired. This happens the next time the attempt, the owner's profile or the home page is loaded.
+6. The score and review pages at `/quiz/[id]/score` and `/quiz/[id]/review` are only visible to the attempt's owner. Anyone else gets a 404.
 
 ## Security
 
@@ -76,8 +77,8 @@ The suite runs in Node and jsdom and never touches the database or the trivia AP
 
 - Scoring: correct, wrong and unanswered picks, out-of-range picks, and the time cap
 - Validation schemas and the server-side countdown
-- The submit API: sign-in required, owner-only access, finished attempts, mismatched answers and double submits
-- The quiz player: answering and submitting, the retry message on a failed save, and auto-submit on timeout
+- The submit and answers APIs: sign-in required, owner-only access, finished attempts, late saves, mismatched answers, double submits and finishing an attempt at its deadline
+- The quiz player: answering and submitting, saving picks as they're made, restoring them after a refresh, the retry message on a failed save, and auto-submit on timeout
 
 ## Project structure
 
@@ -94,6 +95,6 @@ middleware.ts     Route protection
 
 ## Known limitations
 
-- Picks made during a quiz live in the browser until submit, so refreshing keeps the timer but clears the answers
-- Abandoned attempts stay in the database as incomplete and are hidden everywhere, but nothing cleans them up yet
+- Expired attempts are finished when they're next loaded rather than at the deadline itself. An attempt that is never opened again stays in progress until a scheduled job is added to sweep them
+- Quizzes without a time limit stay open until they're submitted
 - Async server components aren't covered by the unit tests; end-to-end tests with Playwright would be the next step
