@@ -7,9 +7,12 @@ import type { PlayerQuestion } from "@/lib/quizAttempts";
 type Props = {
   attemptId: string;
   questions: PlayerQuestion[];
-  timeLimit: number | null;
-  initialTimeLeft: number | null;
+  initialSelected: (number | null)[];
+  secondsLeft: number | null;
 };
+
+const remainingSeconds = (deadline: number) =>
+  Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
 
 const text = "text-gray-900 dark:text-gray-50";
 const accentText = "text-emerald-500 dark:text-emerald-400";
@@ -33,18 +36,21 @@ const formatTime = (time: number | null) => {
 export default function QuizPlayer({
   attemptId,
   questions,
-  timeLimit,
-  initialTimeLeft,
+  initialSelected,
+  secondsLeft,
 }: Props) {
   const router = useRouter();
-  const [selected, setSelected] = useState<(number | null)[]>(() =>
-    new Array(questions.length).fill(null)
-  );
+  const [selected, setSelected] = useState(initialSelected);
   const [index, setIndex] = useState(0);
   const [submitOverlay, setSubmitOverlay] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(initialTimeLeft);
+  const [deadline] = useState(() =>
+    secondsLeft === null ? null : Date.now() + secondsLeft * 1000
+  );
+  const [timeLeft, setTimeLeft] = useState(secondsLeft);
   const [submitError, setSubmitError] = useState("");
   const submittingRef = useRef(false);
+  const savingRef = useRef(false);
+  const pendingSaveRef = useRef<(number | null)[] | null>(null);
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -57,12 +63,32 @@ export default function QuizPlayer({
   }, []);
 
   useEffect(() => {
-    if (timeLimit === null) return;
+    if (deadline === null) return;
     const timer = setInterval(() => {
-      setTimeLeft((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));
-    }, 1000);
+      setTimeLeft(remainingSeconds(deadline));
+    }, 500);
     return () => clearInterval(timer);
-  }, [timeLimit]);
+  }, [deadline]);
+
+  const saveSelection = async () => {
+    if (savingRef.current) return;
+    savingRef.current = true;
+    while (pendingSaveRef.current) {
+      const snapshot = pendingSaveRef.current;
+      pendingSaveRef.current = null;
+      try {
+        await fetch(`/api/quiz-attempts/${attemptId}/answers`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ selected: snapshot }),
+          keepalive: true,
+        });
+      } catch (error) {
+        console.error("Could not save answer", error);
+      }
+    }
+    savingRef.current = false;
+  };
 
   const submitQuiz = async () => {
     if (submittingRef.current) return;
@@ -99,11 +125,11 @@ export default function QuizPlayer({
   }, [timeLeft]);
 
   const handleSelect = (questionIndex: number, optionIndex: number) => {
-    setSelected((prev) => {
-      const updated = [...prev];
-      updated[questionIndex] = optionIndex;
-      return updated;
-    });
+    const updated = [...selected];
+    updated[questionIndex] = optionIndex;
+    setSelected(updated);
+    pendingSaveRef.current = updated;
+    saveSelection();
   };
 
   const isTimeCritical = timeLeft !== null && timeLeft <= 20;
@@ -122,7 +148,7 @@ export default function QuizPlayer({
               QUESTION {index + 1} OF {questions.length}
             </div>
 
-            {timeLimit !== null && (
+            {deadline !== null && (
               <div
                 className={`flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-white transition-all duration-300 shadow-md ${
                   isTimeCritical

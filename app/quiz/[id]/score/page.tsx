@@ -27,7 +27,7 @@ export default async function ScorePage({
 
   const result = await getAttempt(id, session.user.id);
   if (!result) notFound();
-  if (!result.completedAt) redirect(`/quiz/${result.id}`);
+  if (result.status === "IN_PROGRESS") redirect(`/quiz/${result.id}`);
 
   const stats = [
     { label: "Correct", value: result.score, color: "text-emerald-500" },
@@ -52,10 +52,12 @@ export default async function ScorePage({
 
         <div className="text-center mb-[clamp(1rem,3vw,2rem)]">
           <h1 className="text-[clamp(1.25rem,4vw,2rem)] font-extrabold mb-[clamp(0.25rem,1vw,0.5rem)] text-emerald-500">
-            Quiz Completed!
+            {result.status === "EXPIRED" ? "Time's Up!" : "Quiz Completed!"}
           </h1>
           <p className={`text-[clamp(0.875rem,2vw,1rem)] ${mutedText}`}>
-            Here&apos;s how you performed
+            {result.status === "EXPIRED"
+              ? "Your saved answers were scored when the timer ran out"
+              : "Here's how you performed"}
           </p>
         </div>
 

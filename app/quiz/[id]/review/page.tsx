@@ -81,7 +81,7 @@ export default async function QuizReviewPage({
 
   const result = await getAttempt(id, session.user.id);
   if (!result) notFound();
-  if (!result.completedAt) redirect(`/quiz/${result.id}`);
+  if (result.status === "IN_PROGRESS") redirect(`/quiz/${result.id}`);
 
   if (result.answers.length === 0) {
     return (

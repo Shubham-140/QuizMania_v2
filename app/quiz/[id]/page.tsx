@@ -20,7 +20,7 @@ export default async function QuizAttemptPage({
 
   const attempt = await getAttempt(id, session.user.id);
   if (!attempt) notFound();
-  if (attempt.completedAt) redirect(`/quiz/${attempt.id}/score`);
+  if (attempt.status !== "IN_PROGRESS") redirect(`/quiz/${attempt.id}/score`);
 
   return (
     <QuizPlayer
@@ -29,8 +29,8 @@ export default async function QuizAttemptPage({
         question,
         options,
       }))}
-      timeLimit={attempt.timeLimit}
-      initialTimeLeft={secondsLeft(attempt)}
+      initialSelected={attempt.answers.map((answer) => answer.selectedIndex)}
+      secondsLeft={secondsLeft(attempt)}
     />
   );
 }
