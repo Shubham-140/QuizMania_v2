@@ -127,7 +127,7 @@ export default function Signup() {
   return (
     <AuthLayout
       heroTitle="Welcome to QuizMania"
-      heroText="Test your knowledge and climb the leaderboards with our engaging quiz platform"
+      heroText="Test your knowledge across ten categories and review every answer"
       features={features}
       title="Join QuizMania"
       subtitle="Create your account and start testing your knowledge"

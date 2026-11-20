@@ -44,8 +44,8 @@ const Footer = () => {
             </span>
           </div>
           <p className="leading-relaxed text-gray-600 dark:text-gray-400">
-            Test your knowledge across various categories and climb the
-            leaderboard!
+            Test your knowledge across ten categories and track your
+            results.
           </p>
         </div>
 

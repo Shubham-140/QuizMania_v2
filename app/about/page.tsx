@@ -83,7 +83,7 @@ export default function About() {
             About QuizMania
           </h1>
           <p className="text-sm md:text-lg text-gray-600 dark:text-gray-400">
-            Test your knowledge and climb the leaderboards
+            Test your knowledge across ten categories
           </p>
         </div>
 

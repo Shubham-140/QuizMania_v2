@@ -66,7 +66,7 @@ export default function Login() {
   return (
     <AuthLayout
       heroTitle="Welcome Back to QuizMania"
-      heroText="Continue your journey and climb the leaderboards"
+      heroText="Pick up where you left off and keep improving your score"
       features={features}
       title="Welcome Back"
       subtitle="Sign in to continue your quiz journey"

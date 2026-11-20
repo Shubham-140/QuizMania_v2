@@ -21,23 +21,24 @@ export default function Rules() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 md:mb-12">
-          <FeatureTile icon={step(1)} title="10 Questions Per Quiz">
-            Each quiz consists of{" "}
-            <span className="font-semibold">10 questions</span> from your
-            selected category.
+          <FeatureTile icon={step(1)} title="Choose Your Length">
+            Each quiz has{" "}
+            <span className="font-semibold">5 to 20 questions</span> from your
+            selected category. You can change this in Settings.
           </FeatureTile>
-          <FeatureTile icon={step(2)} title="15 Second Timer">
-            You have <span className="font-semibold">15 seconds</span> to
-            answer each question.
+          <FeatureTile icon={step(2)} title="One Timer">
+            You get <span className="font-semibold">one timer</span> for the
+            whole quiz, from 1 to 5 minutes or no limit. When it runs out, your
+            answers are submitted.
           </FeatureTile>
           <FeatureTile icon={step(3)} title="Scoring System">
-            Correct answers earn{" "}
-            <span className="font-semibold">10 points</span> each, decreasing
-            by 1 per second after 5 seconds.
+            Each correct answer is worth{" "}
+            <span className="font-semibold">1 point</span>. You can review
+            every question once the quiz is done.
           </FeatureTile>
           <FeatureTile icon={step(4)} title="No Penalties">
             There&apos;s <span className="font-semibold">no penalty</span> for
-            wrong answers - only points for correct ones!
+            wrong or skipped answers, so it&apos;s always worth a guess.
           </FeatureTile>
         </div>
 
