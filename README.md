@@ -1,172 +1,99 @@
-# 🧠 QuizMania - Ultimate Quiz Experience
+# QuizMania
 
-QuizMania is a feature-rich, full-stack quiz application built with Next.js 15, TypeScript 5, and PostgreSQL. Test your knowledge with beautiful animations, real-time scoring, and personalized feedback — all in a modern, secure, and responsive interface.
+A full-stack quiz app built with Next.js, TypeScript and PostgreSQL. Pick a category and difficulty, answer against the clock, then review every question once you're done.
 
-## 🚀 Features
+## Features
 
-### 🎮 Core Quiz Features
-- **Dynamic Question Engine**
-- **Multiple categories & difficulty levels**
-- **Real-time countdown timer**
-- **Answer validation at the end of quiz**
+- Ten categories and three difficulty levels, with questions from [The Trivia API](https://the-trivia-api.com)
+- Configurable quiz length (5 to 20 questions) and time limit (1 to 5 minutes, or none)
+- Score page and a full answer review for every finished quiz
+- Public profiles showing a user's most recent results
+- Sign in with email and password or GitHub
+- Light and dark themes, saved per user without a flash on load
+- A feedback form backed by Formspree
 
-### Results Dashboard
-- **Animated score calculation**
-- **Performance analytics (correct/incorrect)**
-- **Time-taken metrics**
+## How a quiz works
 
-### 👤 User Experience & Personalization
+Each quiz is a `QuizAttempt` stored in the database, and the server owns everything that decides the result.
 
-#### Authentication System
-- **Secure login/signup with NextAuth.js**
-- **GitHub OAuth integration**
-- **Email/password authentication with bcrypt hashing**
-- **JWT token-based sessions**
+1. Starting a quiz creates an attempt. The server fetches the questions, shuffles the options and stores them together with the correct answers.
+2. The quiz page at `/quiz/[id]` loads the attempt without the correct answers, so they never reach the browser.
+3. The timer is calculated from when the attempt was created, so refreshing the page doesn't reset it. The quiz submits itself when time runs out.
+4. On submit, the server scores the picks against the stored answers, caps the time taken at the limit and marks the attempt complete. A second submit for the same attempt is rejected.
+5. The score and review pages at `/quiz/[id]/score` and `/quiz/[id]/review` are only visible to the attempt's owner. Anyone else gets a 404.
 
-#### Theme & Customization
-- **Light/dark theme toggle with Redux state**
-- **Custom quiz length (5-20 questions)**
-- **Adjustable time limits**
-- **Persistent user preferences with Redux Persist**
-- **Cross-session state retention**
+## Security
 
-#### Engagement Tools
-- **Interactive rules overview**
-- **Exit prevention with confirmation dialogs**
-- **User feedback system**
-- **Profile exploration (view other user's profiles)**
+- Passwords are hashed with bcrypt and never returned by the API
+- Request bodies are validated with Zod on every API route
+- Middleware protects `/settings` and `/quiz/*` and keeps signed-in users away from `/login` and `/signup`
+- Users and quiz attempts use cuid ids, so records can't be found by guessing numbers
+- Every attempt lookup is scoped to the signed-in user
+- Profile pictures are limited to an allow-list of image hosts
 
-### 🔐 Security & Data Management
+## Tech stack
 
-#### Robust Authentication
-- **Password hashing with bcrypt**
-- **Session management with NextAuth.js**
-- **Protected routes and API endpoints**
-- **Secure logout functionality**
+| Area | Tools |
+| --- | --- |
+| Framework | Next.js 15 (App Router), React 19, TypeScript |
+| Styling | Tailwind CSS 4, with `dark:` variants and a few shared `@utility` classes |
+| Data | PostgreSQL (Neon), Prisma |
+| Auth | NextAuth.js (credentials and GitHub), bcrypt |
+| Validation | Zod |
+| State | Redux Toolkit for quiz preferences |
+| Testing | Vitest, React Testing Library |
 
-#### State Persistence
-- **Redux Persist integration for seamless user experience**
-- **Automatic state rehydration on app reload**
-- **Configurable persistence for sensitive data**
-- **Local storage optimization**
+Pages that only display data, like profiles, scores and reviews, are server components. Client components are used where there is interaction, such as the quiz itself and the forms.
 
-#### Database Integration
-- **PostgreSQL database with Prisma ORM**
-- **User data persistence**
-- **Optimized database queries**
+## Getting started
 
-### 🌐 Full-Stack Architecture
+Requirements: Node.js 22 and a PostgreSQL database.
 
-#### Next.js Backend API
-- **RESTful API endpoints (GET, POST, PATCH, DELETE, PUT)**
-- **Server-side authentication**
-- **Database operations**
-- **Error handling and validation**
+```bash
+npm install
+cp .env.example .env
+npx prisma migrate deploy
+npm run dev
+```
 
-#### Modern Routing
-- **Next.js 15 App Router**
-- **File-based routing system**
-- **Dynamic routes for user profiles**
-- **Custom error pages (error.tsx, not-found.tsx)**
+Fill in `.env` before running the migration:
 
-## 🛠️ Tech Stack
+| Variable | Purpose |
+| --- | --- |
+| `DATABASE_URL` | PostgreSQL connection string |
+| `NEXTAUTH_SECRET` | Secret used to sign session tokens |
+| `NEXTAUTH_URL` | Base URL of the app, e.g. `http://localhost:3000` |
+| `GITHUB_CLIENT_ID` | GitHub OAuth app client ID |
+| `GITHUB_CLIENT_SECRET` | GitHub OAuth app client secret |
 
-### Frontend
-- **Framework:** Next.js 15.3.4 with App Router
-- **Language:** TypeScript 5.x
-- **State Management:** Redux Toolkit 2.8.2
-- **State Persistence:** Redux Persist 6.0.0
-- **Styling:** Tailwind CSS 4.x
-- **UI Components:** Lucide React 0.522.0 icons
-- **Animations:** CSS keyframes & Tailwind transitions
-- **React:** React 19.0.0 & React DOM 19.0.0
+## Testing
 
-### Backend & Database
-- **Runtime:** Node.js 20.x
-- **Database:** PostgreSQL 8.16.2
-- **ORM:** Prisma 6.10.1
-- **Authentication:** NextAuth.js 4.24.11
-- **Password Security:** bcrypt 6.0.0
-- **Session Management:** JWT tokens
+```bash
+npm test
+```
 
-### Development Tools
-- **Bundler:** Next.js built-in (Turbopack)
-- **Linting:** ESLint 9.x with Next.js config
-- **Type Checking:** TypeScript 5.x
-- **Environment:** dotenv 16.5.0 for configuration
+The suite runs in Node and jsdom and never touches the database or the trivia API. It covers:
 
-### Additional Dependencies
-- **React Redux:** 9.2.0 for React-Redux integration
-- **@types/pg:** 8.15.4 for PostgreSQL TypeScript types
-- **@types/bcrypt:** 5.0.2 for bcrypt TypeScript types
+- Scoring: correct, wrong and unanswered picks, out-of-range picks, and the time cap
+- Validation schemas and the server-side countdown
+- The submit API: sign-in required, owner-only access, finished attempts, mismatched answers and double submits
+- The quiz player: answering and submitting, the retry message on a failed save, and auto-submit on timeout
 
-## 🔧 Key Features Implementation
+## Project structure
 
-### State Management & Persistence
-- **Redux Toolkit:** Centralized state management with modern Redux patterns
-- **Redux Persist:** Automatic state persistence across browser sessions
-- **Selective Persistence:** Configure which parts of state to persist
-- **Rehydration:** Seamless state restoration on app initialization
-- **Storage Optimization:** Efficient local storage management
+```
+app/
+  api/            Route handlers (quiz attempts, sign-up, profile)
+  quiz/[id]/      Quiz player, score and review pages
+  user/[username] Public profiles
+  component/      Shared UI components
+lib/              Auth, Prisma, quiz logic and helpers
+prisma/           Schema and migrations
+middleware.ts     Route protection
+```
 
-### Authentication Flow
-- **Secure Registration:** bcrypt password hashing + database storage
-- **Multi-Provider Login:** GitHub OAuth + credential-based auth
-- **Session Management:** JWT tokens with NextAuth.js
-- **Protected Routes:** Middleware-based route protection
+## Known limitations
 
-### User Profile System
-- **Profile Exploration:** Search and view other users' profiles
-- **Statistics Tracking:** Quiz history, scores, and performance metrics
-- **Social Features:** Leaderboards and user discovery
-- **Persistent Preferences:** User settings saved across sessions
-
-### Quiz Engine
-- **Dynamic Question Loading:** Server-side question generation
-- **Real-time Scoring:** Instant feedback with animations
-- **Progress Persistence:** Save and resume quiz sessions with Redux Persist
-- **Performance Analytics:** Detailed statistics and insights
-- **State Recovery:** Resume interrupted quizzes after page refresh
-
-### Error Handling
-- **Custom Error Pages:** Branded 404 and error boundaries
-- **API Error Handling:** Proper HTTP status codes and messages
-- **User-Friendly Feedback:** Contextual error messages
-- **Persistence Error Recovery:** Graceful handling of storage failures
-
-## 🚀 Getting Started
-
-1. **Clone the repository**
-2. **Install dependencies:** `npm install`
-3. **Set up environment variables**
-4. **Configure database:** `npx prisma migrate dev`
-5. **Run development server:** `npm run dev`
-
-## 📦 Package Notes
-
-### Core Dependencies
-All major dependencies are included and up-to-date:
-- Next.js 15.3.4 (latest stable)
-- React 19.0.0 (latest)
-- TypeScript 5.x (latest)
-- Prisma 6.10.1 (latest)
-- Redux Toolkit 2.8.2 (latest)
-
-### Missing from Standard Setups
-- **Prisma Studio:** Not included but can be added for database visualization
-- **Jest/Testing Framework:** No testing setup currently configured
-- **Storybook:** Component documentation not included
-- **Docker:** No containerization setup
-
-## 🎯 What Makes QuizMania Special
-
-- **Full-Stack TypeScript:** End-to-end type safety
-- **Modern Architecture:** Next.js 15 App Router with server components
-- **Secure by Design:** Industry-standard authentication and data protection
-- **Scalable Database:** PostgreSQL with optimized Prisma queries
-- **Rich User Experience:** Smooth animations, responsive design, and intuitive UI
-- **Social Features:** User profiles via username using params
-- **Persistent State:** Redux Persist ensures seamless user experience across sessions
-- **Performance Optimized:** Efficient state management with selective persistence
-
-Built with ❤️ using modern web technologies for the ultimate quiz experience.
+- Picks made during a quiz live in the browser until submit, so refreshing keeps the timer but clears the answers
+- Abandoned attempts stay in the database as incomplete and are hidden everywhere, but nothing cleans them up yet
+- Async server components aren't covered by the unit tests; end-to-end tests with Playwright would be the next step
