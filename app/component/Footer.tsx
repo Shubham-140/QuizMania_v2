@@ -2,12 +2,36 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+const heading =
+  "text-lg font-semibold mb-6 text-emerald-600 dark:text-emerald-400";
+const accentIcon = "text-emerald-500 dark:text-emerald-400";
+const bodyText = "text-gray-700 dark:text-gray-200";
+const disabledLink =
+  "text-gray-500 bg-gray-100/50 dark:text-gray-400 dark:bg-gray-700/50";
+
+const quickLinks = [
+  { name: "Go to Home", path: "/" },
+  { name: "About Us", path: "/about" },
+  { name: "Rules", path: "/rules" },
+  { name: "Give us Feedback", path: "/feedback" },
+];
+
+const contacts = [
+  { icon: "✉️", text: "contact@quizmania.com" },
+  { icon: "🌐", text: "quizmania.vercel.app" },
+];
+
+const devLinks = [
+  { icon: "💻", name: "GitHub", href: "https://github.com/Shubham-140" },
+  { icon: "🧠", name: "LeetCode", href: "https://leetcode.com/u/Shubham-140/" },
+];
+
 const Footer = () => {
   const pathname = usePathname();
   const isQuizActive = /^\/quiz\/[^\/]+\/[^\/]+\/?$/.test(pathname);
 
   return (
-    <footer className="border-t mt-auto font-sans transition-colors duration-300 bg-white/95 backdrop-blur-sm border-gray-200 dark:bg-gray-900/95 dark:border-gray-600">
+    <footer className="border-t mt-auto transition-colors duration-300 bg-white/95 backdrop-blur-sm border-gray-200 dark:bg-gray-900/95 dark:border-gray-600">
       <div className="max-w-[1200px] mx-auto px-5 md:px-10 py-8 md:py-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
         <div className="flex flex-col gap-6">
           <div className="flex items-center gap-3 group">
@@ -25,25 +49,20 @@ const Footer = () => {
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-6 text-emerald-600 dark:text-emerald-400">
-            Quick Links
-          </h3>
+          <h3 className={heading}>Quick Links</h3>
           <ul className="list-none p-0 m-0 flex flex-col gap-3">
-            {[
-              { name: "Go to Home", path: "/" },
-              { name: "About Us", path: "/about" },
-              { name: "Rules", path: "/rules" },
-              { name: "Give us Feedback", path: "/feedback" },
-            ].map((item) => (
+            {quickLinks.map((item) => (
               <li key={item.name}>
                 {isQuizActive ? (
-                  <span className="py-1.5 block text-gray-500 bg-gray-100/50 dark:text-gray-400 dark:bg-gray-700/50 rounded-lg px-3">
+                  <span
+                    className={`py-1.5 block rounded-lg px-3 ${disabledLink}`}
+                  >
                     {item.name}
                   </span>
                 ) : (
                   <Link
                     href={item.path}
-                    className="py-1.5 block no-underline text-gray-700 dark:text-gray-200 hover:text-emerald-500 transition-colors duration-300 px-3"
+                    className={`py-1.5 block no-underline hover:text-emerald-500 transition-colors duration-300 px-3 ${bodyText}`}
                   >
                     {item.name}
                   </Link>
@@ -54,69 +73,46 @@ const Footer = () => {
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-6 text-emerald-600 dark:text-emerald-400">
-            Contact
-          </h3>
+          <h3 className={heading}>Contact</h3>
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <span className="text-emerald-500 dark:text-emerald-400">✉️</span>
-              <span className="text-gray-700 dark:text-gray-200">
-                contact@quizmania.com
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-emerald-500 dark:text-emerald-400">🌐</span>
-              <span className="text-gray-700 dark:text-gray-200">
-                quizmania.vercel.app
-              </span>
-            </div>
+            {contacts.map(({ icon, text }) => (
+              <div key={text} className="flex items-center gap-3">
+                <span className={accentIcon}>{icon}</span>
+                <span className={bodyText}>{text}</span>
+              </div>
+            ))}
           </div>
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-6 text-emerald-600 dark:text-emerald-400">
-            Developer Hub
-          </h3>
+          <h3 className={heading}>Developer Hub</h3>
           <div className="flex gap-4 flex-wrap">
-            {isQuizActive ? (
-              <div className="rounded-lg px-4 py-2 flex items-center gap-2 bg-gray-100/50 text-gray-500 dark:bg-gray-700/50 dark:text-gray-400">
-                <span className="text-emerald-500 dark:text-emerald-400">
-                  💻
-                </span>
-                <span className="text-sm">GitHub</span>
-              </div>
-            ) : (
-              <Link
-                href="https://github.com/Shubham-140"
-                className="rounded-lg px-4 py-2 flex items-center gap-2 no-underline transition-colors duration-300 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200"
-                target="_blank"
-              >
-                <span className="text-emerald-500 dark:text-emerald-400">
-                  💻
-                </span>
-                <span className="text-sm">GitHub</span>
-              </Link>
-            )}
-
-            {isQuizActive ? (
-              <div className="rounded-lg px-4 py-2 flex items-center gap-2 bg-gray-100/50 text-gray-500 dark:bg-gray-700/50 dark:text-gray-400">
-                <span className="text-emerald-500 dark:text-emerald-400">
-                  🧠
-                </span>
-                <span className="text-sm">LeetCode</span>
-              </div>
-            ) : (
-              <Link
-                href="https://leetcode.com/u/Shubham-140/"
-                className="rounded-lg px-4 py-2 flex items-center gap-2 no-underline transition-colors duration-300 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200"
-                target="_blank"
-              >
-                <span className="text-emerald-500 dark:text-emerald-400">
-                  🧠
-                </span>
-                <span className="text-sm">LeetCode</span>
-              </Link>
-            )}
+            {devLinks.map(({ icon, name, href }) => {
+              const content = (
+                <>
+                  <span className={accentIcon}>{icon}</span>
+                  <span className="text-sm">{name}</span>
+                </>
+              );
+              return isQuizActive ? (
+                <div
+                  key={name}
+                  className={`rounded-lg px-4 py-2 flex items-center gap-2 ${disabledLink}`}
+                >
+                  {content}
+                </div>
+              ) : (
+                <a
+                  key={name}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-lg px-4 py-2 flex items-center gap-2 no-underline transition-colors duration-300 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200"
+                >
+                  {content}
+                </a>
+              );
+            })}
           </div>
         </div>
       </div>

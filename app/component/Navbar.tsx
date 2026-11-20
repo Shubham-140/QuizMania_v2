@@ -1,7 +1,7 @@
 "use client";
 
 import { ExitConfirmationOverlay } from "./ExitConfirmationOverlay";
-import ProfileDropdown from "./ProfileDropwdown";
+import ProfileDropdown from "./ProfileDropdown";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -9,6 +9,60 @@ import { useSession } from "next-auth/react";
 import { useTheme } from "./ThemeProvider";
 
 const navItems = ["Home", "About", "Rules", "Feedback"] as const;
+
+const ctaDesktop =
+  "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-emerald-600 hover:shadow-emerald-500/35 dark:bg-emerald-600 dark:shadow-emerald-500/20 dark:hover:bg-emerald-700 dark:hover:shadow-emerald-500/30";
+const ctaMobile =
+  "flex items-center gap-3 rounded-xl bg-emerald-500 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all duration-300 hover:bg-emerald-600 dark:bg-emerald-600 dark:shadow-emerald-500/20 dark:hover:bg-emerald-700";
+const menuBar =
+  "h-0.5 w-5 rounded-full bg-gray-800 transition-all duration-300 dark:bg-gray-100";
+
+function ThemeIcon({ size }: { size: string }) {
+  return (
+    <>
+      <svg
+        className={`${size} text-amber-500 dark:hidden`}
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        aria-hidden
+      >
+        <path
+          fillRule="evenodd"
+          d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+          clipRule="evenodd"
+        />
+      </svg>
+      <svg
+        className={`hidden ${size} text-indigo-400 dark:block`}
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        aria-hidden
+      >
+        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+      </svg>
+    </>
+  );
+}
+
+function UserIcon({ size }: { size: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className={size}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      aria-hidden
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+      />
+    </svg>
+  );
+}
 
 const Navbar = () => {
   const { lightMode, toggleMode } = useTheme();
@@ -33,7 +87,7 @@ const Navbar = () => {
     `/${item.toLowerCase() === "home" ? "" : item.toLowerCase()}`;
 
   return (
-    <nav className="sticky top-0 z-[1000] flex h-[clamp(52px,5.5vw,64px)] items-center justify-between border-b border-slate-200 bg-white/95 px-[clamp(16px,5vw,40px)] font-sans shadow-lg shadow-black/5 backdrop-blur-sm dark:border-slate-600 dark:bg-slate-900/95 dark:shadow-black/30">
+    <nav className="sticky top-0 z-[1000] flex h-[clamp(52px,5.5vw,64px)] items-center justify-between border-b border-slate-200 bg-white/95 px-[clamp(16px,5vw,40px)] shadow-lg shadow-black/5 backdrop-blur-sm dark:border-slate-600 dark:bg-slate-900/95 dark:shadow-black/30">
       <Link
         href="/"
         className="z-[1001] flex items-center gap-3 no-underline group"
@@ -83,26 +137,7 @@ const Navbar = () => {
           aria-label="Toggle theme"
         >
           <div className="relative h-5 w-5 transition-transform duration-500 group-hover:rotate-180">
-            <svg
-              className="h-5 w-5 text-amber-500 dark:hidden"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              aria-hidden
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <svg
-              className="hidden h-5 w-5 text-indigo-400 dark:block"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-              aria-hidden
-            >
-              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-            </svg>
+            <ThemeIcon size="h-5 w-5" />
           </div>
         </button>
 
@@ -113,7 +148,7 @@ const Navbar = () => {
             <div className="relative">
               <button
                 onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                className="group relative flex h-12 w-12 cursor-pointer items-center justify-center rounded-xl bg-emerald-500 text-lg font-bold text-white shadow-lg shadow-emerald-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-emerald-600 hover:shadow-emerald-500/35 dark:bg-emerald-600 dark:shadow-emerald-500/20 dark:hover:bg-emerald-700 dark:hover:shadow-emerald-500/30"
+                className={`group relative flex h-12 w-12 cursor-pointer items-center justify-center rounded-xl text-lg font-bold ${ctaDesktop}`}
                 title={`Go to ${
                   session.user.name || session.user.username || "User"
                 }'s profile`}
@@ -124,21 +159,10 @@ const Navbar = () => {
             </div>
           ) : (
             <Link href="/login" className="group relative no-underline">
-              <div className="flex items-center gap-2.5 rounded-xl bg-emerald-500 px-5 py-2.5 text-[clamp(14px,1.8vw,16px)] font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:bg-emerald-600 hover:shadow-emerald-500/35 dark:bg-emerald-600 dark:shadow-emerald-500/20 dark:hover:bg-emerald-700 dark:hover:shadow-emerald-500/30">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
+              <div
+                className={`flex items-center gap-2.5 rounded-xl px-5 py-2.5 text-[clamp(14px,1.8vw,16px)] font-semibold ${ctaDesktop}`}
+              >
+                <UserIcon size="h-4 w-4" />
                 Login
               </div>
             </Link>
@@ -151,17 +175,17 @@ const Navbar = () => {
           aria-label="Menu"
         >
           <div
-            className={`h-0.5 w-5 rounded-full bg-gray-800 transition-all duration-300 dark:bg-gray-100 ${
+            className={`${menuBar} ${
               mobileMenuOpen ? "translate-y-1.5 rotate-45" : ""
             }`}
           />
           <div
-            className={`h-0.5 w-5 rounded-full bg-gray-800 transition-all duration-300 dark:bg-gray-100 ${
+            className={`${menuBar} ${
               mobileMenuOpen ? "opacity-0" : "opacity-100"
             }`}
           />
           <div
-            className={`h-0.5 w-5 rounded-full bg-gray-800 transition-all duration-300 dark:bg-gray-100 ${
+            className={`${menuBar} ${
               mobileMenuOpen ? "-translate-y-1.5 -rotate-45" : ""
             }`}
           />
@@ -178,24 +202,7 @@ const Navbar = () => {
           className="group flex items-center gap-3 rounded-xl bg-gray-100 px-6 py-3 text-gray-700 transition-all duration-300 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
         >
           <div className="h-6 w-6 transition-transform duration-500 group-hover:rotate-180">
-            <svg
-              className="h-6 w-6 text-amber-500 dark:hidden"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <svg
-              className="hidden h-6 w-6 text-indigo-400 dark:block"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-            </svg>
+            <ThemeIcon size="h-6 w-6" />
           </div>
           <span className="text-lg font-semibold">
             {lightMode ? "Dark Mode" : "Light Mode"}
@@ -230,7 +237,7 @@ const Navbar = () => {
         ) : session?.user ? (
           <button
             onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-3 rounded-xl bg-emerald-500 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all duration-300 hover:bg-emerald-600 dark:bg-emerald-600 dark:shadow-emerald-500/20 dark:hover:bg-emerald-700"
+            className={ctaMobile}
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 font-bold">
               {getUserInitial()}
@@ -243,21 +250,8 @@ const Navbar = () => {
             className="group relative no-underline"
             onClick={() => setMobileMenuOpen(false)}
           >
-            <div className="flex items-center gap-3 rounded-xl bg-emerald-500 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all duration-300 hover:bg-emerald-600 dark:bg-emerald-600 dark:shadow-emerald-500/20 dark:hover:bg-emerald-700">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
+            <div className={ctaMobile}>
+              <UserIcon size="h-5 w-5" />
               Login
             </div>
           </Link>

@@ -9,7 +9,7 @@ export default function PageLoader({
 }: PageLoaderProps) {
   return (
     <div
-      className={`flex flex-col items-center justify-center gap-4 p-6 font-sans ${
+      className={`flex flex-col items-center justify-center gap-4 p-6 ${
         fullScreen ? "min-h-[70vh]" : "py-16"
       } bg-gradient-to-br from-emerald-50 via-emerald-100 to-emerald-200 dark:from-emerald-900 dark:via-emerald-800 dark:to-emerald-700`}
       role="status"
