@@ -15,8 +15,9 @@ export const getPublicUser = cache(async (username: string) => {
       quizAttended: true,
       createdAt: true,
       age: true,
-      quizResults: {
-        orderBy: { createdAt: "desc" },
+      quizAttempts: {
+        where: { completedAt: { not: null } },
+        orderBy: { completedAt: "desc" },
         take: 5,
         select: {
           id: true,
@@ -25,14 +26,14 @@ export const getPublicUser = cache(async (username: string) => {
           score: true,
           totalQuestions: true,
           timeTaken: true,
-          createdAt: true,
+          completedAt: true,
         },
       },
     },
   });
 });
 
-export async function getSettingsUser(id: number) {
+export async function getSettingsUser(id: string) {
   return prisma.user.findUnique({
     where: { id },
     select: {

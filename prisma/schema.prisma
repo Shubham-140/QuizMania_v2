@@ -7,37 +7,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id Int @id @default(autoincrement())
-  email String? @unique
-  username String? @unique
-  password String?
-  name String?
-  age Int?
-  quizAttended Int @default(0)
-  createdAt DateTime @default(now())
-  profilePic String?
-  role String @default("user")
-  isEmailVerified Boolean @default(false)
-  description String? @default("I love QuizMania")
+model User {
+  id              String   @id @default(cuid())
+  email           String?  @unique
+  username        String?  @unique
+  password        String?
+  name            String?
+  age             Int?
+  quizAttended    Int      @default(0)
+  createdAt       DateTime @default(now())
+  profilePic      String?
+  role            String   @default("user")
+  isEmailVerified Boolean  @default(false)
+  description     String?  @default("I love QuizMania")
 
-  gitHubId String? @unique
-  gitHubUsername String? @unique
+  gitHubId        String? @unique
+  gitHubUsername  String? @unique
   gitHubAvatarUrl String?
 
-  quizResults QuizResult[]
+  quizAttempts QuizAttempt[]
 }
 
-model QuizResult {
-  id             Int      @id @default(autoincrement())
-  userId         Int
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model QuizAttempt {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   category       String
   difficulty     String
-  score          Int
+  timeLimit      Int?
+  score          Int       @default(0)
   totalQuestions Int
-  timeTaken      Int
-  createdAt      DateTime @default(now())
+  timeTaken      Int       @default(0)
+  answers        Json      @default("[]")
+  createdAt      DateTime  @default(now())
+  completedAt    DateTime?
 
-  @@index([userId, createdAt])
+  @@index([userId, completedAt])
 }

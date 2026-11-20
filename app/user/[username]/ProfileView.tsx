@@ -153,9 +153,9 @@ export default function ProfileView({ user }: { user: PublicUser }) {
         <div className={`mt-6 ${panel}`}>
           <h3 className={panelTitle}>Recent Quizzes</h3>
 
-          {user.quizResults.length ? (
+          {user.quizAttempts.length ? (
             <ul className="space-y-3">
-              {user.quizResults.map((result) => {
+              {user.quizAttempts.map((result) => {
                 const percent = Math.round(
                   (result.score / result.totalQuestions) * 100
                 );
@@ -171,7 +171,7 @@ export default function ProfileView({ user }: { user: PublicUser }) {
                       <p className={`text-sm capitalize ${mutedText}`}>
                         {result.difficulty} ·{" "}
                         {formatDuration(result.timeTaken)} ·{" "}
-                        {result.createdAt.toLocaleDateString("en-US", {
+                        {result.completedAt?.toLocaleDateString("en-US", {
                           day: "numeric",
                           month: "short",
                           year: "numeric",

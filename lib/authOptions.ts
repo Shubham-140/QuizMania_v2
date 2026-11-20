@@ -16,7 +16,7 @@ const githubClientId = process.env.GITHUB_CLIENT_ID?.trim();
 const githubClientSecret = process.env.GITHUB_CLIENT_SECRET?.trim();
 
 function serializeUserForToken(user: {
-  id: number;
+  id: string;
   name: string | null;
   email: string | null;
   username: string | null;
@@ -116,7 +116,7 @@ export const authOptions: NextAuthOptions = {
           login: profile.login,
           username: profile.login,
         } as unknown as {
-          id: number;
+          id: string;
           name?: string | null;
           email?: string | null;
           image?: string | null;
@@ -200,7 +200,7 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       session.user = {
-        id: Number(token.id),
+        id: String(token.id),
         name: token.name,
         email: token.email,
         username: (token.username as string | null) ?? null,

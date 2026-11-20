@@ -1,7 +1,7 @@
 import { getToken } from "next-auth/jwt";
 import { NextResponse, type NextRequest } from "next/server";
 
-const protectedRoutes = ["/settings"];
+const protectedRoutes = ["/settings", "/quiz"];
 const guestOnlyRoutes = ["/login", "/signup"];
 
 const matches = (pathname: string, routes: string[]) =>
@@ -12,13 +12,14 @@ export async function middleware(req: NextRequest) {
     req,
     secret: process.env.NEXTAUTH_SECRET?.trim(),
   });
+  const isSignedIn = typeof token?.id === "string";
   const { pathname } = req.nextUrl;
 
-  if (!token && matches(pathname, protectedRoutes)) {
+  if (!isSignedIn && matches(pathname, protectedRoutes)) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  if (token && matches(pathname, guestOnlyRoutes)) {
+  if (isSignedIn && matches(pathname, guestOnlyRoutes)) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
@@ -26,5 +27,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/settings/:path*", "/login", "/signup"],
+  matcher: ["/settings/:path*", "/quiz/:path*", "/login", "/signup"],
 };
