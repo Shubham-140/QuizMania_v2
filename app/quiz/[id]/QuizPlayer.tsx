@@ -18,7 +18,7 @@ const text = "text-gray-900 dark:text-gray-50";
 const accentText = "text-emerald-500 dark:text-emerald-400";
 const primaryBg = "bg-emerald-500 dark:bg-emerald-600";
 const optionBase =
-  "p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-gray-200 dark:hover:shadow-gray-800 hover:border-emerald-500 relative overflow-hidden";
+  "w-full text-left p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-gray-200 dark:hover:shadow-gray-800 hover:border-emerald-500 relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900";
 const optionSelected =
   "bg-emerald-50 border-emerald-500 shadow-md shadow-emerald-500/20 hover:bg-emerald-100 dark:bg-emerald-900/20 dark:hover:bg-emerald-900/30";
 const optionIdle =
@@ -181,39 +181,48 @@ export default function QuizPlayer({
           <div className="flex-1 flex flex-col overflow-hidden">
             <div className="overflow-y-auto scrollbar-hide flex-1">
               <h2
+                id="quiz-question"
                 className={`text-xl md:text-2xl font-bold mb-6 leading-snug ${text}`}
               >
                 {questions[index]?.question}
               </h2>
 
-              <div className="grid gap-3 mb-6">
+              <div
+                role="group"
+                aria-labelledby="quiz-question"
+                className="grid gap-3 mb-6"
+              >
                 {questions[index]?.options.map((option, ind) => {
                   const isSelected = selected[index] === ind;
                   const optionLetter = String.fromCharCode(65 + ind);
 
                   return (
-                    <div
+                    <button
                       key={option}
+                      type="button"
+                      aria-pressed={isSelected}
                       className={`${optionBase} ${
                         isSelected ? optionSelected : optionIdle
                       }`}
                       onClick={() => handleSelect(index, ind)}
                     >
-                      <div
+                      <span
                         className={`flex items-center gap-3 font-medium ${
                           isSelected ? accentText : text
                         }`}
                       >
-                        <div
+                        <span
+                          aria-hidden
                           className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center ${
                             isSelected ? "bg-emerald-500 text-white" : `border ${text}`
                           }`}
                         >
                           {optionLetter}
-                        </div>
+                        </span>
                         <span className="flex-1">{option}</span>
                         {isSelected && (
                           <svg
+                            aria-hidden
                             className="w-5 h-5 ml-2"
                             viewBox="0 0 24 24"
                             fill="none"
@@ -223,8 +232,8 @@ export default function QuizPlayer({
                             <path d="M20 6L9 17l-5-5" />
                           </svg>
                         )}
-                      </div>
-                    </div>
+                      </span>
+                    </button>
                   );
                 })}
               </div>

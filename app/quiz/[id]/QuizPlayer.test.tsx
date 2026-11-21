@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 const { push } = vi.hoisted(() => ({ push: vi.fn() }));
@@ -101,6 +101,41 @@ describe("QuizPlayer", () => {
 
     await waitFor(() => expect(callsTo(ANSWERS_URL)).toHaveLength(2));
     expect(bodyOf(callsTo(ANSWERS_URL)[1])).toEqual([1, null]);
+  });
+
+  it("lets the quiz be answered with the keyboard alone", async () => {
+    const user = userEvent.setup();
+    renderPlayer();
+
+    const paris = screen.getByRole("button", { name: "Paris" });
+    while (document.activeElement !== paris) {
+      await user.tab();
+    }
+    await user.keyboard("{Enter}");
+    expect(paris).toHaveAttribute("aria-pressed", "true");
+
+    await user.tab({ shift: true });
+    await user.keyboard(" ");
+    expect(screen.getByRole("button", { name: "Berlin" })).toHaveAttribute(
+      "aria-pressed",
+      "true"
+    );
+    expect(paris).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("announces the options as a group labelled by the question", () => {
+    renderPlayer();
+
+    const group = screen.getByRole("group", { name: "Capital of France?" });
+    expect(
+      within(group)
+        .getAllByRole("button")
+        .map((option) => option.textContent)
+    ).toEqual(["ABerlin", "BParis"]);
+    expect(screen.getByRole("button", { name: "Berlin" })).toHaveAttribute(
+      "aria-pressed",
+      "false"
+    );
   });
 
   it("restores picks saved before a refresh", async () => {
