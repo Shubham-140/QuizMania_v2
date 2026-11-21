@@ -22,9 +22,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "QuizMania: The ultimate quiz challenge",
+  title: "QuizMania | Test your knowledge",
   description:
-    "QuizMania is a feature-rich, full-stack quiz application built with Next.js 14, TypeScript, and PostgreSQL. Test your knowledge with beautiful animations, real-time scoring, and personalized feedback — all in a modern, secure, and responsive interface.",
+    "Timed quizzes across ten categories and three difficulty levels, with a full answer review after every quiz.",
 };
 
 const themeInitScript = `(function(){try{var t=localStorage.getItem("${THEME_KEY}");if(!t)return;var light=t==="light";document.documentElement.classList.toggle("dark",!light);document.documentElement.style.colorScheme=light?"light":"dark";if(document.cookie.indexOf("${THEME_KEY}="+t)===-1){document.cookie="${THEME_KEY}="+t+"; path=/; max-age=${THEME_COOKIE_MAX_AGE}; samesite=lax";}}catch(e){}})();`;

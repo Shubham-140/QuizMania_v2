@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import FeatureTile from "../component/FeatureTile";
@@ -71,6 +72,10 @@ const features = [
     ),
   },
 ];
+
+export const metadata: Metadata = {
+  title: "About | QuizMania",
+};
 
 export default function About() {
   return (
