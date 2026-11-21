@@ -4,7 +4,6 @@ import { getServerSession } from "next-auth";
 import type { Metadata } from "next";
 import { authOptions } from "@/lib/authOptions";
 import { getAttempt } from "@/lib/quizAttempts";
-import CalculatingOverlay from "./CalculatingOverlay";
 
 export const metadata: Metadata = {
   title: "Your Score | QuizMania",
@@ -45,8 +44,6 @@ export default async function ScorePage({
 
   return (
     <div className="page-bg-soft min-h-screen p-4 flex justify-center items-center">
-      <CalculatingOverlay />
-
       <div className="card-soft w-full max-w-[min(800px,95vw)] rounded-[clamp(1rem,3vw,1.5rem)] p-[clamp(1rem,3vw,2rem)] relative overflow-hidden">
         <div className="accent-bar" />
 
