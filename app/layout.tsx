@@ -9,6 +9,7 @@ import Footer from "./component/Footer";
 import { ThemeProvider } from "./component/ThemeProvider";
 import { authOptions } from "@/lib/authOptions";
 import { THEME_COOKIE_MAX_AGE, THEME_KEY } from "@/lib/theme";
+import { siteDescription, siteName, siteUrl } from "@/lib/site";
 import { cookies } from "next/headers";
 
 const appFont = Plus_Jakarta_Sans({
@@ -21,10 +22,24 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const defaultTitle = `${siteName} | Test your knowledge`;
+
 export const metadata: Metadata = {
-  title: "QuizMania | Test your knowledge",
-  description:
-    "Timed quizzes across ten categories and three difficulty levels, with a full answer review after every quiz.",
+  metadataBase: siteUrl,
+  title: defaultTitle,
+  description: siteDescription,
+  openGraph: {
+    type: "website",
+    siteName,
+    title: defaultTitle,
+    description: siteDescription,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: defaultTitle,
+    description: siteDescription,
+  },
 };
 
 const themeInitScript = `(function(){try{var t=localStorage.getItem("${THEME_KEY}");if(!t)return;var light=t==="light";document.documentElement.classList.toggle("dark",!light);document.documentElement.style.colorScheme=light?"light":"dark";if(document.cookie.indexOf("${THEME_KEY}="+t)===-1){document.cookie="${THEME_KEY}="+t+"; path=/; max-age=${THEME_COOKIE_MAX_AGE}; samesite=lax";}}catch(e){}})();`;

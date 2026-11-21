@@ -53,6 +53,8 @@ Profile settings are saved with a Server Action through `useActionState`, so the
 
 Slower parts of a page stream in with `<Suspense>`: a profile's recent quizzes and the home page's "Continue quiz" banner load separately, so the rest of the page shows straight away. The quiz, score, review and profile routes each have a `loading.tsx` skeleton shaped like the page it replaces.
 
+For search engines and link previews, `robots.ts` keeps the API, quiz and settings pages out of search results, `sitemap.ts` lists the public pages, and `opengraph-image.tsx` generates the preview image with `next/og`. Profiles get their own title, description and canonical URL, and unknown usernames are marked `noindex`.
+
 ## Getting started
 
 Requirements: Node.js 22 and a PostgreSQL database.
@@ -73,6 +75,7 @@ Fill in `.env` before running the migration:
 | `NEXTAUTH_URL` | Base URL of the app, e.g. `http://localhost:3000` |
 | `GITHUB_CLIENT_ID` | GitHub OAuth app client ID |
 | `GITHUB_CLIENT_SECRET` | GitHub OAuth app client secret |
+| `SITE_URL` | Optional. Public URL used in the sitemap and link previews; falls back to `NEXTAUTH_URL`, then the Vercel production URL |
 
 ## Testing
 
