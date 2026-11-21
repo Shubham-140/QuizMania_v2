@@ -51,6 +51,8 @@ Pages that only display data, like profiles, scores and reviews, are server comp
 
 Profile settings are saved with a Server Action through `useActionState`, so the form shows its pending and saved states and still submits before JavaScript loads. Public profiles are cached with `unstable_cache` under a per-user tag; saving a profile or submitting a quiz calls `revalidateTag` for that user, and the cache also refreshes on its own every five minutes.
 
+Slower parts of a page stream in with `<Suspense>`: a profile's recent quizzes and the home page's "Continue quiz" banner load separately, so the rest of the page shows straight away. The quiz, score, review and profile routes each have a `loading.tsx` skeleton shaped like the page it replaces.
+
 ## Getting started
 
 Requirements: Node.js 22 and a PostgreSQL database.

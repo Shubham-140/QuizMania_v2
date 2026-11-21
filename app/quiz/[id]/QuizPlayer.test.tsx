@@ -108,9 +108,9 @@ describe("QuizPlayer", () => {
     renderPlayer();
 
     const paris = screen.getByRole("button", { name: "Paris" });
-    while (document.activeElement !== paris) {
-      await user.tab();
-    }
+    await user.tab();
+    await user.tab();
+    expect(paris).toHaveFocus();
     await user.keyboard("{Enter}");
     expect(paris).toHaveAttribute("aria-pressed", "true");
 
