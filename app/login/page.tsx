@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import AuthLayout from "../component/AuthLayout";
 import FormField from "../component/FormField";
+import { DEMO_PASSWORD, DEMO_USERNAME } from "@/lib/demo";
 
 const featureIcon = (path: string) => (
   <svg
@@ -43,24 +44,31 @@ export default function Login() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState("");
+  const [isSigningIn, setIsSigningIn] = useState(false);
   const router = useRouter();
 
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
+  async function signInAs(name: string, secret: string) {
     setError("");
+    setIsSigningIn(true);
 
     const result = await signIn("credentials", {
-      username: username.trim(),
-      password: password.trim(),
-      callbackUrl: `/user/${username}`,
+      username: name,
+      password: secret,
+      callbackUrl: `/user/${name}`,
       redirect: false,
     });
 
     if (result?.error) {
       setError("Invalid username or password");
+      setIsSigningIn(false);
     } else {
-      router.push(`/user/${username}`);
+      router.push(`/user/${name}`);
     }
+  }
+
+  function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+    signInAs(username.trim(), password.trim());
   }
 
   return (
@@ -109,9 +117,25 @@ export default function Login() {
               {error}
             </p>
           )}
-          <button type="submit" className="btn-primary">
+          <button
+            type="submit"
+            className="btn-primary disabled:cursor-wait disabled:opacity-60 disabled:hover:translate-y-0"
+            disabled={isSigningIn}
+          >
             Sign In
           </button>
+          <button
+            type="button"
+            onClick={() => signInAs(DEMO_USERNAME, DEMO_PASSWORD)}
+            disabled={isSigningIn}
+            className="mt-3 w-full px-6 py-3 rounded-2xl border-2 border-dashed font-semibold text-base cursor-pointer transition-colors duration-200 border-emerald-500 text-emerald-600 hover:bg-emerald-50 disabled:cursor-wait disabled:opacity-60 dark:text-emerald-400 dark:hover:bg-emerald-900/40"
+          >
+            Sign in with test account
+          </button>
+          <p className="mt-2 text-center text-xs text-gray-500 dark:text-gray-400">
+            Try QuizMania without signing up. The test account&apos;s profile
+            can&apos;t be edited.
+          </p>
         </div>
       </form>
     </AuthLayout>

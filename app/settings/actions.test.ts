@@ -49,6 +49,23 @@ describe("updateProfile server action", () => {
     expect(updateUser).not.toHaveBeenCalled();
   });
 
+  it("refuses to change the shared test account's profile", async () => {
+    getServerSession.mockResolvedValue({
+      user: { id: USER_ID, username: "TestUser" },
+    });
+    const fields = { name: "Renamed", age: "", description: "" };
+
+    const state = await submit(fields);
+
+    expect(state).toEqual({
+      status: "error",
+      message: "The test account's profile can't be changed",
+      values: fields,
+    });
+    expect(updateUser).not.toHaveBeenCalled();
+    expect(revalidateTag).not.toHaveBeenCalled();
+  });
+
   it("returns the validation message and keeps what the user typed", async () => {
     const fields = { name: "Quiz Fan", age: "abc", description: "Hi" };
 

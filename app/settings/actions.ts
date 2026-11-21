@@ -4,6 +4,7 @@ import { revalidateTag } from "next/cache";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
 import { authOptions } from "@/lib/authOptions";
+import { isDemoUser } from "@/lib/demo";
 import { prisma } from "@/lib/prisma";
 import { profileTag } from "@/lib/users";
 
@@ -60,6 +61,14 @@ export async function updateProfile(
     return {
       status: "error",
       message: "Please sign in again to save your profile",
+      values,
+    };
+  }
+
+  if (isDemoUser(session.user.username)) {
+    return {
+      status: "error",
+      message: "The test account's profile can't be changed",
       values,
     };
   }

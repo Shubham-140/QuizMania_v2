@@ -9,6 +9,7 @@ import { useActionState, useEffect, useState, type ReactNode } from "react";
 import { updateProfile, type ProfileFormState } from "./actions";
 import { RootState } from "@/app/store/store";
 import type { SettingsUser } from "@/lib/users";
+import { isDemoUser } from "@/lib/demo";
 
 const sectionTitle =
   "text-lg font-semibold mb-4 pb-2 border-b border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300";
@@ -75,6 +76,7 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
   const [showSaved, setShowSaved] = useState(false);
   const username = user.username ?? user.gitHubUsername ?? "";
   const quizAttended = user.quizAttended;
+  const isDemo = isDemoUser(user.username);
 
   useEffect(() => {
     if (state.status !== "success") return;
@@ -118,87 +120,98 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
         <form action={formAction} className="mb-8">
           <h3 className={sectionTitle}>Profile Information</h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <Field id="username" label="Username">
-                <input
-                  id="username"
-                  type="text"
-                  value={username}
-                  readOnly
-                  className={readOnlyControl}
-                />
-              </Field>
-
-              <Field id="quizAttended" label="Quiz Attended">
-                <input
-                  id="quizAttended"
-                  type="number"
-                  value={quizAttended ?? 0}
-                  readOnly
-                  className={readOnlyControl}
-                />
-              </Field>
-            </div>
-
-            <div>
-              <Field id="fullName" label="Full Name">
-                <input
-                  id="fullName"
-                  name="name"
-                  type="text"
-                  defaultValue={state.values.name}
-                  className={editableControl}
-                  placeholder="Your full name"
-                />
-              </Field>
-
-              <Field id="age" label="Age">
-                <input
-                  id="age"
-                  name="age"
-                  type="number"
-                  min={0}
-                  max={120}
-                  defaultValue={state.values.age}
-                  className={editableControl}
-                  placeholder="Enter your age"
-                />
-              </Field>
-            </div>
-          </div>
-
-          <Field id="description" label="About You">
-            <textarea
-              id="description"
-              name="description"
-              defaultValue={state.values.description}
-              className={editableControl}
-              placeholder="Tell us about yourself..."
-              rows={3}
-            />
-          </Field>
-
-          <div className="flex items-center justify-end gap-4">
-            {state.status === "error" && (
-              <p role="alert" className="text-sm text-red-500">
-                {state.message}
-              </p>
-            )}
-            <p
-              role="status"
-              className="text-sm text-emerald-600 dark:text-emerald-400"
-            >
-              {showSaved ? state.message : ""}
+          {isDemo && (
+            <p className="mb-6 rounded-lg border-l-4 px-4 py-3 text-sm border-amber-500 bg-amber-50 text-amber-800 dark:border-amber-400 dark:bg-amber-900/40 dark:text-amber-200">
+              You&apos;re using the shared test account, so its profile
+              can&apos;t be changed. Quiz preferences still work.
             </p>
-            <button
-              type="submit"
-              className="px-6 py-2 rounded-lg text-white font-medium text-sm cursor-pointer transition-all bg-emerald-500 hover:-translate-y-0.5 shadow-[0_2px_6px_rgba(16,185,129,0.3)] hover:shadow-[0_4px_10px_rgba(16,185,129,0.4)] dark:shadow-[0_2px_6px_rgba(16,185,129,0.2)] dark:hover:shadow-[0_4px_10px_rgba(16,185,129,0.3)] disabled:cursor-wait disabled:opacity-60 disabled:hover:translate-y-0"
-              disabled={isSaving}
-            >
-              {isSaving ? "Saving..." : "Save Profile"}
-            </button>
-          </div>
+          )}
+
+          <fieldset disabled={isDemo} className="disabled:opacity-70">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <Field id="username" label="Username">
+                  <input
+                    id="username"
+                    type="text"
+                    value={username}
+                    readOnly
+                    className={readOnlyControl}
+                  />
+                </Field>
+
+                <Field id="quizAttended" label="Quiz Attended">
+                  <input
+                    id="quizAttended"
+                    type="number"
+                    value={quizAttended ?? 0}
+                    readOnly
+                    className={readOnlyControl}
+                  />
+                </Field>
+              </div>
+
+              <div>
+                <Field id="fullName" label="Full Name">
+                  <input
+                    id="fullName"
+                    name="name"
+                    type="text"
+                    defaultValue={state.values.name}
+                    className={editableControl}
+                    placeholder="Your full name"
+                  />
+                </Field>
+
+                <Field id="age" label="Age">
+                  <input
+                    id="age"
+                    name="age"
+                    type="number"
+                    min={0}
+                    max={120}
+                    defaultValue={state.values.age}
+                    className={editableControl}
+                    placeholder="Enter your age"
+                  />
+                </Field>
+              </div>
+            </div>
+
+            <Field id="description" label="About You">
+              <textarea
+                id="description"
+                name="description"
+                defaultValue={state.values.description}
+                className={editableControl}
+                placeholder="Tell us about yourself..."
+                rows={3}
+              />
+            </Field>
+
+            <div className="flex items-center justify-end gap-4">
+              {state.status === "error" && (
+                <p role="alert" className="text-sm text-red-500">
+                  {state.message}
+                </p>
+              )}
+              <p
+                role="status"
+                className="text-sm text-emerald-600 dark:text-emerald-400"
+              >
+                {showSaved ? state.message : ""}
+              </p>
+              <button
+                type="submit"
+                className={`px-6 py-2 rounded-lg text-white font-medium text-sm cursor-pointer transition-all bg-emerald-500 hover:-translate-y-0.5 shadow-[0_2px_6px_rgba(16,185,129,0.3)] hover:shadow-[0_4px_10px_rgba(16,185,129,0.4)] dark:shadow-[0_2px_6px_rgba(16,185,129,0.2)] dark:hover:shadow-[0_4px_10px_rgba(16,185,129,0.3)] disabled:opacity-60 disabled:hover:translate-y-0 ${
+                  isSaving ? "disabled:cursor-wait" : "disabled:cursor-not-allowed"
+                }`}
+                disabled={isSaving}
+              >
+                {isSaving ? "Saving..." : "Save Profile"}
+              </button>
+            </div>
+          </fieldset>
         </form>
 
         <div>

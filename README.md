@@ -10,7 +10,7 @@ A full-stack quiz app built with Next.js, TypeScript and PostgreSQL. Pick a cate
 - Unfinished quizzes can be resumed from the home page, with answers and remaining time kept
 - Keyboard and screen reader friendly: answers, dialogs and menus all work without a mouse
 - Public profiles showing a user's most recent results
-- Sign in with email and password or GitHub
+- Sign in with email and password or GitHub, or try it in one click with the shared test account
 - Light and dark themes, saved per user without a flash on load
 - A feedback form backed by Formspree
 
@@ -33,6 +33,7 @@ Each quiz is a `QuizAttempt` stored in the database, and the server owns everyth
 - Middleware protects `/settings` and `/quiz/*` and keeps signed-in users away from `/login` and `/signup`
 - Users and quiz attempts use cuid ids, so records can't be found by guessing numbers
 - Every attempt lookup is scoped to the signed-in user
+- The shared test account can take quizzes but its profile can't be edited, so its public page stays as it is
 - Profile pictures are limited to an allow-list of image hosts
 
 ## Tech stack
@@ -90,8 +91,9 @@ The suite runs in Node and jsdom and never touches the database or the trivia AP
 - The submit and answers APIs: sign-in required, owner-only access, finished attempts, late saves, mismatched answers, double submits and finishing an attempt at its deadline
 - The quiz player: answering and submitting, answering with the keyboard alone, saving picks as they're made, restoring them after a refresh, the retry message on a failed save, and auto-submit on timeout
 - Dialogs: focus moves in and stays inside, Escape closes them, and focus returns to where it was
+- The login page: one-click sign-in with the test account, and the error shown when sign-in fails
 - Sign-in sessions created before the switch to cuid ids are upgraded to the user's new id
-- The profile Server Action: sign-in required, validation messages that keep what was typed, and refreshing only that user's cached profile
+- The profile Server Action: sign-in required, the test account kept read-only, validation messages that keep what was typed, and refreshing only that user's cached profile
 - Profile caching: the cache tag, real dates on cache hits, and skipping the cache right after an expired quiz is finished
 
 ## Project structure
