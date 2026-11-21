@@ -1,5 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
+import { useDialog } from "./useDialog";
 
 interface Props {
   setShowExitOverlay: React.Dispatch<React.SetStateAction<boolean>>;
@@ -10,6 +11,7 @@ const buttonBase =
 
 export const ExitConfirmationOverlay = ({ setShowExitOverlay }: Props) => {
   const router = useRouter();
+  const dialogRef = useDialog<HTMLDivElement>(() => setShowExitOverlay(false));
 
   return (
     <div
@@ -17,6 +19,12 @@ export const ExitConfirmationOverlay = ({ setShowExitOverlay }: Props) => {
       onClick={() => setShowExitOverlay(false)}
     >
       <div
+        ref={dialogRef}
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="exit-quiz-title"
+        aria-describedby="exit-quiz-description"
+        tabIndex={-1}
         className="relative w-full max-w-[500px] rounded-[clamp(16px,3vw,24px)] p-[clamp(20px,5vw,32px)] text-center overflow-hidden animate-fade-in-up border bg-white border-gray-200 shadow-xl shadow-black/10 dark:bg-gray-800 dark:border-gray-600 dark:shadow-black/30"
         onClick={(e) => e.stopPropagation()}
       >
@@ -35,12 +43,12 @@ export const ExitConfirmationOverlay = ({ setShowExitOverlay }: Props) => {
           </svg>
         </div>
 
-        <h2 className="text-[clamp(1.25rem,5vw,1.75rem)] font-extrabold mb-[clamp(8px,2vw,12px)] leading-tight bg-gradient-to-r from-emerald-500 to-emerald-600 bg-clip-text text-transparent">
+        <h2 id="exit-quiz-title" className="text-[clamp(1.25rem,5vw,1.75rem)] font-extrabold mb-[clamp(8px,2vw,12px)] leading-tight bg-gradient-to-r from-emerald-500 to-emerald-600 bg-clip-text text-transparent">
           Are you sure you want to leave?
         </h2>
 
-        <p className="mb-[clamp(20px,5vw,28px)] text-[clamp(0.875rem,3vw,1rem)] leading-relaxed text-gray-600 dark:text-gray-300">
-          Your current quiz progress will be lost if you exit now.
+        <p id="exit-quiz-description" className="mb-[clamp(20px,5vw,28px)] text-[clamp(0.875rem,3vw,1rem)] leading-relaxed text-gray-600 dark:text-gray-300">
+          Your answers are saved, but the timer keeps running while you&apos;re away.
         </p>
 
         <div className="flex gap-[clamp(12px,3vw,16px)] justify-center flex-wrap">

@@ -2,10 +2,10 @@
 
 import { ExitConfirmationOverlay } from "./ExitConfirmationOverlay";
 import ProfileDropdown from "./ProfileDropdown";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useTheme } from "./ThemeProvider";
 import { isQuizInProgress } from "@/lib/quizRoutes";
 
@@ -70,6 +70,10 @@ const Navbar = () => {
   const [showExitOverlay, setShowExitOverlay] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const closeProfileDropdown = useCallback(
+    () => setShowProfileDropdown(false),
+    []
+  );
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const isQuizActive = isQuizInProgress(pathname);
@@ -150,13 +154,16 @@ const Navbar = () => {
               <button
                 onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                 className={`group relative flex h-12 w-12 cursor-pointer items-center justify-center rounded-xl text-lg font-bold ${ctaDesktop}`}
-                title={`Go to ${
-                  session.user.name || session.user.username || "User"
-                }'s profile`}
+                aria-label="Account menu"
+                aria-haspopup="true"
+                aria-expanded={showProfileDropdown}
+                aria-controls="profile-menu"
               >
                 {getUserInitial()}
               </button>
-              {showProfileDropdown && <ProfileDropdown />}
+              {showProfileDropdown && (
+                <ProfileDropdown onClose={closeProfileDropdown} />
+              )}
             </div>
           ) : (
             <Link href="/login" className="group relative no-underline">
@@ -174,6 +181,7 @@ const Navbar = () => {
           className="ml-1 flex h-12 w-12 flex-col items-center justify-center gap-1.5 rounded-xl border border-gray-200 bg-gray-100 transition-all duration-300 hover:bg-gray-200 md:hidden dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Menu"
+          aria-expanded={mobileMenuOpen}
         >
           <div
             className={`${menuBar} ${
@@ -197,6 +205,7 @@ const Navbar = () => {
         className={`fixed inset-0 z-[999] flex flex-col items-center justify-center gap-8 bg-white/95 backdrop-blur-sm transition-opacity duration-300 md:hidden dark:bg-slate-900/95 ${
           mobileMenuOpen ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
+        inert={!mobileMenuOpen}
       >
         <button
           onClick={toggleMode}
@@ -236,15 +245,25 @@ const Navbar = () => {
         {!authReady ? (
           <div className="h-14 w-40 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-700" />
         ) : session?.user ? (
-          <button
-            onClick={() => setMobileMenuOpen(false)}
-            className={ctaMobile}
-          >
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 font-bold">
-              {getUserInitial()}
-            </div>
-            Profile
-          </button>
+          <div className="flex flex-col items-center gap-4">
+            <Link
+              href={`/user/${session.user.username}`}
+              onClick={() => setMobileMenuOpen(false)}
+              className={ctaMobile}
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 font-bold">
+                {getUserInitial()}
+              </span>
+              Profile
+            </Link>
+            <button
+              type="button"
+              onClick={() => signOut()}
+              className="text-lg font-semibold text-gray-600 transition-colors duration-300 hover:text-red-600 dark:text-gray-300 dark:hover:text-red-400"
+            >
+              Logout
+            </button>
+          </div>
         ) : (
           <Link
             href="/login"

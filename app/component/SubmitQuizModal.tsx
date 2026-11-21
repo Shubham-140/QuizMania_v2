@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useDialog } from "./useDialog";
 
 interface PropTypes {
   setSubmitOverlay: React.Dispatch<React.SetStateAction<boolean>>;
@@ -11,10 +12,21 @@ const buttonBase =
 
 export const SubmitQuizModal = ({ setSubmitOverlay, onSubmit }: PropTypes) => {
   const [submitting, setSubmitting] = useState(false);
+  const dialogRef = useDialog<HTMLDivElement>(() => {
+    if (!submitting) setSubmitOverlay(false);
+  });
 
   return (
     <div className="fixed inset-0 z-[1000] flex justify-center items-center p-4 backdrop-blur-md bg-black/50 dark:bg-black/70">
-      <div className="relative w-full max-w-[500px] rounded-2xl p-8 text-center overflow-hidden border bg-white/96 border-slate-200 shadow-[0_20px_40px_rgba(0,0,0,0.08)] dark:bg-slate-900/96 dark:border-slate-700 dark:shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="submit-quiz-title"
+        aria-describedby="submit-quiz-description"
+        tabIndex={-1}
+        className="relative w-full max-w-[500px] rounded-2xl p-8 text-center overflow-hidden border bg-white/96 border-slate-200 shadow-[0_20px_40px_rgba(0,0,0,0.08)] dark:bg-slate-900/96 dark:border-slate-700 dark:shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
+      >
         <div className="accent-bar" />
 
         <div className="w-20 h-20 rounded-full flex justify-center items-center mx-auto mb-6 border-2 bg-red-50 border-red-200 dark:bg-red-900/30 dark:border-red-500">
@@ -30,11 +42,11 @@ export const SubmitQuizModal = ({ setSubmitOverlay, onSubmit }: PropTypes) => {
           </svg>
         </div>
 
-        <h2 className="text-[clamp(1.5rem,5vw,1.75rem)] font-bold mb-4 leading-tight text-slate-900 dark:text-slate-50">
+        <h2 id="submit-quiz-title" className="text-[clamp(1.5rem,5vw,1.75rem)] font-bold mb-4 leading-tight text-slate-900 dark:text-slate-50">
           Submit Your Quiz?
         </h2>
 
-        <p className="text-[clamp(1rem,3vw,1.125rem)] mb-8 leading-relaxed text-slate-600 dark:text-slate-400">
+        <p id="submit-quiz-description" className="text-[clamp(1rem,3vw,1.125rem)] mb-8 leading-relaxed text-slate-600 dark:text-slate-400">
           Are you sure you want to submit your answers? You won&apos;t be able
           to make changes after submission.
         </p>

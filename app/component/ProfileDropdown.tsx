@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
+import { useDialog } from "./useDialog";
 
 const menuItem =
   "flex w-full cursor-pointer items-center px-4 py-3 text-left text-gray-700 transition-all duration-200 hover:translate-x-1 dark:text-gray-300";
@@ -16,10 +17,9 @@ const iconProps = {
   strokeWidth: "2",
 };
 
-const ProfileDropdown = () => {
+const ProfileDropdown = ({ onClose }: { onClose: () => void }) => {
   const { data: session } = useSession();
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const [show, setShow] = useState(true);
+  const dropdownRef = useDialog<HTMLDivElement>(onClose, { trapFocus: false });
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -27,15 +27,13 @@ const ProfileDropdown = () => {
         dropdownRef.current &&
         !dropdownRef.current.contains(e.target as Node)
       ) {
-        setShow(false);
+        onClose();
       }
     }
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  if (!show) return null;
+  }, [dropdownRef, onClose]);
 
   return (
     <div className="fixed inset-0 z-50 mt-2">
@@ -43,6 +41,9 @@ const ProfileDropdown = () => {
 
       <div
         ref={dropdownRef}
+        id="profile-menu"
+        aria-label="Account"
+        role="region"
         className="absolute top-12 right-4 mt-1 w-48 overflow-hidden rounded-xl border border-slate-200 bg-white/95 shadow-xl shadow-black/10 backdrop-blur-sm dark:border-slate-600 dark:bg-slate-900/95 dark:shadow-black/30"
       >
         <div className="absolute top-0 right-0 left-0 h-0.5 bg-gradient-to-r from-emerald-500 to-blue-500" />
@@ -50,6 +51,7 @@ const ProfileDropdown = () => {
         <div className="py-2">
           <Link
             href={`/user/${session?.user?.username}`}
+            onClick={onClose}
             className={`${menuItem} hover:bg-slate-50 hover:text-gray-900 dark:hover:bg-slate-800 dark:hover:text-white`}
           >
             <div className="mr-3 flex h-5 w-5 flex-shrink-0">
