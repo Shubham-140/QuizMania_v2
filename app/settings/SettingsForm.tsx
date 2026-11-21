@@ -62,11 +62,21 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
   const [age, setAge] = useState(user.age ?? 0);
   const [description, setDescription] = useState(user.description ?? "");
   const [saveError, setSaveError] = useState("");
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
+    "idle"
+  );
   const username = user.username ?? user.gitHubUsername ?? "";
   const quizAttended = user.quizAttended;
 
+  useEffect(() => {
+    if (saveStatus !== "saved") return;
+    const timer = setTimeout(() => setSaveStatus("idle"), 3000);
+    return () => clearTimeout(timer);
+  }, [saveStatus]);
+
   async function handleSaveChanges() {
     setSaveError("");
+    setSaveStatus("saving");
     try {
       const res = await fetch("/api/user/update", {
         method: "PUT",
@@ -83,14 +93,17 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
       const data = await res.json();
       if (!res.ok) {
         setSaveError(data.error ?? "Could not save your profile");
+        setSaveStatus("idle");
         return;
       }
 
       setName(data.name ?? "");
       setAge(data.age ?? 0);
       setDescription(data.description ?? "");
+      setSaveStatus("saved");
     } catch {
       setSaveError("Could not save your profile");
+      setSaveStatus("idle");
     }
   }
 
@@ -196,11 +209,18 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
                 {saveError}
               </p>
             )}
-            <button
-              className="px-6 py-2 rounded-lg text-white font-medium text-sm cursor-pointer transition-all bg-emerald-500 hover:-translate-y-0.5 shadow-[0_2px_6px_rgba(16,185,129,0.3)] hover:shadow-[0_4px_10px_rgba(16,185,129,0.4)] dark:shadow-[0_2px_6px_rgba(16,185,129,0.2)] dark:hover:shadow-[0_4px_10px_rgba(16,185,129,0.3)]"
-              onClick={handleSaveChanges}
+            <p
+              role="status"
+              className="text-sm text-emerald-600 dark:text-emerald-400"
             >
-              Save Profile
+              {saveStatus === "saved" ? "Profile saved" : ""}
+            </p>
+            <button
+              className="px-6 py-2 rounded-lg text-white font-medium text-sm cursor-pointer transition-all bg-emerald-500 hover:-translate-y-0.5 shadow-[0_2px_6px_rgba(16,185,129,0.3)] hover:shadow-[0_4px_10px_rgba(16,185,129,0.4)] dark:shadow-[0_2px_6px_rgba(16,185,129,0.2)] dark:hover:shadow-[0_4px_10px_rgba(16,185,129,0.3)] disabled:cursor-wait disabled:opacity-60 disabled:hover:translate-y-0"
+              onClick={handleSaveChanges}
+              disabled={saveStatus === "saving"}
+            >
+              {saveStatus === "saving" ? "Saving..." : "Save Profile"}
             </button>
           </div>
         </div>
