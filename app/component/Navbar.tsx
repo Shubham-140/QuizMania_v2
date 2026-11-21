@@ -92,114 +92,118 @@ const Navbar = () => {
     `/${item.toLowerCase() === "home" ? "" : item.toLowerCase()}`;
 
   return (
-    <nav className="sticky top-0 z-[1000] flex h-[clamp(52px,5.5vw,64px)] items-center justify-between border-b border-slate-200 bg-white/95 px-[clamp(16px,5vw,40px)] shadow-lg shadow-black/5 backdrop-blur-sm dark:border-slate-600 dark:bg-slate-900/95 dark:shadow-black/30">
-      <Link
-        href="/"
-        className="z-[1001] flex items-center gap-3 no-underline group"
-        onClick={(e) => {
-          if (isQuizActive) {
-            e.preventDefault();
-            setShowExitOverlay(true);
-          }
-        }}
-      >
-        <div className="flex h-[clamp(32px,4.8vw,40px)] w-[clamp(32px,4.8vw,40px)] items-center justify-center rounded-xl bg-emerald-500 text-[clamp(14px,2.4vw,18px)] font-extrabold text-white shadow-lg shadow-emerald-500/30 -rotate-6 transition-all duration-300 group-hover:rotate-0 group-hover:scale-105 dark:shadow-emerald-500/20">
-          QM
-        </div>
-        <h1 className="m-0 bg-gradient-to-r from-emerald-500 to-emerald-700 bg-clip-text text-[clamp(18px,2.6vw,22px)] font-extrabold tracking-tight text-transparent">
-          QuizMania
-        </h1>
-      </Link>
+    <>
+      <nav className="sticky top-0 z-[1000] h-[clamp(52px,5.5vw,64px)] border-b border-slate-200 bg-white/95 shadow-lg shadow-black/5 backdrop-blur-sm dark:border-slate-600 dark:bg-slate-900/95 dark:shadow-black/30">
+        <div className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-5 md:px-10">
+          <Link
+            href="/"
+            className="z-[1001] flex items-center gap-3 no-underline group"
+            onClick={(e) => {
+              if (isQuizActive) {
+                e.preventDefault();
+                setShowExitOverlay(true);
+              }
+            }}
+          >
+            <div className="flex h-[clamp(32px,4.8vw,40px)] w-[clamp(32px,4.8vw,40px)] items-center justify-center rounded-xl bg-emerald-500 text-[clamp(14px,2.4vw,18px)] font-extrabold text-white shadow-lg shadow-emerald-500/30 -rotate-6 transition-all duration-300 group-hover:rotate-0 group-hover:scale-105 dark:shadow-emerald-500/20">
+              QM
+            </div>
+            <h1 className="m-0 bg-gradient-to-r from-emerald-500 to-emerald-700 bg-clip-text text-[clamp(18px,2.6vw,22px)] font-extrabold tracking-tight text-transparent">
+              QuizMania
+            </h1>
+          </Link>
 
-      <div className="hidden items-center gap-8 md:flex">
-        {navItems.map((item) =>
-          isQuizActive ? (
-            <span
-              key={item}
-              className="rounded-lg bg-gray-100/50 px-4 py-2 text-[clamp(14px,1.8vw,16px)] font-semibold text-gray-500 dark:bg-gray-700/50 dark:text-gray-400"
-            >
-              {item}
-            </span>
-          ) : (
-            <Link
-              key={item}
-              href={navHref(item)}
-              className="group relative px-4 py-2 no-underline"
-            >
-              <span className="text-[clamp(14px,1.8vw,16px)] font-semibold text-gray-700 transition-colors duration-300 group-hover:text-emerald-500 dark:text-gray-200">
-                {item}
-              </span>
-              <span className="absolute bottom-1 left-0 h-0.5 w-0 bg-emerald-500 transition-all duration-300 group-hover:w-full" />
-            </Link>
-          )
-        )}
-      </div>
-
-      <div className="z-[1001] flex items-center gap-3">
-        <button
-          onClick={toggleMode}
-          className="group relative flex h-12 w-12 cursor-pointer items-center justify-center rounded-xl border border-gray-200 bg-gray-100 shadow-sm transition-all duration-300 hover:scale-105 hover:bg-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
-          aria-label="Toggle theme"
-        >
-          <div className="relative h-5 w-5 transition-transform duration-500 group-hover:rotate-180">
-            <ThemeIcon size="h-5 w-5" />
+          <div className="hidden items-center gap-8 md:flex">
+            {navItems.map((item) =>
+              isQuizActive ? (
+                <span
+                  key={item}
+                  className="rounded-lg bg-gray-100/50 px-4 py-2 text-[clamp(14px,1.8vw,16px)] font-semibold text-gray-500 dark:bg-gray-700/50 dark:text-gray-400"
+                >
+                  {item}
+                </span>
+              ) : (
+                <Link
+                  key={item}
+                  href={navHref(item)}
+                  className="group relative px-4 py-2 no-underline"
+                >
+                  <span className="text-[clamp(14px,1.8vw,16px)] font-semibold text-gray-700 transition-colors duration-300 group-hover:text-emerald-500 dark:text-gray-200">
+                    {item}
+                  </span>
+                  <span className="absolute bottom-1 left-0 h-0.5 w-0 bg-emerald-500 transition-all duration-300 group-hover:w-full" />
+                </Link>
+              )
+            )}
           </div>
-        </button>
 
-        <div className="relative hidden h-12 min-w-[48px] items-center md:flex">
-          {!authReady ? (
-            <div className="h-12 w-12 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-700" />
-          ) : session?.user ? (
-            <div className="relative">
-              <button
-                onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                className={`group relative flex h-12 w-12 cursor-pointer items-center justify-center rounded-xl text-lg font-bold ${ctaDesktop}`}
-                aria-label="Account menu"
-                aria-haspopup="true"
-                aria-expanded={showProfileDropdown}
-                aria-controls="profile-menu"
-              >
-                {getUserInitial()}
-              </button>
-              {showProfileDropdown && (
-                <ProfileDropdown onClose={closeProfileDropdown} />
+          <div className="z-[1001] flex items-center gap-3">
+            <button
+              onClick={toggleMode}
+              className="group relative flex h-12 w-12 cursor-pointer items-center justify-center rounded-xl border border-gray-200 bg-gray-100 shadow-sm transition-all duration-300 hover:scale-105 hover:bg-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+              aria-label="Toggle theme"
+            >
+              <div className="relative h-5 w-5 transition-transform duration-500 group-hover:rotate-180">
+                <ThemeIcon size="h-5 w-5" />
+              </div>
+            </button>
+
+            <div className="relative hidden h-12 min-w-[48px] items-center md:flex">
+              {!authReady ? (
+                <div className="h-12 w-12 animate-pulse rounded-xl bg-gray-200 dark:bg-gray-700" />
+              ) : session?.user ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                    className={`group relative flex h-12 w-12 cursor-pointer items-center justify-center rounded-xl text-lg font-bold ${ctaDesktop}`}
+                    aria-label="Account menu"
+                    aria-haspopup="true"
+                    aria-expanded={showProfileDropdown}
+                    aria-controls="profile-menu"
+                  >
+                    {getUserInitial()}
+                  </button>
+                  {showProfileDropdown && (
+                    <ProfileDropdown onClose={closeProfileDropdown} />
+                  )}
+                </div>
+              ) : (
+                <Link href="/login" className="group relative no-underline">
+                  <div
+                    className={`flex items-center gap-2.5 rounded-xl px-5 py-2.5 text-[clamp(14px,1.8vw,16px)] font-semibold ${ctaDesktop}`}
+                  >
+                    <UserIcon size="h-4 w-4" />
+                    Login
+                  </div>
+                </Link>
               )}
             </div>
-          ) : (
-            <Link href="/login" className="group relative no-underline">
-              <div
-                className={`flex items-center gap-2.5 rounded-xl px-5 py-2.5 text-[clamp(14px,1.8vw,16px)] font-semibold ${ctaDesktop}`}
-              >
-                <UserIcon size="h-4 w-4" />
-                Login
-              </div>
-            </Link>
-          )}
-        </div>
 
-        <button
-          className="ml-1 flex h-12 w-12 flex-col items-center justify-center gap-1.5 rounded-xl border border-gray-200 bg-gray-100 transition-all duration-300 hover:bg-gray-200 md:hidden dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Menu"
-          aria-expanded={mobileMenuOpen}
-        >
-          <div
-            className={`${menuBar} ${
-              mobileMenuOpen ? "translate-y-1.5 rotate-45" : ""
-            }`}
-          />
-          <div
-            className={`${menuBar} ${
-              mobileMenuOpen ? "opacity-0" : "opacity-100"
-            }`}
-          />
-          <div
-            className={`${menuBar} ${
-              mobileMenuOpen ? "-translate-y-1.5 -rotate-45" : ""
-            }`}
-          />
-        </button>
-      </div>
+            <button
+              className="ml-1 flex h-12 w-12 flex-col items-center justify-center gap-1.5 rounded-xl border border-gray-200 bg-gray-100 transition-all duration-300 hover:bg-gray-200 md:hidden dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Menu"
+              aria-expanded={mobileMenuOpen}
+            >
+              <div
+                className={`${menuBar} ${
+                  mobileMenuOpen ? "translate-y-1.5 rotate-45" : ""
+                }`}
+              />
+              <div
+                className={`${menuBar} ${
+                  mobileMenuOpen ? "opacity-0" : "opacity-100"
+                }`}
+              />
+              <div
+                className={`${menuBar} ${
+                  mobileMenuOpen ? "-translate-y-1.5 -rotate-45" : ""
+                }`}
+              />
+            </button>
+          </div>
+        </div>
+      </nav>
 
       <div
         className={`fixed inset-0 z-[999] flex flex-col items-center justify-center gap-8 bg-white/95 backdrop-blur-sm transition-opacity duration-300 md:hidden dark:bg-slate-900/95 ${
@@ -281,7 +285,7 @@ const Navbar = () => {
       {showExitOverlay && (
         <ExitConfirmationOverlay setShowExitOverlay={setShowExitOverlay} />
       )}
-    </nav>
+    </>
   );
 };
 
