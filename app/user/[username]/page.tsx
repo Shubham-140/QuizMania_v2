@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { getPublicUser } from "@/lib/users";
 import ProfileView from "./ProfileView";
+import RecentQuizzes, { RecentQuizzesSkeleton } from "./RecentQuizzes";
 
 type Props = {
   params: Promise<{ username: string }>;
@@ -24,5 +26,14 @@ export default async function ProfilePage({ params }: Props) {
     notFound();
   }
 
-  return <ProfileView user={user} />;
+  return (
+    <ProfileView
+      user={user}
+      recentQuizzes={
+        <Suspense fallback={<RecentQuizzesSkeleton />}>
+          <RecentQuizzes username={username} />
+        </Suspense>
+      }
+    />
+  );
 }

@@ -1,22 +1,14 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOptions";
-import { getActiveAttempt } from "@/lib/quizAttempts";
+import { Suspense } from "react";
 import HomePage from "./component/HomePage";
+import ContinueQuizBanner from "./component/ContinueQuizBanner";
 
-export default async function Home() {
-  const session = await getServerSession(authOptions);
-  const attempt = session?.user?.id
-    ? await getActiveAttempt(session.user.id)
-    : null;
-
+export default function Home() {
   return (
     <HomePage
-      activeAttempt={
-        attempt && {
-          id: attempt.id,
-          category: attempt.category,
-          secondsLeft: attempt.secondsLeft,
-        }
+      continueBanner={
+        <Suspense fallback={null}>
+          <ContinueQuizBanner />
+        </Suspense>
       }
     />
   );

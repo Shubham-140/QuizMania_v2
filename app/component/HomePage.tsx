@@ -1,43 +1,9 @@
 "use client";
-import { useState } from "react";
-import Link from "next/link";
+import { useState, type ReactNode } from "react";
 import { CountdownOverlay } from "./CountdownOverlay";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { categories, NO_TIME_LIMIT } from "@/lib/quizOptions";
-
-type ActiveAttempt = {
-  id: string;
-  category: string;
-  secondsLeft: number | null;
-};
-
-const formatTimeLeft = (seconds: number) =>
-  `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
-
-function ContinueQuizBanner({ attempt }: { attempt: ActiveAttempt }) {
-  const label =
-    categories.find((category) => category.value === attempt.category)
-      ?.label ?? attempt.category;
-
-  return (
-    <div className="mb-8 flex flex-col items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-left sm:flex-row dark:border-emerald-700/50 dark:bg-emerald-900/30">
-      <p className="text-sm text-emerald-800 dark:text-emerald-200">
-        You have an unfinished <span className="font-semibold">{label}</span>{" "}
-        quiz
-        {attempt.secondsLeft !== null &&
-          ` with ${formatTimeLeft(attempt.secondsLeft)} left`}
-        .
-      </p>
-      <Link
-        href={`/quiz/${attempt.id}`}
-        className="shrink-0 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-600"
-      >
-        Continue quiz
-      </Link>
-    </div>
-  );
-}
 
 const readSetting = (key: string, fallback: number) => {
   const stored = localStorage.getItem(key);
@@ -97,11 +63,7 @@ function Warning({ message }: { message: string }) {
   );
 }
 
-const HomePage = ({
-  activeAttempt,
-}: {
-  activeAttempt: ActiveAttempt | null;
-}) => {
+const HomePage = ({ continueBanner }: { continueBanner: ReactNode }) => {
   const { data: session, status } = useSession();
   const [difficulty, setDifficulty] = useState<string>("");
   const [category, setCategory] = useState<string>("");
@@ -169,7 +131,7 @@ const HomePage = ({
         <div className="w-full max-w-2xl min-w-[280px] mx-auto rounded-2xl shadow-xl p-6 md:p-12 text-center transition-all duration-300 backdrop-blur-sm bg-white/95 border border-gray-200 shadow-black/5 dark:bg-gray-800/95 dark:border-gray-600 dark:shadow-black/30">
           <div className="accent-bar"></div>
 
-          {activeAttempt && <ContinueQuizBanner attempt={activeAttempt} />}
+          {continueBanner}
 
           <div className="relative mb-8 md:mb-12">
             <div className="w-16 h-16 md:w-24 md:h-24 mx-auto rounded-xl flex justify-center items-center text-3xl md:text-4xl font-extrabold text-white bg-emerald-500 -rotate-6 transition-all duration-300 hover:rotate-0 hover:scale-105">

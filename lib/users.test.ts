@@ -1,16 +1,26 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { findUnique, finishExpiredAttempts, unstableCache } = vi.hoisted(() => ({
-  findUnique: vi.fn(),
-  finishExpiredAttempts: vi.fn(),
-  unstableCache: vi.fn(),
-}));
+const { findUnique, findMany, finishExpiredAttempts, unstableCache } =
+  vi.hoisted(() => ({
+    findUnique: vi.fn(),
+    findMany: vi.fn(),
+    finishExpiredAttempts: vi.fn(),
+    unstableCache: vi.fn(),
+  }));
 
 vi.mock("next/cache", () => ({ unstable_cache: unstableCache }));
-vi.mock("@/lib/prisma", () => ({ prisma: { user: { findUnique } } }));
+vi.mock("@/lib/prisma", () => ({
+  prisma: { user: { findUnique }, quizAttempt: { findMany } },
+}));
 vi.mock("@/lib/quizAttempts", () => ({ finishExpiredAttempts }));
 
-import { getPublicUser, PROFILE_REVALIDATE_SECONDS } from "./users";
+import {
+  getPublicUser,
+  getRecentAttempts,
+  PROFILE_REVALIDATE_SECONDS,
+} from "./users";
+
+const USER_ID = "cuser00000000000000000001";
 
 const profileRow = {
   name: "Quiz Fan",
@@ -23,20 +33,26 @@ const profileRow = {
   quizAttended: 3,
   createdAt: new Date("2026-01-01T00:00:00Z"),
   age: null,
-  quizAttempts: [
-    {
-      id: "cattempt00000000000000001",
-      category: "science",
-      difficulty: "easy",
-      score: 7,
-      totalQuestions: 10,
-      timeTaken: 95,
-      completedAt: new Date("2026-02-01T10:00:00Z"),
-    },
-  ],
 };
 
-describe("getPublicUser", () => {
+const attemptRows = [
+  {
+    id: "cattempt00000000000000001",
+    category: "science",
+    difficulty: "easy",
+    score: 7,
+    totalQuestions: 10,
+    timeTaken: 95,
+    completedAt: new Date("2026-02-01T10:00:00Z"),
+  },
+];
+
+const cacheOptions = {
+  tags: ["profile:quiz-fan"],
+  revalidate: PROFILE_REVALIDATE_SECONDS,
+};
+
+describe("cached public profile data", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     unstableCache.mockImplementation(
@@ -45,41 +61,49 @@ describe("getPublicUser", () => {
     );
     finishExpiredAttempts.mockResolvedValue(0);
     findUnique.mockImplementation(({ select }: { select: object }) =>
-      Promise.resolve("id" in select ? { id: "cuser00000000000000000001" } : profileRow)
+      Promise.resolve("id" in select ? { id: USER_ID } : profileRow)
     );
+    findMany.mockResolvedValue(attemptRows);
   });
 
-  it("caches the profile under the user's tag with a time-based fallback", async () => {
+  it("caches the profile and its recent quizzes under the same user tag", async () => {
     await getPublicUser("quiz-fan");
+    await getRecentAttempts("quiz-fan");
 
     expect(unstableCache).toHaveBeenCalledWith(
       expect.any(Function),
       ["public-user", "quiz-fan"],
-      { tags: ["profile:quiz-fan"], revalidate: PROFILE_REVALIDATE_SECONDS }
+      cacheOptions
+    );
+    expect(unstableCache).toHaveBeenCalledWith(
+      expect.any(Function),
+      ["recent-attempts", USER_ID],
+      cacheOptions
     );
   });
 
   it("returns real dates even though the cache stores JSON", async () => {
     const user = await getPublicUser("quiz-fan");
+    const attempts = await getRecentAttempts("quiz-fan");
 
     expect(user?.createdAt).toBeInstanceOf(Date);
     expect(user?.createdAt.toISOString()).toBe("2026-01-01T00:00:00.000Z");
-    expect(user?.quizAttempts[0].completedAt).toBeInstanceOf(Date);
+    expect(attempts[0].completedAt).toBeInstanceOf(Date);
   });
 
   it("skips the cache right after an expired quiz was finished", async () => {
     finishExpiredAttempts.mockResolvedValue(1);
 
-    const user = await getPublicUser("quiz-fan");
-
+    expect(await getPublicUser("quiz-fan")).toEqual(profileRow);
+    expect(await getRecentAttempts("quiz-fan")).toEqual(attemptRows);
     expect(unstableCache).not.toHaveBeenCalled();
-    expect(user).toEqual(profileRow);
   });
 
-  it("returns null for unknown users without caching anything", async () => {
+  it("returns nothing for unknown users without caching anything", async () => {
     findUnique.mockResolvedValue(null);
 
     expect(await getPublicUser("nobody")).toBeNull();
+    expect(await getRecentAttempts("nobody")).toEqual([]);
     expect(unstableCache).not.toHaveBeenCalled();
   });
 });
