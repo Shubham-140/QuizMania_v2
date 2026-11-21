@@ -3,8 +3,8 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import AuthLayout from "../component/AuthLayout";
-import FormField from "../component/FormField";
+import AuthLayout from "@/app/component/AuthLayout";
+import FormField from "@/app/component/FormField";
 import { DEMO_PASSWORD, DEMO_USERNAME } from "@/lib/demo";
 
 const featureIcon = (path: string) => (

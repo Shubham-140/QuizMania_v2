@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { getServerSession } from "next-auth";
 import "./globals.css";
-import Navbar from "./component/Navbar";
 import ReduxProvider from "./store/provider";
 import { AuthProvider } from "./component/SessionProvider";
-import Footer from "./component/Footer";
 import { ThemeProvider } from "./component/ThemeProvider";
 import { authOptions } from "@/lib/authOptions";
 import { THEME_COOKIE_MAX_AGE, THEME_KEY } from "@/lib/theme";
@@ -72,9 +70,7 @@ export default async function RootLayout({
         <ThemeProvider initialLight={initialLight}>
           <ReduxProvider>
             <AuthProvider session={session}>
-              <Navbar />
               {children}
-              <Footer />
             </AuthProvider>
           </ReduxProvider>
         </ThemeProvider>

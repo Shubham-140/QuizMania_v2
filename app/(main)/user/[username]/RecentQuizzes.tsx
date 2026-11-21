@@ -1,5 +1,5 @@
 import { getRecentAttempts } from "@/lib/users";
-import { LoadingStatus, Skeleton } from "../../component/Skeleton";
+import { LoadingStatus, Skeleton } from "@/app/component/Skeleton";
 
 const mutedText = "text-gray-500 dark:text-gray-400";
 const accentText = "text-emerald-600 dark:text-emerald-400";

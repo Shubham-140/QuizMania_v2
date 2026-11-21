@@ -1,4 +1,4 @@
-import { LoadingStatus, Skeleton } from "../../../component/Skeleton";
+import { LoadingStatus, Skeleton } from "@/app/component/Skeleton";
 
 export default function ScoreLoading() {
   return (

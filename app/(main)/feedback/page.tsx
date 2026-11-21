@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import Select from "../component/Select";
+import Select from "@/app/component/Select";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-3 border-slate-200 bg-slate-50 text-gray-900 focus:border-emerald-500 focus:ring-emerald-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:focus:ring-emerald-500/30";

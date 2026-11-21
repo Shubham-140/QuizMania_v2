@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import FeatureTile from "../component/FeatureTile";
+import FeatureTile from "@/app/component/FeatureTile";
 
 const step = (number: number) => (
   <span className="text-white font-bold text-xl">{number}</span>

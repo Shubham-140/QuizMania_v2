@@ -9,7 +9,7 @@ const { signIn, push } = vi.hoisted(() => ({
 
 vi.mock("next-auth/react", () => ({ signIn }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
-vi.mock("../component/AuthLayout", () => ({
+vi.mock("@/app/component/AuthLayout", () => ({
   default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 

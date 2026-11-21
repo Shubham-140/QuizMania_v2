@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import FeatureTile from "../component/FeatureTile";
+import FeatureTile from "@/app/component/FeatureTile";
 
 const icon = (children: ReactNode) => (
   <svg

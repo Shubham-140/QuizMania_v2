@@ -1,4 +1,4 @@
-import { LoadingStatus, Skeleton } from "../../component/Skeleton";
+import { LoadingStatus, Skeleton } from "@/app/component/Skeleton";
 import { RecentQuizzesSkeleton } from "./RecentQuizzes";
 
 const panel = "p-6 rounded-xl bg-gray-50 dark:bg-slate-800/50";

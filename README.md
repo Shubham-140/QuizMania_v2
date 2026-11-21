@@ -49,6 +49,8 @@ Each quiz is a `QuizAttempt` stored in the database, and the server owns everyth
 | State | Redux Toolkit for quiz preferences |
 | Testing | Vitest, React Testing Library |
 
+Pages are split into two route groups that don't change the URLs: `(main)` wraps the app in the navbar and footer, and `(auth)` gives the login and sign-up pages a minimal layout of their own. The root layout only holds the providers, fonts and theme script.
+
 Pages that only display data, like profiles, scores and reviews, are server components. Client components are used where there is interaction, such as the quiz itself and the forms.
 
 Profile settings are saved with a Server Action through `useActionState`, so the form shows its pending and saved states and still submits before JavaScript loads. Public profiles are cached with `unstable_cache` under a per-user tag; saving a profile or submitting a quiz calls `revalidateTag` for that user, and the cache also refreshes on its own every five minutes.
@@ -102,13 +104,16 @@ The suite runs in Node and jsdom and never touches the database or the trivia AP
 
 ```
 app/
-  api/            Route handlers (quiz attempts, sign-up, profile)
-  quiz/[id]/      Quiz player, score and review pages
-  user/[username] Public profiles
-  component/      Shared UI components
-lib/              Auth, Prisma, quiz logic and helpers
-prisma/           Schema and migrations
-middleware.ts     Route protection
+  (main)/                 Pages with the navbar and footer
+    quiz/[id]/            Quiz player, score and review pages
+    user/[username]/      Public profiles
+    settings/             Profile and quiz preferences
+  (auth)/                 Login and sign-up, with a minimal layout
+  api/                    Route handlers (quiz attempts, sign-up, profile)
+  component/              Shared UI components
+lib/                      Auth, Prisma, quiz logic and helpers
+prisma/                   Schema and migrations
+middleware.ts             Route protection
 ```
 
 ## Known limitations

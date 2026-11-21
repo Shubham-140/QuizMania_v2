@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import HomePage from "./component/HomePage";
-import ContinueQuizBanner from "./component/ContinueQuizBanner";
+import HomePage from "@/app/component/HomePage";
+import ContinueQuizBanner from "@/app/component/ContinueQuizBanner";
 
 export default function Home() {
   return (

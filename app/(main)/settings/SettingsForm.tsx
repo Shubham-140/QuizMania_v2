@@ -4,14 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setNumberOfQues,
   setTotalTime,
-} from "../features/userChoices/userChoicesSlice";
+} from "@/app/features/userChoices/userChoicesSlice";
 import { useActionState, useEffect, useState, type ReactNode } from "react";
 import { updateProfile, type ProfileFormState } from "./actions";
 import { RootState } from "@/app/store/store";
 import { NO_TIME_LIMIT } from "@/lib/quizOptions";
 import type { SettingsUser } from "@/lib/users";
 import { isDemoUser } from "@/lib/demo";
-import Select from "../component/Select";
+import Select from "@/app/component/Select";
 
 const sectionTitle =
   "text-lg font-semibold mb-4 pb-2 border-b border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300";

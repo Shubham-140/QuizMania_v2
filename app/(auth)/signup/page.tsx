@@ -3,8 +3,8 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import AuthLayout from "../component/AuthLayout";
-import FormField from "../component/FormField";
+import AuthLayout from "@/app/component/AuthLayout";
+import FormField from "@/app/component/FormField";
 
 const iconProps = {
   className: "w-4 h-4 text-white",
