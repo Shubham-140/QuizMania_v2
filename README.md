@@ -8,7 +8,8 @@ A full-stack quiz app built with Next.js, TypeScript and PostgreSQL. Pick a cate
 - Configurable quiz length (5 to 20 questions) and time limit (1 to 5 minutes, or none)
 - Score page and a full answer review for every finished quiz
 - Unfinished quizzes can be resumed from the home page, with answers and remaining time kept
-- Keyboard and screen reader friendly: answers, dialogs and menus all work without a mouse
+- Keyboard and screen reader friendly: answers, dialogs, menus and dropdowns all work without a mouse
+- Custom dropdowns in place of the browser default, following the listbox pattern (arrow keys, Home, End, type-to-jump, Escape)
 - Public profiles showing a user's most recent results
 - Sign in with email and password or GitHub, or try it in one click with the shared test account
 - Light and dark themes, saved per user without a flash on load
@@ -91,6 +92,7 @@ The suite runs in Node and jsdom and never touches the database or the trivia AP
 - The submit and answers APIs: sign-in required, owner-only access, finished attempts, late saves, mismatched answers, double submits and finishing an attempt at its deadline
 - The quiz player: answering and submitting, answering with the keyboard alone, saving picks as they're made, restoring them after a refresh, the retry message on a failed save, and auto-submit on timeout
 - Dialogs: focus moves in and stays inside, Escape closes them, and focus returns to where it was
+- Dropdowns: picking with the mouse or the keyboard alone, the selected option, closing on Escape or a click outside without a change, and sending the value with a form
 - The login page: one-click sign-in with the test account, and the error shown when sign-in fails
 - Sign-in sessions created before the switch to cuid ids are upgraded to the user's new id
 - The profile Server Action: sign-in required, the test account kept read-only, validation messages that keep what was typed, and refreshing only that user's cached profile

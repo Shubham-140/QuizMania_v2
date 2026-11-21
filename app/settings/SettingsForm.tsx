@@ -8,8 +8,10 @@ import {
 import { useActionState, useEffect, useState, type ReactNode } from "react";
 import { updateProfile, type ProfileFormState } from "./actions";
 import { RootState } from "@/app/store/store";
+import { NO_TIME_LIMIT } from "@/lib/quizOptions";
 import type { SettingsUser } from "@/lib/users";
 import { isDemoUser } from "@/lib/demo";
+import Select from "../component/Select";
 
 const sectionTitle =
   "text-lg font-semibold mb-4 pb-2 border-b border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300";
@@ -17,15 +19,18 @@ const control =
   "w-full border rounded-lg py-2 px-3 text-sm border-slate-200 text-slate-900 dark:border-slate-600 dark:text-slate-50";
 const readOnlyControl = `${control} cursor-not-allowed bg-slate-100 dark:bg-slate-700`;
 const editableControl = `${control} bg-slate-50 dark:bg-slate-800`;
-const selectControl = `${editableControl} pr-8 cursor-pointer select-arrow`;
+const selectControl = `${editableControl} hover:border-emerald-400`;
 
-const questionOptions = [5, 10, 15, 20];
+const questionOptions = [5, 10, 15, 20].map((count) => ({
+  value: String(count),
+  label: `${count} Questions`,
+}));
 const timeOptions = [
-  { value: 60, label: "1 minute" },
-  { value: 120, label: "2 minutes" },
-  { value: 180, label: "3 minutes" },
-  { value: 300, label: "5 minutes" },
-  { value: 999999, label: "No limit" },
+  { value: "60", label: "1 minute" },
+  { value: "120", label: "2 minutes" },
+  { value: "180", label: "3 minutes" },
+  { value: "300", label: "5 minutes" },
+  { value: String(NO_TIME_LIMIT), label: "No limit" },
 ];
 
 function Field({
@@ -40,6 +45,7 @@ function Field({
   return (
     <div className="mb-6">
       <label
+        id={`${id}-label`}
         htmlFor={id}
         className="block font-medium mb-2 text-sm text-slate-700 dark:text-slate-300"
       >
@@ -219,33 +225,25 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Field id="numberOfQuestions" label="Number of Questions">
-              <select
+              <Select
                 id="numberOfQuestions"
+                labelledBy="numberOfQuestions-label"
+                value={String(numberOfQuestions)}
+                options={questionOptions}
+                onChange={(count) => dispatch(setNumberOfQues(count))}
                 className={selectControl}
-                onChange={(e) => dispatch(setNumberOfQues(e.target.value))}
-                value={numberOfQuestions}
-              >
-                {questionOptions.map((count) => (
-                  <option key={count} value={count}>
-                    {count} Questions
-                  </option>
-                ))}
-              </select>
+              />
             </Field>
 
             <Field id="totalTime" label="Time Limit">
-              <select
+              <Select
                 id="totalTime"
+                labelledBy="totalTime-label"
+                value={String(totalTime)}
+                options={timeOptions}
+                onChange={(time) => dispatch(setTotalTime(time))}
                 className={selectControl}
-                onChange={(e) => dispatch(setTotalTime(e.target.value))}
-                value={totalTime}
-              >
-                {timeOptions.map(({ value, label }) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
+              />
             </Field>
           </div>
         </div>

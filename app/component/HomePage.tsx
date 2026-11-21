@@ -4,6 +4,7 @@ import { CountdownOverlay } from "./CountdownOverlay";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { categories, NO_TIME_LIMIT } from "@/lib/quizOptions";
+import Select from "./Select";
 
 const readSetting = (key: string, fallback: number) => {
   const stored = localStorage.getItem(key);
@@ -146,22 +147,21 @@ const HomePage = ({ continueBanner }: { continueBanner: ReactNode }) => {
           </div>
 
           <div className="mb-8 md:mb-10 text-left">
-            <h2 className={sectionTitle}>Select Category</h2>
-            <select
-              className={`w-full p-4 rounded-xl cursor-pointer appearance-none transition-all duration-300 border bg-gray-50 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-200 dark:bg-gray-700 dark:focus:ring-emerald-900 ${
+            <h2 id="category-label" className={sectionTitle}>
+              Select Category
+            </h2>
+            <Select
+              labelledBy="category-label"
+              value={category}
+              options={categories}
+              onChange={setCategory}
+              placeholder="Select a category"
+              className={`p-4 rounded-xl border bg-gray-50 text-gray-900 hover:border-emerald-400 dark:bg-gray-700 dark:text-gray-100 ${
                 selectCategoryWarning
                   ? "border-red-500 dark:border-red-600 animate-shake"
                   : "border-gray-200 dark:border-gray-600"
               }`}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="">Select a category</option>
-              {categories.map(({ value, label }) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
+            />
 
             {selectCategoryWarning && (
               <Warning message="Please select a category to continue" />

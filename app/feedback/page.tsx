@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Select from "../component/Select";
 
 const inputClass =
   "w-full px-4 py-3 rounded-xl border transition-all duration-200 focus:outline-none focus:ring-3 border-slate-200 bg-slate-50 text-gray-900 focus:border-emerald-500 focus:ring-emerald-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:focus:ring-emerald-500/30";
@@ -18,6 +19,7 @@ export default function Feedback() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const [feedbackType, setFeedbackType] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,6 +37,7 @@ export default function Feedback() {
         throw new Error(`Formspree responded with ${response.status}`);
       }
       form.reset();
+      setFeedbackType("");
       setIsSubmitted(true);
     } catch (err) {
       console.error("Feedback submit error:", err);
@@ -128,36 +131,24 @@ export default function Feedback() {
           </div>
 
           <div>
-            <label htmlFor="feedback_type" className="field-label">
+            <label
+              id="feedback_type-label"
+              htmlFor="feedback_type"
+              className="field-label"
+            >
               Feedback Type
             </label>
 
-            <div className="relative">
-              <select
-                id="feedback_type"
-                name="feedback_type"
-                className={`text-sm pr-10 appearance-none cursor-pointer hover:border-emerald-500 ${inputClass}`}
-              >
-                <option value="">Select feedback type</option>
-                {feedbackTypes.map(({ value, label }) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-
-              <div className="absolute top-1/2 right-4 -translate-y-1/2 pointer-events-none text-gray-600 dark:text-gray-400">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </div>
-            </div>
+            <Select
+              id="feedback_type"
+              labelledBy="feedback_type-label"
+              name="feedback_type"
+              value={feedbackType}
+              options={feedbackTypes}
+              onChange={setFeedbackType}
+              placeholder="Select feedback type"
+              className={`text-sm hover:border-emerald-500 ${inputClass}`}
+            />
           </div>
 
           <div>
