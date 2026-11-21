@@ -5,7 +5,8 @@ import {
   setNumberOfQues,
   setTotalTime,
 } from "../features/userChoices/userChoicesSlice";
-import { useEffect, useState, type ReactNode } from "react";
+import { useActionState, useEffect, useState, type ReactNode } from "react";
+import { updateProfile, type ProfileFormState } from "./actions";
 import { RootState } from "@/app/store/store";
 import type { SettingsUser } from "@/lib/users";
 
@@ -58,54 +59,29 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
   const dispatch = useDispatch();
   const [reduxHydrated, setReduxHydrated] = useState(false);
 
-  const [name, setName] = useState(user.name ?? "");
-  const [age, setAge] = useState(user.age ?? 0);
-  const [description, setDescription] = useState(user.description ?? "");
-  const [saveError, setSaveError] = useState("");
-  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
-    "idle"
+  const initialState: ProfileFormState = {
+    status: "idle",
+    message: "",
+    values: {
+      name: user.name ?? "",
+      age: user.age ? String(user.age) : "",
+      description: user.description ?? "",
+    },
+  };
+  const [state, formAction, isSaving] = useActionState(
+    updateProfile,
+    initialState
   );
+  const [showSaved, setShowSaved] = useState(false);
   const username = user.username ?? user.gitHubUsername ?? "";
   const quizAttended = user.quizAttended;
 
   useEffect(() => {
-    if (saveStatus !== "saved") return;
-    const timer = setTimeout(() => setSaveStatus("idle"), 3000);
+    if (state.status !== "success") return;
+    setShowSaved(true);
+    const timer = setTimeout(() => setShowSaved(false), 3000);
     return () => clearTimeout(timer);
-  }, [saveStatus]);
-
-  async function handleSaveChanges() {
-    setSaveError("");
-    setSaveStatus("saving");
-    try {
-      const res = await fetch("/api/user/update", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          age,
-          description,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setSaveError(data.error ?? "Could not save your profile");
-        setSaveStatus("idle");
-        return;
-      }
-
-      setName(data.name ?? "");
-      setAge(data.age ?? 0);
-      setDescription(data.description ?? "");
-      setSaveStatus("saved");
-    } catch {
-      setSaveError("Could not save your profile");
-      setSaveStatus("idle");
-    }
-  }
+  }, [state]);
 
   useEffect(() => {
     if (!reduxHydrated) return;
@@ -139,7 +115,7 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
           User Settings
         </h2>
 
-        <div className="mb-8">
+        <form action={formAction} className="mb-8">
           <h3 className={sectionTitle}>Profile Information</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -169,9 +145,9 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
               <Field id="fullName" label="Full Name">
                 <input
                   id="fullName"
+                  name="name"
                   type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  defaultValue={state.values.name}
                   className={editableControl}
                   placeholder="Your full name"
                 />
@@ -180,11 +156,11 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
               <Field id="age" label="Age">
                 <input
                   id="age"
+                  name="age"
                   type="number"
-                  value={age}
-                  onChange={(e) =>
-                    setAge(e.target.value === "" ? 0 : Number(e.target.value))
-                  }
+                  min={0}
+                  max={120}
+                  defaultValue={state.values.age}
                   className={editableControl}
                   placeholder="Enter your age"
                 />
@@ -195,8 +171,8 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
           <Field id="description" label="About You">
             <textarea
               id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              name="description"
+              defaultValue={state.values.description}
               className={editableControl}
               placeholder="Tell us about yourself..."
               rows={3}
@@ -204,26 +180,26 @@ export default function SettingsForm({ user }: { user: SettingsUser }) {
           </Field>
 
           <div className="flex items-center justify-end gap-4">
-            {saveError && (
+            {state.status === "error" && (
               <p role="alert" className="text-sm text-red-500">
-                {saveError}
+                {state.message}
               </p>
             )}
             <p
               role="status"
               className="text-sm text-emerald-600 dark:text-emerald-400"
             >
-              {saveStatus === "saved" ? "Profile saved" : ""}
+              {showSaved ? state.message : ""}
             </p>
             <button
+              type="submit"
               className="px-6 py-2 rounded-lg text-white font-medium text-sm cursor-pointer transition-all bg-emerald-500 hover:-translate-y-0.5 shadow-[0_2px_6px_rgba(16,185,129,0.3)] hover:shadow-[0_4px_10px_rgba(16,185,129,0.4)] dark:shadow-[0_2px_6px_rgba(16,185,129,0.2)] dark:hover:shadow-[0_4px_10px_rgba(16,185,129,0.3)] disabled:cursor-wait disabled:opacity-60 disabled:hover:translate-y-0"
-              onClick={handleSaveChanges}
-              disabled={saveStatus === "saving"}
+              disabled={isSaving}
             >
-              {saveStatus === "saving" ? "Saving..." : "Save Profile"}
+              {isSaving ? "Saving..." : "Save Profile"}
             </button>
           </div>
-        </div>
+        </form>
 
         <div>
           <h3 className={sectionTitle}>Quiz Preferences</h3>

@@ -28,7 +28,8 @@ Each quiz is a `QuizAttempt` stored in the database, and the server owns everyth
 ## Security
 
 - Passwords are hashed with bcrypt and never returned by the API
-- Request bodies are validated with Zod on every API route
+- Input is validated with Zod in every API route and Server Action
+- Modules that touch the database or auth are marked `server-only`, so they can't end up in the browser bundle
 - Middleware protects `/settings` and `/quiz/*` and keeps signed-in users away from `/login` and `/signup`
 - Users and quiz attempts use cuid ids, so records can't be found by guessing numbers
 - Every attempt lookup is scoped to the signed-in user
@@ -47,6 +48,8 @@ Each quiz is a `QuizAttempt` stored in the database, and the server owns everyth
 | Testing | Vitest, React Testing Library |
 
 Pages that only display data, like profiles, scores and reviews, are server components. Client components are used where there is interaction, such as the quiz itself and the forms.
+
+Profile settings are saved with a Server Action through `useActionState`, so the form shows its pending and saved states and still submits before JavaScript loads. Public profiles are cached with `unstable_cache` under a per-user tag; saving a profile or submitting a quiz calls `revalidateTag` for that user, and the cache also refreshes on its own every five minutes.
 
 ## Getting started
 
@@ -83,6 +86,8 @@ The suite runs in Node and jsdom and never touches the database or the trivia AP
 - The quiz player: answering and submitting, answering with the keyboard alone, saving picks as they're made, restoring them after a refresh, the retry message on a failed save, and auto-submit on timeout
 - Dialogs: focus moves in and stays inside, Escape closes them, and focus returns to where it was
 - Sign-in sessions created before the switch to cuid ids are upgraded to the user's new id
+- The profile Server Action: sign-in required, validation messages that keep what was typed, and refreshing only that user's cached profile
+- Profile caching: the cache tag, real dates on cache hits, and skipping the cache right after an expired quiz is finished
 
 ## Project structure
 
@@ -101,4 +106,5 @@ middleware.ts     Route protection
 
 - Expired attempts are finished when they're next loaded rather than at the deadline itself. An attempt that is never opened again stays in progress until a scheduled job is added to sweep them
 - Quizzes without a time limit stay open until they're submitted
+- Profile changes that don't go through the app's own actions, such as a new GitHub avatar, can take up to five minutes to show on the cached profile
 - Async server components aren't covered by the unit tests; end-to-end tests with Playwright would be the next step
