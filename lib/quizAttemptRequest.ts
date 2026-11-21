@@ -1,3 +1,4 @@
+import "server-only";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/authOptions";
@@ -69,5 +70,11 @@ export async function readSelection(
     };
   }
 
-  return { ok: true as const, userId, attempt, selected };
+  return {
+    ok: true as const,
+    userId,
+    username: session.user.username ?? null,
+    attempt,
+    selected,
+  };
 }

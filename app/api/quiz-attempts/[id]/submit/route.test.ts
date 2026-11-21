@@ -27,6 +27,9 @@ vi.mock("@/lib/prisma", () => ({
   },
 }));
 
+const { revalidateTag } = vi.hoisted(() => ({ revalidateTag: vi.fn() }));
+vi.mock("next/cache", () => ({ revalidateTag, unstable_cache: vi.fn() }));
+
 import { POST } from "./route";
 
 const USER_ID = "cuser00000000000000000001";
@@ -64,7 +67,9 @@ const submit = (body: unknown) =>
 describe("POST /api/quiz-attempts/[id]/submit", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    getServerSession.mockResolvedValue({ user: { id: USER_ID } });
+    getServerSession.mockResolvedValue({
+      user: { id: USER_ID, username: "quiz-fan" },
+    });
     findFirst.mockResolvedValue(attempt());
     updateMany.mockResolvedValue({ count: 1 });
   });
@@ -127,6 +132,7 @@ describe("POST /api/quiz-attempts/[id]/submit", () => {
       where: { id: USER_ID },
       data: { quizAttended: { increment: 1 } },
     });
+    expect(revalidateTag).toHaveBeenCalledWith("profile:quiz-fan");
   });
 
   it("returns 409 and doesn't count the quiz twice when a second submit races the first", async () => {
@@ -136,6 +142,7 @@ describe("POST /api/quiz-attempts/[id]/submit", () => {
 
     expect(response.status).toBe(409);
     expect(updateUser).not.toHaveBeenCalled();
+    expect(revalidateTag).not.toHaveBeenCalled();
   });
 
   it("finishes an attempt submitted long after its deadline using the saved picks", async () => {

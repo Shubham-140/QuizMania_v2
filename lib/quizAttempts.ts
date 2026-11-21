@@ -1,3 +1,4 @@
+import "server-only";
 import { cache } from "react";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -126,6 +127,7 @@ export async function finishExpiredAttempts(userId: string) {
   for (const attempt of expired) {
     await finishExpiredAttempt(attempt);
   }
+  return expired.length;
 }
 
 export async function getActiveAttempt(userId: string) {

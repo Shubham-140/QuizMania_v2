@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { secondsElapsed } from "@/lib/quizAttempts";
 import { readSelection } from "@/lib/quizAttemptRequest";
 import { scoreAttempt } from "@/lib/quizScoring";
+import { profileTag } from "@/lib/users";
+import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function POST(
@@ -10,7 +12,7 @@ export async function POST(
 ) {
   const request = await readSelection(req, params);
   if (!request.ok) return request.response;
-  const { userId, attempt, selected } = request;
+  const { userId, username, attempt, selected } = request;
 
   const { answers, score, timeTaken } = scoreAttempt(
     attempt.answers,
@@ -35,6 +37,8 @@ export async function POST(
       });
       return true;
     });
+
+    if (completed && username) revalidateTag(profileTag(username));
 
     return NextResponse.json(
       { id: attempt.id },
