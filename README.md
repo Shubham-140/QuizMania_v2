@@ -2,6 +2,8 @@
 
 A full-stack quiz app built with Next.js, TypeScript and PostgreSQL. Pick a category and difficulty, answer against the clock, then review every question once you're done.
 
+**Live demo:** [quizmania.vercel.app](https://quizmania.vercel.app/). No sign-up needed: click **Sign in with test account** on the login page.
+
 ## Features
 
 - Ten categories and three difficulty levels, with questions from [The Trivia API](https://the-trivia-api.com)
@@ -115,10 +117,3 @@ lib/                      Auth, Prisma, quiz logic and helpers
 prisma/                   Schema and migrations
 middleware.ts             Route protection
 ```
-
-## Known limitations
-
-- Expired attempts are finished when they're next loaded rather than at the deadline itself. An attempt that is never opened again stays in progress until a scheduled job is added to sweep them
-- Quizzes without a time limit stay open until they're submitted
-- Profile changes that don't go through the app's own actions, such as a new GitHub avatar, can take up to five minutes to show on the cached profile
-- Async server components aren't covered by the unit tests; end-to-end tests with Playwright would be the next step
